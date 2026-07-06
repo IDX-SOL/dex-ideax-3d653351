@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync, existsSync } from "fs";
-import { fileURLToPath } from "url";
 import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -20,7 +20,7 @@ interface Colors {
 function rgbToHex(
   r: string | number,
   g: string | number,
-  b: string | number
+  b: string | number,
 ): string {
   return (
     "#" +
@@ -45,10 +45,10 @@ function extractCSSColors(): Colors {
     const cssContent = readFileSync(themePath, "utf-8");
 
     const base7Match = cssContent.match(
-      /--oui-color-base-7:\s*(\d+)\s+(\d+)\s+(\d+)/
+      /--oui-color-base-7:\s*(\d+)\s+(\d+)\s+(\d+)/,
     );
     const primaryMatch = cssContent.match(
-      /--oui-color-primary:\s*(\d+)\s+(\d+)\s+(\d+)/
+      /--oui-color-primary:\s*(\d+)\s+(\d+)\s+(\d+)/,
     );
 
     const backgroundColor = base7Match
@@ -60,7 +60,7 @@ function extractCSSColors(): Colors {
       : "#000000";
 
     console.log(
-      `✓ Extracted colors from theme.css: bg=${backgroundColor}, theme=${themeColor}`
+      `✓ Extracted colors from theme.css: bg=${backgroundColor}, theme=${themeColor}`,
     );
 
     return { backgroundColor, themeColor };
@@ -146,7 +146,7 @@ function generateManifest() {
         name: "Trading",
         short_name: "Trade",
         description: "Start trading perpetuals",
-        url: withBasePath("/perp", basePath),
+        url: withBasePath("/", basePath),
         icons: [
           {
             src: iconPath,

@@ -86,13 +86,17 @@ const router = createBrowserRouter(
       element: <App />,
       errorElement: <ErrorBoundary />,
       children: [
-        { index: true, element: <IndexPage /> },
         {
-          path: "perp",
           element: <PerpLayout />,
           children: [
-            { index: true, element: <PerpIndex /> },
-            { path: ":symbol", element: <PerpSymbol /> },
+            { index: true, element: <IndexPage /> },
+            {
+              path: "perp",
+              children: [
+                { index: true, element: <PerpIndex /> },
+                { path: ":symbol", element: <PerpSymbol /> },
+              ],
+            },
           ],
         },
         {

@@ -1,6 +1,5 @@
 import { useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { getSymbol } from "@/utils/storage";
 import { RouteOption } from "@orderly.network/types";
 
 export function useNav() {
@@ -18,8 +17,7 @@ export function useNav() {
       }
 
       if (option.href === "/") {
-        const symbol = getSymbol();
-        navigate(`/perp/${symbol}${queryString}`);
+        navigate(`/${queryString}`.replace(/\/\?$/, "/"));
         return;
       }
 
@@ -36,7 +34,7 @@ export function useNav() {
 
       navigate(`${path}${queryString}`);
     },
-    [navigate, searchParams]
+    [navigate, searchParams],
   );
 
   return { onRouteChange };

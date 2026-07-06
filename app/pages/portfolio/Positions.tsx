@@ -1,14 +1,14 @@
 import { useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { API } from "@orderly.network/types";
-import { Box } from "@orderly.network/ui";
 import { PositionsModule } from "@orderly.network/portfolio";
 import { useTradingLocalStorage } from "@orderly.network/trading";
-import { updateSymbol } from "@/utils/storage";
-import { generatePageTitle } from "@/utils/utils";
+import { API } from "@orderly.network/types";
+import { Box } from "@orderly.network/ui";
 import { useOrderlyConfig } from "@/utils/config";
 import { getPageMeta } from "@/utils/seo";
 import { renderSEOTags } from "@/utils/seo-tags";
+import { updateSymbol } from "@/utils/storage";
+import { generatePageTitle } from "@/utils/utils";
 
 export default function PortfolioPositions() {
   const config = useOrderlyConfig();
@@ -20,13 +20,13 @@ export default function PortfolioPositions() {
     (data: API.Symbol) => {
       const symbol = data.symbol;
       updateSymbol(symbol);
-      
+
       const searchParamsString = searchParams.toString();
-      const queryString = searchParamsString ? `?${searchParamsString}` : '';
-      
-      navigate(`/perp/${symbol}${queryString}`);
+      const queryString = searchParamsString ? `?${searchParamsString}` : "";
+
+      navigate(`/${queryString}`.replace(/\/\?$/, "/"));
     },
-    [navigate, searchParams]
+    [navigate, searchParams],
   );
 
   const pageMeta = getPageMeta();
@@ -58,4 +58,3 @@ export default function PortfolioPositions() {
     </>
   );
 }
-
