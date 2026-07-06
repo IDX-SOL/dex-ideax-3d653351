@@ -6,6 +6,7 @@ import App from "./App";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { withBasePath } from "./utils/base-path";
 import { getRuntimeConfig } from "./utils/runtime-config";
+import { applyDefaultChartSettings } from "./utils/trading-chart-defaults";
 import { applyDefaultTradingLayout } from "./utils/trading-layout";
 import "./styles/index.css";
 
@@ -149,6 +150,7 @@ const router = createBrowserRouter(
 
 loadRuntimeConfig().then(() => {
   applyDefaultTradingLayout();
+  applyDefaultChartSettings();
   loadAnalytics();
 
   ReactDOM.createRoot(document.getElementById("root")!).render(

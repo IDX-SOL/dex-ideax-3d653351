@@ -4,7 +4,22 @@ export const ORDERLY_HORIZONTAL_MARKETS_LAYOUT_KEY =
 
 export const DEFAULT_MARKET_LAYOUT = "top";
 
-const MARKET_LAYOUT_MIGRATION_KEY = "idx_dex_default_market_layout_top_v1";
+const MARKET_LAYOUT_MIGRATION_KEY = "idx_dex_default_market_layout_top_v2";
+
+/** Set a value using Orderly's JSON.stringify localStorage convention. */
+export function setOrderlyLocalStorage<T>(key: string, value: T) {
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
+function getOrderlyLocalStorage<T>(key: string): T | undefined {
+  const raw = localStorage.getItem(key);
+  if (raw == null) return undefined;
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return undefined;
+  }
+}
 
 /** Apply IDX default: horizontal markets bar on top. */
 export function applyDefaultTradingLayout() {
@@ -12,7 +27,7 @@ export function applyDefaultTradingLayout() {
 
   const migrated = localStorage.getItem(MARKET_LAYOUT_MIGRATION_KEY);
   if (!migrated) {
-    localStorage.setItem(
+    setOrderlyLocalStorage(
       ORDERLY_HORIZONTAL_MARKETS_LAYOUT_KEY,
       DEFAULT_MARKET_LAYOUT,
     );
@@ -20,8 +35,20 @@ export function applyDefaultTradingLayout() {
     return;
   }
 
-  if (!localStorage.getItem(ORDERLY_HORIZONTAL_MARKETS_LAYOUT_KEY)) {
-    localStorage.setItem(
+  const existing = localStorage.getItem(ORDERLY_HORIZONTAL_MARKETS_LAYOUT_KEY);
+  if (!existing) {
+    setOrderlyLocalStorage(
+      ORDERLY_HORIZONTAL_MARKETS_LAYOUT_KEY,
+      DEFAULT_MARKET_LAYOUT,
+    );
+    return;
+  }
+
+  if (
+    getOrderlyLocalStorage<string>(ORDERLY_HORIZONTAL_MARKETS_LAYOUT_KEY) ===
+    undefined
+  ) {
+    setOrderlyLocalStorage(
       ORDERLY_HORIZONTAL_MARKETS_LAYOUT_KEY,
       DEFAULT_MARKET_LAYOUT,
     );
