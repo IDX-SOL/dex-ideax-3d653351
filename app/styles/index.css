@@ -15,3 +15,56 @@
 .oui-portfolio-page .oui-box.oui-flex.oui-flex-nowrap > div:nth-child(2).oui-box.oui-flex.oui-justify-start.oui-flex-nowrap.oui-relative {
   display: none;
 }
+
+/*
+ * Orderly scaffold/trading use ~1018px / 1440px min-widths; clip horizontal overflow
+ * so narrow viewports do not get a page-level sideways scrollbar.
+ */
+html,
+body,
+#root {
+  overflow-x: clip;
+  max-width: 100%;
+}
+
+.oui-scaffold-root {
+  overflow-x: clip !important;
+  overflow-y: auto;
+  width: 100%;
+  max-width: 100%;
+}
+
+.oui-scaffold-container {
+  min-width: 0 !important;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.oui-scaffold-restricted-info {
+  min-width: 0 !important;
+  max-width: 100%;
+}
+
+[class*="oui-min-w-[1018px]"] {
+  min-width: 0 !important;
+  max-width: 100%;
+}
+
+.oui-trading-markets-container {
+  min-width: 0 !important;
+  max-width: 100%;
+}
+
+/* Desktop trading root (calc viewport height class from Orderly Trading layout) */
+.oui-scaffold-container [class*="100vh_-_48px_-_29px"] {
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.oui-scaffold-container .oui-flex-1.oui-overflow-hidden[style*="min-width"] {
+  min-width: 0 !important;
+  max-width: 100%;
+}
