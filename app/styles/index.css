@@ -16,7 +16,6 @@
   display: none;
 }
 
-<<<<<<< HEAD
 /*
  * Orderly scaffold/trading use ~1018px / 1440px min-widths; clip horizontal overflow
  * so narrow viewports do not get a page-level sideways scrollbar.
@@ -68,9 +67,4 @@ body,
 .oui-scaffold-container .oui-flex-1.oui-overflow-hidden[style*="min-width"] {
   min-width: 0 !important;
   max-width: 100%;
-=======
-/* hide power by orderly footer */
-.oui-scaffold-footer-powered-by {
-  display: none;
->>>>>>> origin/main
 }
