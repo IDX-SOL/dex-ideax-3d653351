@@ -5,7 +5,7 @@ window.__RUNTIME_CONFIG__ = {
   "VITE_DISABLE_MAINNET": "false",
   "VITE_DISABLE_TESTNET": "false",
   "VITE_ORDERLY_MAINNET_CHAINS": "42161,10,8453,5000,1,56,900900900,143,1329,43114,2818,146,80094,1514,34443,98866,2741",
-  "VITE_ORDERLY_TESTNET_CHAINS": "421614,97,10143,11124,901901901",
+  "VITE_ORDERLY_TESTNET_CHAINS": "901901901,97",
   "VITE_DEFAULT_CHAIN": "900900900",
   "VITE_PRIVY_APP_ID": "",
   "VITE_PRIVY_LOGIN_METHODS": "email",
@@ -21,7 +21,11 @@ window.__RUNTIME_CONFIG__ = {
   "VITE_ENABLED_MENUS": "Trading,Portfolio,Markets,Swap",
   "VITE_CUSTOM_MENUS": "Launchlab, https://tools.idxsolana.io/idx-launchlab/live",
   "VITE_ENABLE_SERVICE_DISCLAIMER_DIALOG": "false",
+<<<<<<< HEAD
   "VITE_ENABLE_CAMPAIGNS": "false",
+=======
+  "VITE_ENABLE_CAMPAIGNS": "true",
+>>>>>>> DexFix
   "VITE_TELEGRAM_URL": "https://t.me/IDX_Official/13",
   "VITE_DISCORD_URL": "https://discord.gg/T5cMArBv",
   "VITE_TWITTER_URL": "",
@@ -33,9 +37,9 @@ window.__RUNTIME_CONFIG__ = {
   "VITE_SEO_TWITTER_HANDLE": "@IDX_SOLANA",
   "VITE_SEO_THEME_COLOR": "#1a1b23",
   "VITE_SEO_KEYWORDS": "IDX Perps, perpetual futures, crypto perps, Solana perps, multi-chain trading, BTC perp, ETH perp, SOL perp, IDX Solana, IDX ecosystem, leverage trading, decentralized exchange",
-  "VITE_AVAILABLE_LANGUAGES": "en,fr,de,pt,it,nl,ar,es,tr,uk,ru",
-  "VITE_USE_CUSTOM_PNL_POSTERS": "false",
-  "VITE_CUSTOM_PNL_POSTER_COUNT": "0",
+  "VITE_AVAILABLE_LANGUAGES": "en,fr,de,pt,es,uk,ru",
+  "VITE_USE_CUSTOM_PNL_POSTERS": "true",
+  "VITE_CUSTOM_PNL_POSTER_COUNT": "1",
   "VITE_TRADING_VIEW_COLOR_CONFIG": "",
   "VITE_ANALYTICS_SCRIPT": "",
   "VITE_SYMBOL_LIST": "",
