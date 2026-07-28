@@ -1,16 +1,19 @@
-import { defineConfig, Plugin } from "vite";
 import react from "@vitejs/plugin-react";
-import tsconfigPaths from "vite-tsconfig-paths";
-import { cjsInterop } from "vite-plugin-cjs-interop";
-import { nodePolyfills } from "vite-plugin-node-polyfills";
 import fs from "fs";
 import path from "path";
+import { defineConfig, Plugin } from "vite";
+import { cjsInterop } from "vite-plugin-cjs-interop";
+import { nodePolyfills } from "vite-plugin-node-polyfills";
+import tsconfigPaths from "vite-tsconfig-paths";
+
+const DEFAULT_HTML_TITLE =
+  "IDX Exchange - Decentralized Crypto Perpetual Futures (Perp) Exchange";
 
 function loadConfigTitle(): string {
   try {
     const configPath = path.join(__dirname, "public/config.js");
     if (!fs.existsSync(configPath)) {
-      return "Orderly Network";
+      return DEFAULT_HTML_TITLE;
     }
 
     const configText = fs.readFileSync(configPath, "utf-8");
@@ -20,10 +23,14 @@ function loadConfigTitle(): string {
       .trim();
 
     const config = JSON.parse(jsonText);
-    return config.VITE_ORDERLY_BROKER_NAME || "Orderly Network";
+    return (
+      config.VITE_SEO_SITE_NAME ||
+      config.VITE_ORDERLY_BROKER_NAME ||
+      DEFAULT_HTML_TITLE
+    );
   } catch (error) {
     console.warn("Failed to load title from config.js:", error);
-    return "Orderly Network";
+    return DEFAULT_HTML_TITLE;
   }
 }
 
