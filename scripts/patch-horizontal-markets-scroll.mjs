@@ -17,22 +17,28 @@ function writeIfChanged(filePath, next) {
 }
 
 /**
- * CSS marquee v4: stay paused until track width matches symbol count
- * (ticker rows often mount empty → early duration = fast burst on refresh).
+ * CSS marquee v5:
+ * - Pause until width matches symbol count (avoids fast startup burst).
+ * - Remeasure only when symbol *membership* changes (sorted set), not order.
+ * - While playing, quietly update duration if width jumps — never pause/blink.
  * CSS must use animation-duration: var(--idx-hm-duration, …).
  */
 const IDX_CSS_MARQUEE_ESM = `var IdxCssMarquee = (props) => {
       const { data, renderItem, className } = props;
       const trackRef = React7.useRef(null);
-      const listKey = React7.useMemo(
-        () => Array.isArray(data) ? data.join("\\0") : "",
-        [data]
-      );
+      const membershipKey = React7.useMemo(() => {
+        if (!Array.isArray(data) || data.length === 0) return "";
+        return [...data].sort().join("\\0");
+      }, [data]);
       const itemCount = Array.isArray(data) ? data.length : 0;
       const [ready, setReady] = React7.useState(false);
+      const playingRef = React7.useRef(false);
+      const committedHalfRef = React7.useRef(0);
       React7.useLayoutEffect(() => {
         const track = trackRef.current;
         if (!track) return;
+        playingRef.current = false;
+        committedHalfRef.current = 0;
         setReady(false);
         track.style.removeProperty("--idx-hm-duration");
         const t0 = performance.now();
@@ -41,22 +47,32 @@ const IDX_CSS_MARQUEE_ESM = `var IdxCssMarquee = (props) => {
         const MAX_WAIT_MS = 3e3;
         let lastHalf = 0;
         let stableTimer = 0;
-        let playing = false;
         let cancelled = false;
-        const commit = (half) => {
-          if (cancelled || playing || half < 120) return;
-          playing = true;
-          window.clearTimeout(stableTimer);
+        const applyDuration = (half) => {
           track.style.setProperty(
             "--idx-hm-duration",
             \`\${Math.max(55, half / 80)}s\`
           );
+          committedHalfRef.current = half;
+        };
+        const commit = (half) => {
+          if (cancelled || playingRef.current || half < 120) return;
+          playingRef.current = true;
+          window.clearTimeout(stableTimer);
+          applyDuration(half);
           setReady(true);
         };
         const sample = () => {
-          if (cancelled || playing) return;
+          if (cancelled) return;
           const half = track.scrollWidth / 2;
           if (half < 120) return;
+          if (playingRef.current) {
+            const prev = committedHalfRef.current;
+            if (prev > 0 && Math.abs(half - prev) / prev >= 0.03) {
+              applyDuration(half);
+            }
+            return;
+          }
           const elapsed = performance.now() - t0;
           const wideEnough = half >= expectedMinHalf || elapsed >= MAX_WAIT_MS;
           if (!wideEnough) return;
@@ -64,7 +80,7 @@ const IDX_CSS_MARQUEE_ESM = `var IdxCssMarquee = (props) => {
             lastHalf = half;
             window.clearTimeout(stableTimer);
             stableTimer = window.setTimeout(() => {
-              if (cancelled || playing) return;
+              if (cancelled || playingRef.current) return;
               const nextHalf = track.scrollWidth / 2;
               const waited = performance.now() - t0;
               if (nextHalf >= expectedMinHalf || waited >= MAX_WAIT_MS) {
@@ -89,7 +105,7 @@ const IDX_CSS_MARQUEE_ESM = `var IdxCssMarquee = (props) => {
           window.clearTimeout(stableTimer);
           timers.forEach((id) => window.clearTimeout(id));
         };
-      }, [listKey, itemCount]); // idx_hm_marquee_stable_v4
+      }, [membershipKey, itemCount]); // idx_hm_marquee_stable_v5
       if (!Array.isArray(data) || data.length === 0) return null;
       const row = (prefix) => data.map((item, index) => /* @__PURE__ */ jsx(
         "div",
@@ -119,15 +135,19 @@ const IDX_CSS_MARQUEE_ESM = `var IdxCssMarquee = (props) => {
 const IDX_CSS_MARQUEE_CJS = `var IdxCssMarquee = (props) => {
       const { data, renderItem, className } = props;
       const trackRef = React7__default.default.useRef(null);
-      const listKey = React7__default.default.useMemo(
-        () => Array.isArray(data) ? data.join("\\0") : "",
-        [data]
-      );
+      const membershipKey = React7__default.default.useMemo(() => {
+        if (!Array.isArray(data) || data.length === 0) return "";
+        return [...data].sort().join("\\0");
+      }, [data]);
       const itemCount = Array.isArray(data) ? data.length : 0;
       const [ready, setReady] = React7__default.default.useState(false);
+      const playingRef = React7__default.default.useRef(false);
+      const committedHalfRef = React7__default.default.useRef(0);
       React7__default.default.useLayoutEffect(() => {
         const track = trackRef.current;
         if (!track) return;
+        playingRef.current = false;
+        committedHalfRef.current = 0;
         setReady(false);
         track.style.removeProperty("--idx-hm-duration");
         const t0 = performance.now();
@@ -136,22 +156,32 @@ const IDX_CSS_MARQUEE_CJS = `var IdxCssMarquee = (props) => {
         const MAX_WAIT_MS = 3e3;
         let lastHalf = 0;
         let stableTimer = 0;
-        let playing = false;
         let cancelled = false;
-        const commit = (half) => {
-          if (cancelled || playing || half < 120) return;
-          playing = true;
-          window.clearTimeout(stableTimer);
+        const applyDuration = (half) => {
           track.style.setProperty(
             "--idx-hm-duration",
             \`\${Math.max(55, half / 80)}s\`
           );
+          committedHalfRef.current = half;
+        };
+        const commit = (half) => {
+          if (cancelled || playingRef.current || half < 120) return;
+          playingRef.current = true;
+          window.clearTimeout(stableTimer);
+          applyDuration(half);
           setReady(true);
         };
         const sample = () => {
-          if (cancelled || playing) return;
+          if (cancelled) return;
           const half = track.scrollWidth / 2;
           if (half < 120) return;
+          if (playingRef.current) {
+            const prev = committedHalfRef.current;
+            if (prev > 0 && Math.abs(half - prev) / prev >= 0.03) {
+              applyDuration(half);
+            }
+            return;
+          }
           const elapsed = performance.now() - t0;
           const wideEnough = half >= expectedMinHalf || elapsed >= MAX_WAIT_MS;
           if (!wideEnough) return;
@@ -159,7 +189,7 @@ const IDX_CSS_MARQUEE_CJS = `var IdxCssMarquee = (props) => {
             lastHalf = half;
             window.clearTimeout(stableTimer);
             stableTimer = window.setTimeout(() => {
-              if (cancelled || playing) return;
+              if (cancelled || playingRef.current) return;
               const nextHalf = track.scrollWidth / 2;
               const waited = performance.now() - t0;
               if (nextHalf >= expectedMinHalf || waited >= MAX_WAIT_MS) {
@@ -184,7 +214,7 @@ const IDX_CSS_MARQUEE_CJS = `var IdxCssMarquee = (props) => {
           window.clearTimeout(stableTimer);
           timers.forEach((id) => window.clearTimeout(id));
         };
-      }, [listKey, itemCount]); // idx_hm_marquee_stable_v4
+      }, [membershipKey, itemCount]); // idx_hm_marquee_stable_v5
       if (!Array.isArray(data) || data.length === 0) return null;
       const row = (prefix) => data.map((item, index) => /* @__PURE__ */ jsxRuntime.jsx(
         "div",
@@ -223,7 +253,7 @@ function replaceIdxCssMarquee(code, replacement, assignPrefix) {
 function patchInjectCssMarquee(code) {
   // Refresh existing marquee when version marker is missing/outdated
   if (code.includes("var IdxCssMarquee = ")) {
-    if (code.includes("idx_hm_marquee_stable_v4")) return code;
+    if (code.includes("idx_hm_marquee_stable_v5")) return code;
     const esm = replaceIdxCssMarquee(
       code,
       IDX_CSS_MARQUEE_ESM,
@@ -453,6 +483,90 @@ $1if (!out.length) return out;
   return code;
 }
 
+/**
+ * Freeze marquee symbol order after first paint so volume reshuffles
+ * don't reorder DOM nodes (that blinks/jumps the CSS animation).
+ */
+function patchFreezeSymbolOrder(code) {
+  if (code.includes("idx_hm_freeze_order")) return code;
+
+  const freezeBody = `if (!out.length) {
+      hmOrderRef.current = [];
+      return out;
+    }
+    const IDX = "__IDX_DEXSCREENER__";
+    const filtered = out.filter((s) => s !== IDX);
+    const solIdx = filtered.indexOf("PERP_SOL_USDC");
+    const insertAt = solIdx >= 0 ? solIdx + 1 : Math.min(1, filtered.length);
+    const preferred = [
+      ...filtered.slice(0, insertAt),
+      IDX,
+      ...filtered.slice(insertAt)
+    ];
+    // idx_hm_freeze_order — keep bar order; only add/remove (no volume reshuffle blink)
+    const prev = hmOrderRef.current;
+    if (!prev.length) {
+      hmOrderRef.current = preferred;
+      return preferred;
+    }
+    const nextSet = new Set(preferred);
+    const kept = prev.filter((s) => nextSet.has(s));
+    const keptSet = new Set(kept);
+    const added = preferred.filter((s) => !keptSet.has(s));
+    const result = [...kept, ...added];
+    if (
+      result.length === prev.length &&
+      result.every((s, i) => s === prev[i])
+    ) {
+      return prev;
+    }
+    hmOrderRef.current = result;
+    return result;`;
+
+  // ESM: after-SOL chip already present
+  let next = code.replace(
+    /\/\/ idx_hm_external_idx — IDX spot chip after SOL \(not first in the bar\)\n  const symbols = useMemo\(\(\) => \{\n    const list = optionSymbols\n      \? optionSymbols\n      : marketsSymbolKey\n        \? marketsSymbolKey\.split\("\\0"\)\n        : \[\];\n    const max = optionMaxItems;\n    let out = list;\n    if \(typeof max === "number"\) \{\n      if \(max === -1\) out = list;\n      else if \(max >= 0\) out = list\.slice\(0, max\);\n    \}\n    if \(!out\.length\) return out;\n    const IDX = "__IDX_DEXSCREENER__";\n    const filtered = out\.filter\(\(s\) => s !== IDX\);\n    const solIdx = filtered\.indexOf\("PERP_SOL_USDC"\);\n    const insertAt = solIdx >= 0 \? solIdx \+ 1 : Math\.min\(1, filtered\.length\);\n    return \[\n      \.\.\.filtered\.slice\(0, insertAt\),\n      IDX,\n      \.\.\.filtered\.slice\(insertAt\)\n    \];\n  \}, \[marketsSymbolKey, optionSymbols, optionMaxItems\]\);/,
+    `// idx_hm_external_idx — IDX spot chip after SOL (not first in the bar)
+  const hmOrderRef = useRef([]);
+  const symbols = useMemo(() => {
+    const list = optionSymbols
+      ? optionSymbols
+      : marketsSymbolKey
+        ? marketsSymbolKey.split("\\0")
+        : [];
+    const max = optionMaxItems;
+    let out = list;
+    if (typeof max === "number") {
+      if (max === -1) out = list;
+      else if (max >= 0) out = list.slice(0, max);
+    }
+    ${freezeBody}
+  }, [marketsSymbolKey, optionSymbols, optionMaxItems]);`,
+  );
+
+  next = next.replace(
+    /\/\/ idx_hm_external_idx — IDX spot chip after SOL \(not first in the bar\)\n  const symbols = React7\.useMemo\(\(\) => \{\n    const list = optionSymbols\n      \? optionSymbols\n      : marketsSymbolKey\n        \? marketsSymbolKey\.split\("\\0"\)\n        : \[\];\n    const max = optionMaxItems;\n    let out = list;\n    if \(typeof max === "number"\) \{\n      if \(max === -1\) out = list;\n      else if \(max >= 0\) out = list\.slice\(0, max\);\n    \}\n    if \(!out\.length\) return out;\n    const IDX = "__IDX_DEXSCREENER__";\n    const filtered = out\.filter\(\(s\) => s !== IDX\);\n    const solIdx = filtered\.indexOf\("PERP_SOL_USDC"\);\n    const insertAt = solIdx >= 0 \? solIdx \+ 1 : Math\.min\(1, filtered\.length\);\n    return \[\n      \.\.\.filtered\.slice\(0, insertAt\),\n      IDX,\n      \.\.\.filtered\.slice\(insertAt\)\n    \];\n  \}, \[marketsSymbolKey, optionSymbols, optionMaxItems\]\);/,
+    `// idx_hm_external_idx — IDX spot chip after SOL (not first in the bar)
+  const hmOrderRef = React7.useRef([]);
+  const symbols = React7.useMemo(() => {
+    const list = optionSymbols
+      ? optionSymbols
+      : marketsSymbolKey
+        ? marketsSymbolKey.split("\\0")
+        : [];
+    const max = optionMaxItems;
+    let out = list;
+    if (typeof max === "number") {
+      if (max === -1) out = list;
+      else if (max >= 0) out = list.slice(0, max);
+    }
+    ${freezeBody}
+  }, [marketsSymbolKey, optionSymbols, optionMaxItems]);`,
+  );
+
+  return next;
+}
+
 function patchRemoveItemTransition(code) {
   return code.replace(
     /"oui-transition-all oui-duration-200"/g,
@@ -476,6 +590,7 @@ function patchMarkets(code) {
   next = bumpThrottle(next);
   next = patchStableSymbols(next);
   next = patchIdxChipNotFirst(next);
+  next = patchFreezeSymbolOrder(next);
   next = patchRemoveItemTransition(next);
   return next;
 }
