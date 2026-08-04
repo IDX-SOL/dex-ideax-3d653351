@@ -11,6 +11,53 @@
   display: none !important;
 }
 
+/* Right-side credit over the (hidden) powered-by slot */
+.idx-footer-shell {
+  position: relative;
+  width: 100%;
+}
+
+.idx-footer-credit {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  color: rgb(var(--oui-color-base-contrast) / 0.54);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.idx-footer-credit:hover {
+  color: rgb(var(--oui-color-base-contrast) / 0.98);
+}
+
+.idx-footer-by {
+  position: absolute;
+  /* Synced to order-entry right edge on trading pages (see IdxScaffoldFooter) */
+  right: calc(var(--idx-footer-by-right, 12px) + 6px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+@media (max-width: 1023px) {
+  .idx-footer-by {
+    display: none;
+  }
+}
+
+.idx-mobile-nav-by-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 32px;
+  padding: 8px 12px;
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
+}
+
+.idx-mobile-nav-by {
+  display: block;
+}
+
 /*
  * Brand CTAs (Connect wallet, etc.): solid emerald, no gradient↔solid swap on
  * hover (that flash was the blink). Keep the same fill mode always.

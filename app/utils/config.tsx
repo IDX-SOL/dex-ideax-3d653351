@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "@orderly.network/i18n";
 import { AppLogos } from "@orderly.network/react-app";
@@ -24,6 +24,7 @@ import {
 } from "@orderly.network/ui-scaffold";
 import { CampaignsNavTitle } from "@/components/CampaignsNavTitle";
 import CustomLeftNav from "@/components/CustomLeftNav";
+import { IdxScaffoldFooter } from "@/components/IdxScaffoldFooter";
 import { TradingModeToggle } from "@/components/TradingModeToggle";
 import { OrderlyActiveIcon, OrderlyIcon } from "../components/icons/orderly";
 import { withBasePath } from "./base-path";
@@ -63,6 +64,7 @@ export type OrderlyConfig = {
   scaffold: {
     mainNavProps: MainNavWidgetProps;
     footerProps: FooterProps;
+    footer: ReactNode;
     bottomNavProps: BottomNavProps;
   };
   tradingPage: {
@@ -397,6 +399,14 @@ export const useOrderlyConfig = () => {
           twitterUrl: getRuntimeConfig("VITE_TWITTER_URL") || undefined,
           trailing: null,
         },
+        footer: (
+          <IdxScaffoldFooter
+            telegramUrl={getRuntimeConfig("VITE_TELEGRAM_URL") || undefined}
+            discordUrl={getRuntimeConfig("VITE_DISCORD_URL") || undefined}
+            twitterUrl={getRuntimeConfig("VITE_TWITTER_URL") || undefined}
+            trailing={null}
+          />
+        ),
       },
       orderlyAppProvider: {
         appIcons: {

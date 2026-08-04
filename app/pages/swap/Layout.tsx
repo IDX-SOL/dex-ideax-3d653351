@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
-import { useOrderlyConfig } from "@/utils/config";
 import { Scaffold } from "@orderly.network/ui-scaffold";
 import { useNav } from "@/hooks/useNav";
+import { useOrderlyConfig } from "@/utils/config";
 
 export default function SwapLayout() {
   const config = useOrderlyConfig();
@@ -14,6 +14,7 @@ export default function SwapLayout() {
         initialMenu: "/swap",
       }}
       footerProps={config.scaffold.footerProps}
+      footer={config.scaffold.footer}
       routerAdapter={{
         onRouteChange,
       }}
@@ -23,4 +24,3 @@ export default function SwapLayout() {
     </Scaffold>
   );
 }
-

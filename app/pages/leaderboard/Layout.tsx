@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { Scaffold } from "@orderly.network/ui-scaffold";
-import { useOrderlyConfig } from "@/utils/config";
 import { useNav } from "@/hooks/useNav";
+import { useOrderlyConfig } from "@/utils/config";
 
 export default function LeaderboardLayout() {
   const config = useOrderlyConfig();
@@ -14,6 +14,7 @@ export default function LeaderboardLayout() {
         initialMenu: "/leaderboard",
       }}
       footerProps={config.scaffold.footerProps}
+      footer={config.scaffold.footer}
       routerAdapter={{
         onRouteChange,
       }}
@@ -23,4 +24,3 @@ export default function LeaderboardLayout() {
     </Scaffold>
   );
 }
-

@@ -22,6 +22,7 @@ export default function RewardsLayout() {
         initialMenu: "/",
       }}
       footerProps={config.scaffold.footerProps}
+      footer={config.scaffold.footer}
       routerAdapter={{
         onRouteChange,
       }}

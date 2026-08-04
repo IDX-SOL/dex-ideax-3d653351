@@ -1,7 +1,7 @@
 import { Outlet, useLocation } from "react-router-dom";
 import { PortfolioLayoutWidget } from "@orderly.network/portfolio";
-import { useOrderlyConfig } from "@/utils/config";
 import { useNav } from "@/hooks/useNav";
+import { useOrderlyConfig } from "@/utils/config";
 
 export default function PortfolioLayout() {
   const location = useLocation();
@@ -13,6 +13,7 @@ export default function PortfolioLayout() {
   return (
     <PortfolioLayoutWidget
       footerProps={config.scaffold.footerProps}
+      footer={config.scaffold.footer}
       mainNavProps={{
         ...config.scaffold.mainNavProps,
         initialMenu: "/portfolio",
@@ -29,4 +30,3 @@ export default function PortfolioLayout() {
     </PortfolioLayoutWidget>
   );
 }
-

@@ -20,6 +20,7 @@ import {
   useLanguageSwitcherScript,
   useScanQRCodeScript,
 } from "@orderly.network/ui-scaffold";
+import { IdxFooterCreditLink } from "@/components/IdxFooterCreditLink";
 import { withBasePath } from "@/utils/base-path";
 import {
   getRuntimeConfig,
@@ -169,12 +170,8 @@ const BottomAccountActions: FC = () => {
   const showScan = state.status === AccountStatusEnum.NotConnected;
   const showSwitch = state.status >= AccountStatusEnum.EnableTrading;
 
-  if (!showScan && !showSwitch) {
-    return null;
-  }
-
   return (
-    <div className="oui-mt-auto oui-w-full oui-shrink-0 oui-border-t oui-border-line-12 oui-pb-[env(safe-area-inset-bottom)]">
+    <div className="oui-mt-auto oui-w-full oui-shrink-0 oui-flex oui-flex-col">
       {showScan && (
         <>
           <button
@@ -204,6 +201,11 @@ const BottomAccountActions: FC = () => {
           />
         </div>
       )}
+      <div className="oui-border-t oui-border-line-12">
+        <div className="idx-mobile-nav-by-wrap">
+          <IdxFooterCreditLink className="idx-mobile-nav-by" />
+        </div>
+      </div>
     </div>
   );
 };
