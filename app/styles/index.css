@@ -11,6 +11,397 @@
   display: none !important;
 }
 
+/*
+ * Brand CTAs (Connect wallet, etc.): solid emerald, no gradient↔solid swap on
+ * hover (that flash was the blink). Keep the same fill mode always.
+ */
+.oui-button.oui-gradient-brand,
+.oui-button.oui-gradient-brand:hover,
+.oui-button.oui-gradient-brand:active,
+.oui-button.oui-gradient-brand:focus-visible {
+  background-image: none !important;
+  background-color: rgb(var(--oui-color-primary) / 1) !important;
+  color: rgb(var(--oui-color-primary-contrast) / 1) !important;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.oui-button.oui-gradient-brand:hover {
+  background-color: rgb(var(--oui-color-primary-darken) / 1) !important;
+}
+
+.oui-button.oui-gradient-brand:active {
+  background-color: rgb(var(--oui-color-primary-darken) / 0.92) !important;
+}
+
+/*
+ * Deposit / Transfer / Withdraw: shared neutral chip (Lite·Pro greys).
+ * Connect wallet stays emerald via .wallet-connect-button / header brand.
+ */
+.oui-assetView-deposit-btn.oui-button,
+.oui-button.oui-assetView-deposit-btn,
+.oui-assetView-transfer-btn.oui-button,
+.oui-button.oui-assetView-transfer-btn,
+.oui-assetView-withdraw-btn.oui-button,
+.oui-button.oui-assetView-withdraw-btn,
+button.oui-button[data-testid="oui-testid-assetView-deposit-button"],
+button.oui-button[data-testid="oui-testid-assetView-transfer-button"],
+button.oui-button[data-testid="oui-testid-assetView-withdraw-button"],
+button.oui-button[data-testid="oui-testid-portfolio-assets-deposit-btn"],
+button.oui-button[data-testid="oui-testid-portfolio-assets-deposit-btn"] ~ button.oui-button,
+button.oui-button[data-testid="oui-testid-portfolio-assets-withdraw-btn"] {
+  background-image: none !important;
+  background-color: #28282d !important;
+  color: rgba(255, 255, 255, 0.98) !important;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.oui-assetView-deposit-btn.oui-button:hover,
+.oui-button.oui-assetView-deposit-btn:hover,
+.oui-assetView-transfer-btn.oui-button:hover,
+.oui-button.oui-assetView-transfer-btn:hover,
+.oui-assetView-withdraw-btn.oui-button:hover,
+.oui-button.oui-assetView-withdraw-btn:hover,
+button.oui-button[data-testid="oui-testid-assetView-deposit-button"]:hover,
+button.oui-button[data-testid="oui-testid-assetView-transfer-button"]:hover,
+button.oui-button[data-testid="oui-testid-assetView-withdraw-button"]:hover,
+button.oui-button[data-testid="oui-testid-portfolio-assets-deposit-btn"]:hover,
+button.oui-button[data-testid="oui-testid-portfolio-assets-deposit-btn"] ~ button.oui-button:hover,
+button.oui-button[data-testid="oui-testid-portfolio-assets-withdraw-btn"]:hover {
+  background-color: #343439 !important;
+  color: rgba(255, 255, 255, 0.98) !important;
+}
+
+.oui-assetView-deposit-btn.oui-button:active,
+.oui-button.oui-assetView-deposit-btn:active,
+.oui-assetView-transfer-btn.oui-button:active,
+.oui-button.oui-assetView-transfer-btn:active,
+.oui-assetView-withdraw-btn.oui-button:active,
+.oui-button.oui-assetView-withdraw-btn:active,
+button.oui-button[data-testid="oui-testid-assetView-deposit-button"]:active,
+button.oui-button[data-testid="oui-testid-assetView-transfer-button"]:active,
+button.oui-button[data-testid="oui-testid-assetView-withdraw-button"]:active,
+button.oui-button[data-testid="oui-testid-portfolio-assets-deposit-btn"]:active,
+button.oui-button[data-testid="oui-testid-portfolio-assets-deposit-btn"] ~ button.oui-button:active,
+button.oui-button[data-testid="oui-testid-portfolio-assets-withdraw-btn"]:active {
+  background-color: #3f3f44 !important;
+}
+
+.oui-assetView-deposit-btn .oui-text-primary-contrast,
+.oui-assetView-transfer-btn .oui-text-primary-contrast,
+.oui-assetView-withdraw-btn .oui-text-primary-contrast,
+button[data-testid="oui-testid-assetView-deposit-button"] .oui-text-primary-contrast,
+button[data-testid="oui-testid-assetView-transfer-button"] .oui-text-primary-contrast,
+button[data-testid="oui-testid-assetView-withdraw-button"] .oui-text-primary-contrast,
+button[data-testid="oui-testid-portfolio-assets-deposit-btn"] .oui-text-primary-contrast,
+button[data-testid="oui-testid-portfolio-assets-withdraw-btn"] .oui-text-primary-contrast {
+  color: rgba(255, 255, 255, 0.98) !important;
+}
+
+/*
+ * Order entry Buy/Sell colors: SDK only paints the active side when canTrade
+ * (wallet connected). Keep the same green/red UI while disconnected.
+ * Active side is inferred from the submit button's buy/sell class.
+ */
+.oui-orderEntry:has(#order-entry-submit-button.orderly-order-entry-submit-button-buy)
+  .oui-orderEntry-side-buy-btn {
+  background-color: rgb(var(--oui-color-success-darken) / 1) !important;
+  color: rgb(var(--oui-color-success-contrast) / 1) !important;
+}
+
+.oui-orderEntry:has(#order-entry-submit-button.orderly-order-entry-submit-button-sell)
+  .oui-orderEntry-side-sell-btn {
+  background-color: rgb(var(--oui-color-danger-darken) / 1) !important;
+  color: rgb(var(--oui-color-danger-contrast) / 1) !important;
+}
+
+#order-entry-submit-button.orderly-order-entry-submit-button-buy:disabled,
+.oui-orderEntry-submit-btn.orderly-order-entry-submit-button-buy:disabled {
+  background-color: rgb(var(--oui-color-success-darken) / 1) !important;
+  color: rgb(var(--oui-color-success-contrast) / 1) !important;
+}
+
+#order-entry-submit-button.orderly-order-entry-submit-button-sell:disabled,
+.oui-orderEntry-submit-btn.orderly-order-entry-submit-button-sell:disabled {
+  background-color: rgb(var(--oui-color-danger-darken) / 1) !important;
+  color: rgb(var(--oui-color-danger-contrast) / 1) !important;
+}
+
+/*
+ * Hide the side assets panel while wallet is disconnected.
+ * Keep deposit / enable-trading / balances once connected.
+ * Header Connect wallet remains available.
+ */
+html[data-idx-wallet-connected="false"] .oui-trading-assetsView-container {
+  display: none !important;
+}
+
+/*
+ * Disabled Buy/Long|Sell/Short swallows clicks; let pointer events pass so our
+ * connect gate can hit-test the button rect and open Connect wallet.
+ */
+html[data-idx-wallet-connected="false"] #order-entry-submit-button:disabled {
+  pointer-events: none !important;
+}
+
+/* Header Lite | Pro toggle — sized in CSS (oui arbitrary utilities are not compiled) */
+.idx-trading-mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 2px;
+  height: 32px;
+  padding: 2px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  /* Sit on tools-black header: inset track + hairline, not panel grey */
+  background-color: #0a0a0b;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.idx-trading-mode-toggle__btn {
+  height: 26px;
+  min-width: 52px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: rgb(var(--oui-color-base-foreground) / 0.54);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.idx-trading-mode-toggle__btn:hover {
+  color: rgb(var(--oui-color-base-foreground) / 0.8);
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.idx-trading-mode-toggle__btn--active {
+  /* Neutral selected chip — keep emerald for brand CTAs only */
+  background-color: #28282d;
+  color: rgba(255, 255, 255, 0.98);
+}
+
+.idx-trading-mode-toggle__btn--active:hover {
+  background-color: #343439;
+  color: rgba(255, 255, 255, 0.98);
+}
+
+/* ── Lite mode: hide Pro-only chrome (Pro keeps full UI) ── */
+html[data-idx-trading-mode="lite"]
+  .oui-orderEntry-leverage-btn
+  > button[data-testid="oui-testid-orderEntry-margin-mode"],
+html[data-idx-trading-mode="lite"]
+  .oui-orderEntry-leverage-btn
+  > .oui-h-5.oui-w-px.oui-bg-line {
+  display: none !important;
+}
+
+/* Lite: hide Reduce only (optional advanced control) */
+html[data-idx-trading-mode="lite"] .oui-orderEntry-reduceOnly {
+  display: none !important;
+}
+
+/* Lite: hide Additional (pin) config row / button */
+html[data-idx-trading-mode="lite"]
+  .oui-orderEntry
+  .oui-justify-end.oui-w-full:has(.oui-orderEntry-additionalConfig-btn),
+html[data-idx-trading-mode="lite"] .oui-orderEntry-additionalConfig-btn {
+  display: none !important;
+}
+
+/* Lite: hide TP/SL Partial position + Advanced row */
+html[data-idx-trading-mode="lite"]
+  .oui-orderEntry-tpsl-form
+  > .oui-justify-between.oui-gap-x-2:first-child,
+html[data-idx-trading-mode="lite"] .oui-orderEntry-tpsl-advanced-btn {
+  display: none !important;
+}
+
+/* Desktop Lite: hide Advanced next to Market / Limit */
+html[data-idx-trading-mode="lite"]
+  [data-testid="oui-testid-orderEntry-orderType-advanced"] {
+  display: none !important;
+}
+
+/* Lite: hide Order size / Initial margin switch (static Order size label via SDK patch) */
+html[data-idx-trading-mode="lite"] .oui-orderEntry-totalTypeSelect-btn {
+  display: none !important;
+}
+
+/*
+ * Desktop Lite symbol bar: keep symbol, last price, 24h%, 24h volume.
+ * Hide Mark (2), Index (3), Est. funding (5), Open interest (6), Layout.
+ */
+html[data-idx-trading-mode="lite"]
+  .oui-symbol-info-bar-desktop
+  .oui-hide-scrollbar
+  > .oui-gap-x-8
+  > :nth-child(2),
+html[data-idx-trading-mode="lite"]
+  .oui-symbol-info-bar-desktop
+  .oui-hide-scrollbar
+  > .oui-gap-x-8
+  > :nth-child(3),
+html[data-idx-trading-mode="lite"]
+  .oui-symbol-info-bar-desktop
+  .oui-hide-scrollbar
+  > .oui-gap-x-8
+  > :nth-child(5),
+html[data-idx-trading-mode="lite"]
+  .oui-symbol-info-bar-desktop
+  .oui-hide-scrollbar
+  > .oui-gap-x-8
+  > :nth-child(6),
+html[data-idx-trading-mode="lite"]
+  .oui-symbol-info-bar-desktop
+  .oui-switchLayout,
+html[data-idx-trading-mode="lite"]
+  .oui-symbol-info-bar-desktop
+  .oui-relative.oui-overflow-hidden
+  > button.oui-absolute.oui-w-\[80px\] {
+  display: none !important;
+}
+
+/*
+ * Lite data list: keep Positions, Pending, Filled, Position history, Order history
+ * (mobile: History covers both histories). Hide TP/SL, Liquidation, Assets.
+ */
+html[data-idx-trading-mode="lite"]
+  .oui-trading-dataList-tabs
+  [role="tab"][id$="-trigger-TP/SL"],
+html[data-idx-trading-mode="lite"]
+  .oui-trading-dataList-tabs
+  [role="tab"][id$="-trigger-Liquidation"],
+html[data-idx-trading-mode="lite"]
+  .oui-trading-dataList-tabs
+  [role="tab"][id$="-trigger-Assets"] {
+  display: none !important;
+}
+
+/* Lite: hide "Hide other symbols" + portfolio settings gear (still show all symbols) */
+html[data-idx-trading-mode="lite"]
+  .oui-trading-dataList-tabs
+  .oui-preference,
+html[data-idx-trading-mode="lite"]
+  .oui-rounded-b-xl.oui-bg-base-9
+  > .oui-cursor-pointer.oui-gap-\[2px\] {
+  display: none !important;
+}
+
+/* Mobile Lite: hide Chart/Trades/Data tabs; keep fold/unfold chevron only */
+html[data-idx-trading-mode="lite"]
+  .oui-trading-topTab
+  .oui-tabs-list.oui-header-list {
+  display: none !important;
+}
+
+html[data-idx-trading-mode="lite"]
+  .oui-trading-topTab
+  > .oui-box.oui-flex-row {
+  justify-content: flex-end;
+}
+
+/* Mobile left-nav Language row uses a full-width button; hide Orderly's icon trigger */
+.idx-mobile-lang-switcher #language-switcher-icon {
+  display: none !important;
+}
+
+/* Mobile left-nav Scan QR row — keep dialog, hide header icon trigger */
+.idx-mobile-scan-qr .oui-h-8.oui-w-8 {
+  display: none !important;
+}
+
+.idx-mobile-account-nav > div {
+  width: 100%;
+}
+
+/* Markets sheet: Orderly sets closeable:false — X on same row as "Markets" */
+.oui-marketsSheet-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: 8px;
+}
+
+.oui-marketsSheet-header > .oui-text-base {
+  order: 1;
+}
+
+.idx-markets-sheet-close {
+  order: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  margin-left: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  color: rgb(var(--oui-color-base-foreground) / 0.8);
+}
+
+.idx-markets-sheet-close:hover {
+  color: rgb(var(--oui-color-base-foreground) / 1);
+  background-color: rgb(var(--oui-color-base-7) / 0.8);
+}
+
+.oui-marketsSheet-header .oui-marketsSheet-search-input {
+  order: 3;
+  flex: 1 1 100%;
+  width: 100%;
+}
+
+/*
+ * Order-entry danger outlines: keep SDK validation, but don't show red borders
+ * when trading isn't ready (submit disabled / wallet not connected) or the
+ * field is still empty. Filled invalid values while canTrade still show red.
+ */
+.oui-orderEntry:has(#order-entry-submit-button:disabled)
+  .oui-input-root.oui-outline-danger,
+.oui-orderEntry:has(#order-entry-submit-button:disabled)
+  .oui-input-root.focus-within\:oui-outline-danger:focus-within {
+  outline-color: transparent !important;
+}
+
+.oui-orderEntry
+  .oui-input-root.oui-outline-danger:has(input:placeholder-shown),
+.oui-orderEntry
+  .oui-input-root.focus-within\:oui-outline-danger:has(
+    input:placeholder-shown
+  ):focus-within {
+  outline-color: transparent !important;
+}
+
+/* Order type tabs: Market left, Limit right (Advanced stays last). */
+.oui-orderEntry
+  [data-testid="oui-testid-orderEntry-orderType-desktop"]
+  > [data-testid="oui-testid-orderEntry-orderType-market"],
+.oui-orderEntry
+  [data-testid="oui-testid-orderEntry-orderType-desktop"]
+  > span:has([data-testid="oui-testid-orderEntry-orderType-market"]) {
+  order: 1;
+}
+
+.oui-orderEntry
+  [data-testid="oui-testid-orderEntry-orderType-desktop"]
+  > [data-testid="oui-testid-orderEntry-orderType-limit"] {
+  order: 2;
+}
+
+.oui-orderEntry
+  [data-testid="oui-testid-orderEntry-orderType-desktop"]
+  > [data-testid="oui-testid-orderEntry-orderType-advanced"] {
+  order: 3;
+}
+
 /* hide trading rewards on mobile */
 .oui-portfolio-page .oui-box.oui-flex.oui-flex-nowrap > div:nth-child(2).oui-box.oui-flex.oui-justify-start.oui-flex-nowrap.oui-relative {
   display: none;
@@ -67,4 +458,544 @@ body,
 .oui-scaffold-container .oui-flex-1.oui-overflow-hidden[style*="min-width"] {
   min-width: 0 !important;
   max-width: 100%;
+}
+
+/*
+ * Mobile symbol bar: live $ price above the unchanged 24h % (same source as
+ * desktop last price / 24h_close). Percentage node is not modified.
+ */
+.oui-symbol-info-bar-mobile .idx-mobile-symbol-price-host {
+  display: grid !important;
+  grid-template-columns: auto auto minmax(0, auto);
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 12px;
+  row-gap: 1px;
+}
+
+/* icon + symbol column */
+.oui-symbol-info-bar-mobile .idx-mobile-symbol-price-host > :nth-child(1) {
+  grid-column: 1;
+  grid-row: 1 / -1;
+}
+
+/* vertical divider */
+.oui-symbol-info-bar-mobile .idx-mobile-symbol-price-host > :nth-child(2) {
+  grid-column: 2;
+  grid-row: 1 / -1;
+  align-self: stretch;
+}
+
+.idx-mobile-symbol-price {
+  grid-column: 3;
+  grid-row: 1;
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: rgb(var(--oui-color-base-foreground) / 0.98);
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+/* Orderly 24h % — unchanged node, second row under price */
+.oui-symbol-info-bar-mobile .idx-mobile-symbol-price-host > span.oui-text-2xs,
+.oui-symbol-info-bar-mobile .idx-mobile-symbol-price-host > span.oui-tabular-nums:not(.idx-mobile-symbol-price) {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+/*
+ * Mobile symbol bar trailing:
+ *  row1 — ≈ + amount USDC + eye
+ *  row2 — Deposit / Withdraw
+ */
+.oui-symbol-info-bar-mobile .oui-cursor-pointer {
+  display: grid !important;
+  grid-template-columns: auto auto auto;
+  grid-template-areas:
+    "approx value eye"
+    "label label label";
+  justify-content: end;
+  align-items: center;
+  column-gap: 2px;
+  row-gap: 0;
+}
+
+.oui-symbol-info-bar-mobile .oui-cursor-pointer > .oui-box {
+  display: contents;
+}
+
+.oui-symbol-info-bar-mobile
+  .oui-cursor-pointer
+  > .oui-box
+  > span.oui-text-base-contrast-54 {
+  grid-area: label;
+  justify-self: end;
+  font-size: 0 !important;
+  line-height: 0 !important;
+}
+
+.oui-symbol-info-bar-mobile
+  .oui-cursor-pointer
+  > .oui-box
+  > span.oui-text-base-contrast-54::after {
+  content: "Deposit / Withdraw";
+  font-size: 11px;
+  line-height: 17px;
+  font-weight: 600;
+  color: rgb(var(--oui-color-base-foreground) / 0.54);
+}
+
+.oui-symbol-info-bar-mobile .oui-cursor-pointer > .oui-box > button.oui-px-1 {
+  grid-area: eye;
+  display: inline-flex;
+  align-items: center;
+  padding-inline: 2px !important;
+}
+
+.oui-symbol-info-bar-mobile
+  .oui-cursor-pointer
+  > .oui-box
+  > svg.oui-fill-base-contrast-54 {
+  grid-area: approx;
+  align-self: center;
+}
+
+.oui-symbol-info-bar-mobile .oui-cursor-pointer > .oui-tabular-nums,
+.oui-symbol-info-bar-mobile .oui-cursor-pointer > .oui-text-inherit {
+  grid-area: value;
+  justify-self: start;
+}
+
+/*
+ * Main header: match IDX tools site black (#050506), not DexScreener panel grey.
+ * Scaffold paints topNavbar with oui-bg-base-9 (panels use that for surfaces).
+ */
+.oui-scaffold-topNavbar,
+.oui-scaffold-topNavbar .oui-main-nav {
+  background-color: #050506 !important;
+  border-bottom: none !important;
+}
+
+/*
+ * Symbol bar vs chart: SDK paints both oui-bg-base-9. Chart chrome should
+ * match DexScreener TradingView bg (#131722); symbol bar keeps panel #17171c.
+ */
+.oui-trading-tradingview-container,
+.oui-trading-tradingview-container .top-toolbar,
+.oui-tradingview-root {
+  background-color: #131722 !important;
+}
+
+/*
+ * Order-entry fees: hide SDK rate text; OrderEntryFeeAmounts portals $ estimates.
+ */
+.oui-orderEntry-fees.idx-fees-amount-active
+  > div
+  > span.oui-truncate:not(.oui-fees-label):not(.idx-order-entry-fees),
+.oui-orderEntry-fees.idx-fees-amount-active .oui-fees-value-container {
+  display: none !important;
+}
+
+/*
+ * Horizontal markets: CSS marquee (GPU transform) instead of Embla JS scroll.
+ */
+.oui-horizontal-markets .idx-hm-marquee {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+}
+
+.oui-horizontal-markets .idx-hm-marquee-track {
+  display: flex;
+  flex-direction: row;
+  width: max-content;
+  will-change: transform;
+  backface-visibility: hidden;
+  animation-name: idx-hm-scroll;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  /* JS sets --idx-hm-duration from track width (~80px/s). Fallback must stay slow. */
+  animation-duration: var(--idx-hm-duration, 120s);
+  /* Pause until JS measures full width — avoids fast→slow burst on reload */
+  animation-play-state: paused;
+}
+
+.oui-horizontal-markets .idx-hm-marquee-track.idx-hm-ready {
+  animation-play-state: running;
+}
+
+.oui-horizontal-markets .idx-hm-marquee:hover .idx-hm-marquee-track.idx-hm-ready {
+  animation-play-state: paused;
+}
+
+@keyframes idx-hm-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/*
+ * Align data bar with Risk rate only when there is no risk notice.
+ * Do not lock .oui-trading-symbolInfoBar-container height — Orderly sets
+ * inline height (56, or 148+ with notice/countdown via risk-height patch)
+ * and sizes chart/orderbook from that same value.
+ */
+.oui-trading-symbolInfoBar-container:not(:has(.oui-symbol-info-bar-risk-notice)) {
+  min-height: 60px !important;
+  box-sizing: border-box !important;
+}
+
+.oui-trading-symbolInfoBar-container:not(:has(.oui-symbol-info-bar-risk-notice))
+  .oui-symbol-info-bar-desktop {
+  height: 60px !important;
+  min-height: 60px !important;
+  max-height: 60px !important;
+  box-sizing: border-box !important;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+
+/* Keep details row visible when a multi-line risk notice is shown */
+.oui-trading-symbolInfoBar-container:has(.oui-symbol-info-bar-risk-notice)
+  .oui-symbol-info-bar-desktop {
+  flex-shrink: 0 !important;
+}
+
+/* Outer main↔order-entry split: invisible but still draggable */
+.w-split.oui-flex-1.w-split-horizontal > .w-split-bar.w-split-line-bar,
+.w-split.oui-flex-1.w-split-horizontal > .w-split-bar.w-split-line-bar:hover,
+.w-split.oui-flex-1.w-split-horizontal > .w-split-bar.w-split-line-bar:active,
+.w-split.oui-flex-1.w-split-horizontal > .w-split-bar.w-split-line-bar:focus {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.w-split.oui-flex-1.w-split-horizontal > .w-split-bar.w-split-line-bar > div,
+.w-split.oui-flex-1.w-split-horizontal > .w-split-bar.w-split-line-bar > div::after {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Fixed order-book panel width (Order book tab = Last trades tab). */
+.oui-trading-orderBook-container,
+.idx-orderbook-pane:not(.oui-trading-orderBook-container) {
+  transition:
+    width 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    min-width 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    max-width 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    flex-basis 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.16s ease;
+}
+
+.oui-trading-orderBookAndEntry {
+  transition: grid-template-columns 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.oui-trading-orderBookAndTrades {
+  transition: opacity 0.14s ease, visibility 0.14s ease;
+}
+
+/* Mobile book column: ease width + fade content so fold doesn’t jump */
+.idx-orderbook-mobile-col {
+  transition:
+    width 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    min-width 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    max-width 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.idx-orderbook-mobile-col > *:not(.idx-orderbook-fold-host) {
+  transition: opacity 0.18s ease, visibility 0.18s ease;
+}
+
+html[data-idx-orderbook-folding="true"]
+  .idx-orderbook-mobile-col
+  > *:not(.idx-orderbook-fold-host) {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oui-trading-orderBook-container,
+  .idx-orderbook-pane:not(.oui-trading-orderBook-container),
+  .oui-trading-orderBookAndEntry,
+  .oui-trading-orderBookAndTrades,
+  .idx-orderbook-mobile-col,
+  .idx-orderbook-mobile-col > *:not(.idx-orderbook-fold-host) {
+    transition: none !important;
+  }
+}
+
+html:not([data-idx-orderbook-folded="true"]) .oui-trading-orderBook-container {
+  width: 280px !important;
+  min-width: 280px !important;
+  max-width: 280px !important;
+  flex: 0 0 280px !important;
+}
+
+/* Order entry column: wider than Orderly’s 280px default */
+.oui-trading-orderEntry-container {
+  width: 320px !important;
+  min-width: 320px !important;
+  max-width: 320px !important;
+  flex: 0 0 320px !important;
+  box-sizing: border-box !important;
+}
+
+/* SM layout sibling that hardcodes 280px for the order-entry slot */
+.oui-w-\[calc\(100\%_-_280px_-_12px\)\] {
+  width: calc(100% - 320px - 12px) !important;
+}
+
+/* Positions / data list: always full width of the chart+order-book column */
+.oui-trading-dataList-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Chart↔order-book resize: remove — fold arrow handles collapsing the book.
+   Keep a tiny gap between chart and book when expanded. */
+html:not([data-idx-orderbook-folded="true"])
+  .w-split-horizontal:has(> .oui-trading-orderBook-container)
+  > .w-split-bar {
+  display: block !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  margin: 0 4px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+html:not([data-idx-orderbook-folded="true"])
+  .w-split-horizontal:has(> .oui-trading-orderBook-container)
+  > .w-split-bar
+  > div {
+  pointer-events: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Folded: no extra book strip — only the standard chart↔settings gap remains */
+html[data-idx-orderbook-folded="true"]
+  .w-split-horizontal:has(> .oui-trading-orderBook-container)
+  > .w-split-bar {
+  display: none !important;
+  margin: 0 !important;
+}
+
+/* Order book fold — top-right arrow (beside Last trades) / mobile book column */
+.idx-orderbook-pane,
+.idx-orderbook-mobile-col {
+  position: relative;
+}
+
+.idx-orderbook-fold-host {
+  position: absolute;
+  top: 10px;
+  right: 6px;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mobile: align fold control with Est. funding rate row */
+.idx-orderbook-mobile-col > .idx-orderbook-fold-host {
+  top: 6px;
+  right: 4px;
+}
+
+.idx-orderbook-mobile-col > .idx-orderbook-fold-host .idx-orderbook-fold-btn {
+  width: 18px;
+  height: 18px;
+}
+
+.idx-orderbook-fold-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.idx-orderbook-fold-btn:hover {
+  background: rgb(var(--oui-color-base-5, 40 40 40) / 0.7);
+}
+
+/* Desktop folded: book takes no width; chart fills; arrow lives in section gap */
+html[data-idx-orderbook-folded="true"] .oui-trading-orderBook-container {
+  min-width: 0 !important;
+  max-width: 0 !important;
+  width: 0 !important;
+  flex: 0 0 0 !important;
+  overflow: hidden !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  pointer-events: none !important;
+}
+
+html[data-idx-orderbook-folded="true"]
+  .w-split-horizontal:has(> .oui-trading-orderBook-container)
+  > .w-split-pane:not(.oui-trading-orderBook-container) {
+  flex: 1 1 auto !important;
+  width: auto !important;
+  max-width: none !important;
+  min-width: 0 !important;
+}
+
+html[data-idx-orderbook-folded="true"]
+  .idx-orderbook-pane:not(.oui-trading-orderBook-container) {
+  min-height: 0 !important;
+  max-height: 0 !important;
+  height: 0 !important;
+  flex: 0 0 0 !important;
+  overflow: hidden !important;
+  background: transparent !important;
+  pointer-events: none !important;
+}
+
+html[data-idx-orderbook-folded="true"]
+  .w-split-bar:has(+ .oui-trading-orderBook-container),
+html[data-idx-orderbook-folded="true"]
+  .oui-trading-orderBook-container
+  + .w-split-bar,
+html[data-idx-orderbook-folded="true"]
+  .w-split-bar:has(+ .idx-orderbook-pane),
+html[data-idx-orderbook-folded="true"] .idx-orderbook-pane + .w-split-bar {
+  display: none !important;
+}
+
+/* Fade/clip book content (avoid display:none — that makes fold feel heavy) */
+html[data-idx-orderbook-folded="true"] .oui-trading-orderBookAndTrades,
+html[data-idx-orderbook-folded="true"]
+  .oui-trading-orderBook-container
+  > *:not(.idx-orderbook-fold-host),
+html[data-idx-orderbook-folded="true"]
+  .idx-orderbook-pane:not(.oui-trading-orderBook-container)
+  > *:not(.idx-orderbook-fold-host) {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Arrow in the standard chart↔settings gap — pinned to the top (not bar-centered) */
+html[data-idx-orderbook-folded="true"] .idx-orderbook-fold-gap {
+  position: relative !important;
+  z-index: 5;
+}
+
+html[data-idx-orderbook-folded="true"]
+  .idx-orderbook-fold-gap
+  > .idx-orderbook-fold-host {
+  position: absolute !important;
+  top: 8px !important;
+  bottom: auto !important;
+  left: 50% !important;
+  right: auto !important;
+  height: auto !important;
+  max-height: none !important;
+  width: auto !important;
+  margin: 0 !important;
+  inset: auto !important;
+  /* keep top/left after inset reset — JS also sets chart-aligned top */
+  top: 8px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  align-self: flex-start !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 6;
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+html[data-idx-orderbook-folded="true"]
+  .idx-orderbook-fold-gap
+  > .idx-orderbook-fold-host
+  .idx-orderbook-fold-btn {
+  pointer-events: auto !important;
+}
+
+html[data-idx-orderbook-folded="true"] .idx-orderbook-fold-btn {
+  width: 14px;
+  height: 14px;
+}
+
+html[data-idx-orderbook-folded="true"] .idx-orderbook-fold-btn svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Mobile: collapse order-book in place (left when book is left, etc.) */
+html[data-idx-orderbook-folded="true"]
+  .oui-trading-orderBookAndEntry.oui-grid-cols-\[4fr\,6fr\] {
+  grid-template-columns: 4px 1fr !important;
+}
+
+html[data-idx-orderbook-folded="true"]
+  .oui-trading-orderBookAndEntry.oui-grid-cols-\[6fr\,4fr\] {
+  grid-template-columns: 1fr 4px !important;
+}
+
+html[data-idx-orderbook-folded="true"] .idx-orderbook-mobile-col {
+  overflow: visible !important;
+  min-width: 4px !important;
+  max-width: 4px !important;
+  width: 4px !important;
+  background: transparent !important;
+}
+
+html[data-idx-orderbook-folded="true"]
+  .idx-orderbook-mobile-col
+  > *:not(.idx-orderbook-fold-host) {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+html[data-idx-orderbook-folded="true"]
+  .idx-orderbook-mobile-col
+  > .idx-orderbook-fold-host {
+  top: 6px;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+html[data-idx-orderbook-folded="true"]
+  .idx-orderbook-mobile-col
+  > .idx-orderbook-fold-host
+  .idx-orderbook-fold-btn {
+  width: 14px;
+  height: 14px;
+}
+
+html[data-idx-orderbook-folded="true"]
+  .idx-orderbook-mobile-col
+  > .idx-orderbook-fold-host
+  .idx-orderbook-fold-btn
+  svg {
+  width: 12px;
+  height: 12px;
 }

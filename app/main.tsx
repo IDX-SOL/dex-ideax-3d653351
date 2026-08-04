@@ -8,6 +8,7 @@ import { withBasePath } from "./utils/base-path";
 import { getRuntimeConfig } from "./utils/runtime-config";
 import { applyDefaultChartSettings } from "./utils/trading-chart-defaults";
 import { applyDefaultTradingLayout } from "./utils/trading-layout";
+import { applyTradingModeToDocument } from "./utils/trading-mode";
 import "./styles/index.css";
 
 const IndexPage = lazy(() => import("./pages/Index"));
@@ -155,6 +156,7 @@ const router = createBrowserRouter(
 loadRuntimeConfig().then(() => {
   applyDefaultTradingLayout();
   applyDefaultChartSettings();
+  applyTradingModeToDocument();
   loadAnalytics();
 
   ReactDOM.createRoot(document.getElementById("root")!).render(
@@ -166,7 +168,9 @@ loadRuntimeConfig().then(() => {
   );
 });
 
-if ("serviceWorker" in navigator) {
+// Skip SW in Vite/dev — it breaks lazy route imports after dep re-opt / HMR
+// ("Failed to fetch dynamically imported module: .../Layout.tsx").
+if ("serviceWorker" in navigator && !import.meta.env.DEV) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
       .register(withBasePath("/sw.js"))
@@ -176,5 +180,9 @@ if ("serviceWorker" in navigator) {
       .catch((error) => {
         console.log("SW registration failed:", error);
       });
+  });
+} else if ("serviceWorker" in navigator && import.meta.env.DEV) {
+  navigator.serviceWorker.getRegistrations().then((regs) => {
+    regs.forEach((reg) => reg.unregister());
   });
 }

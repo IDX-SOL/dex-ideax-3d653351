@@ -1,5 +1,5 @@
-let CACHE_NAME = 'orderly-dex-v1';
-const CACHE_VERSION = 'v1';
+let CACHE_NAME = 'orderly-dex-v2';
+const CACHE_VERSION = 'v2';
 let cacheNameInitialized = false;
 
 const NEVER_CACHE = ['/', '/index.html', '/config.js'];
@@ -71,6 +71,21 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
 
   if (request.method !== 'GET' || !url.protocol.startsWith('http')) {
+    return;
+  }
+
+  // Dev / Vite: never intercept — stale .vite deps and HMR break lazy routes otherwise
+  // ("Failed to fetch dynamically imported module: .../Layout.tsx").
+  if (
+    url.hostname === 'localhost' ||
+    url.hostname === '127.0.0.1' ||
+    url.port === '5173' ||
+    url.pathname.includes('/@vite/') ||
+    url.pathname.includes('/@react-refresh') ||
+    url.pathname.includes('/node_modules/.vite/') ||
+    url.pathname.includes('/node_modules/') ||
+    /\.(tsx?|jsx?|mjs)(\?|$)/i.test(url.pathname + url.search)
+  ) {
     return;
   }
 

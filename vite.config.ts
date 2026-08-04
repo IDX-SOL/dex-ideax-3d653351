@@ -19,7 +19,7 @@ function loadConfigTitle(): string {
     const configText = fs.readFileSync(configPath, "utf-8");
     const jsonText = configText
       .replace(/window\.__RUNTIME_CONFIG__\s*=\s*/, "")
-      .replace(/;$/, "")
+      .replace(/;\s*$/, "")
       .trim();
 
     const config = JSON.parse(jsonText);
@@ -46,6 +46,79 @@ function htmlTitlePlugin(): Plugin {
   };
 }
 
+/**
+ * Chart legend shows "… · Orderly" from ui-tradingview's hardcoded EXCHANGE.
+ * Remap display/prefix to IDX; keep SymbolsStorage group "Orderly" for the API.
+ */
+function renameTradingViewExchange(code: string): string | null {
+  if (!code.includes('var EXCHANGE = "Orderly"')) return null;
+
+  let next = code.replace(/var EXCHANGE = "Orderly"/g, 'var EXCHANGE = "IDX"');
+
+  next = next.replace(
+    /var withExchangePrefix = \(symbol\) => symbol\.startsWith\(`\$\{EXCHANGE\}:`\) \? symbol : `\$\{EXCHANGE\}:\$\{symbol\}`;/g,
+    "var withExchangePrefix = (symbol) => `${EXCHANGE}:${withoutExchangePrefix(symbol)}`;",
+  );
+
+  next = next.replace(
+    /const fullName = tradedExchange \+ ":" \+ symbolName;/g,
+    'const fullName = EXCHANGE + ":" + symbolName;',
+  );
+
+  next = next.replace(
+    /listed_exchange: listedExchange,\s*exchange: tradedExchange,/g,
+    "listed_exchange: EXCHANGE,\n          exchange: EXCHANGE,",
+  );
+
+  return next === code ? null : next;
+}
+
+function tradingViewExchangeNamePlugin(): Plugin {
+  const isTradingViewPkg = (id: string) =>
+    id.includes(
+      `${path.sep}@orderly.network${path.sep}ui-tradingview${path.sep}`,
+    );
+
+  return {
+    name: "idx-tradingview-exchange-name",
+    enforce: "pre",
+    transform(code, id) {
+      if (!isTradingViewPkg(id)) return null;
+      const next = renameTradingViewExchange(code);
+      return next == null ? null : { code: next, map: null };
+    },
+    config() {
+      return {
+        optimizeDeps: {
+          esbuildOptions: {
+            plugins: [
+              {
+                name: "idx-tradingview-exchange-name-esbuild",
+                setup(build) {
+                  build.onLoad(
+                    {
+                      filter:
+                        /@orderly\.network[\\/]ui-tradingview[\\/]dist[\\/]index\.(mjs|js)$/,
+                    },
+                    async (args) => {
+                      const source = await fs.promises.readFile(
+                        args.path,
+                        "utf8",
+                      );
+                      const next = renameTradingViewExchange(source) ?? source;
+                      return { contents: next, loader: "js" };
+                    },
+                  );
+                },
+              },
+            ],
+          },
+        },
+      };
+    },
+  };
+}
+
 export default defineConfig(() => {
   const basePath = process.env.PUBLIC_PATH || "/";
 
@@ -59,8 +132,9 @@ export default defineConfig(() => {
       react(),
       tsconfigPaths(),
       htmlTitlePlugin(),
+      tradingViewExchangeNamePlugin(),
       cjsInterop({
-        dependencies: ["bs58", "@coral-xyz/anchor", "lodash"],
+        dependencies: ["bs58", "@coral-xyz/anchor", "lodash", "dayjs"],
       }),
       nodePolyfills({
         include: ["buffer", "crypto", "stream"],
@@ -70,7 +144,10 @@ export default defineConfig(() => {
       outDir: "build/client",
     },
     optimizeDeps: {
-      include: ["react", "react-dom", "react-router-dom"],
+      // dayjs ships UMD/CJS (dayjs.min.js) — must be prebundled or ESM default import fails
+      include: ["react", "react-dom", "react-router-dom", "dayjs"],
+      // Patched in postinstall — pre-bundle cache ignores node_modules edits.
+      exclude: ["@orderly.network/markets"],
     },
   };
 });

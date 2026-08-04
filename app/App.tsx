@@ -1,27 +1,34 @@
-import { Outlet } from "react-router-dom";
+import { Suspense } from "react";
 import { Helmet } from "react-helmet-async";
-import OrderlyProvider from "@/components/orderlyProvider";
+import { Outlet } from "react-router-dom";
 import { HttpsRequiredWarning } from "@/components/HttpsRequiredWarning";
+import { LoadingSpinner } from "@/components/LoadingSpinner";
+import OrderlyProvider from "@/components/orderlyProvider";
 import { withBasePath } from "./utils/base-path";
 import { getSEOConfig, getUserLanguage } from "./utils/seo";
 
 export default function App() {
   const seoConfig = getSEOConfig();
   const defaultLanguage = getUserLanguage();
-  
+
   return (
     <>
       <Helmet>
         <html lang={seoConfig.language || defaultLanguage} />
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" type="image/webp" href={withBasePath("/favicon.webp")} />
+        <link
+          rel="icon"
+          type="image/webp"
+          href={withBasePath("/favicon.webp")}
+        />
       </Helmet>
       <HttpsRequiredWarning />
       <OrderlyProvider>
-        <Outlet />
+        <Suspense fallback={<LoadingSpinner />}>
+          <Outlet />
+        </Suspense>
       </OrderlyProvider>
     </>
   );
 }
-

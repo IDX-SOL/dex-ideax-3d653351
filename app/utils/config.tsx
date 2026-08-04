@@ -24,6 +24,7 @@ import {
 } from "@orderly.network/ui-scaffold";
 import { CampaignsNavTitle } from "@/components/CampaignsNavTitle";
 import CustomLeftNav from "@/components/CustomLeftNav";
+import { TradingModeToggle } from "@/components/TradingModeToggle";
 import { OrderlyActiveIcon, OrderlyIcon } from "../components/icons/orderly";
 import { withBasePath } from "./base-path";
 import {
@@ -31,6 +32,7 @@ import {
   getRuntimeConfigBoolean,
   getRuntimeConfigNumber,
 } from "./runtime-config";
+import { CHART_THEME_OVERRIDES } from "./trading-chart-defaults";
 
 interface MainNavItem {
   name: string;
@@ -369,11 +371,13 @@ export const useOrderlyConfig = () => {
           </Flex>
 
           <Flex itemAlign={"center"} className="oui-gap-2 oui-shrink-0">
-            {components.accountSummary}
-            {components.linkDevice}
-            {components.scanQRCode}
-            {components.languageSwitcher}
-            {components.subAccount}
+            <TradingModeToggle />
+            {!isMobile && components.accountSummary}
+            {!isMobile && components.linkDevice}
+            {/* scanQR / account (subAccount) live in the mobile left menu */}
+            {!isMobile && components.scanQRCode}
+            {!isMobile && components.languageSwitcher}
+            {!isMobile && components.subAccount}
             {components.chainMenu}
             {components.walletConnect}
           </Flex>
@@ -422,13 +426,15 @@ export const useOrderlyConfig = () => {
           library_path: withBasePath("/tradingview/charting_library/"),
           customCssUrl: withBasePath("/tradingview/chart.css"),
           colorConfig: getColorConfig(),
+          // DexScreener TradingView dark palette (also forced in trading-chart-defaults)
+          overrides: { ...CHART_THEME_OVERRIDES },
         },
         sharePnLConfig: {
           backgroundImages: getPnLBackgroundImages(),
           color: "rgba(255, 255, 255, 0.98)",
-          profitColor: "rgba(41, 223, 169, 1)",
+          profitColor: "rgba(52, 211, 153, 1)",
           lossColor: "rgba(245, 97, 139, 1)",
-          brandColor: "rgba(255, 255, 255, 0.98)",
+          brandColor: "rgba(5, 150, 105, 1)",
           // ref
           refLink:
             typeof window !== "undefined" ? window.location.origin : undefined,

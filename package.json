@@ -8,12 +8,14 @@
     "node": ">=22.0.0"
   },
   "scripts": {
-    "build": "tsx scripts/generate-manifest.ts && NODE_OPTIONS='--max-old-space-size=8192' vite build && tsx scripts/generate-manifest.ts",
-    "build:spa": "tsx scripts/generate-manifest.ts && NODE_OPTIONS='--max-old-space-size=8192' tsx build.ts && tsx scripts/generate-manifest.ts",
-    "dev": "tsx scripts/generate-manifest.ts && vite",
+    "patch:sdk": "node scripts/patch-horizontal-markets-scroll.mjs && node scripts/patch-default-margin-isolated.mjs && node scripts/patch-default-order-type-market.mjs && node scripts/patch-allow-disconnected-order-controls.mjs && node scripts/patch-leverage-button-label.mjs && node scripts/patch-mobile-order-type-market-first.mjs && node scripts/patch-lite-mobile-order-type-tabs.mjs && node scripts/patch-lite-hide-total-type-select.mjs && node scripts/patch-symbol-info-bar-risk-height.mjs",
+    "build": "npm run patch:sdk && tsx scripts/generate-manifest.ts && NODE_OPTIONS='--max-old-space-size=8192' vite build && tsx scripts/generate-manifest.ts",
+    "build:spa": "npm run patch:sdk && tsx scripts/generate-manifest.ts && NODE_OPTIONS='--max-old-space-size=8192' tsx build.ts && tsx scripts/generate-manifest.ts",
+    "dev": "npm run patch:sdk && tsx scripts/generate-manifest.ts && vite",
     "generate:manifest": "tsx scripts/generate-manifest.ts",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
     "prepare": "husky",
+    "postinstall": "npm run patch:sdk",
     "preview": "vite preview",
     "typecheck": "tsc"
   },

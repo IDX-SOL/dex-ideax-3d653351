@@ -3,6 +3,7 @@ import { OrderlyAppProvider } from "@orderly.network/react-app";
 import type { NetworkId } from "@orderly.network/types";
 import { DemoGraduationChecker } from "@/components/DemoGraduationChecker";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { MarketsSheetCloseButton } from "@/components/MarketsSheetCloseButton";
 import { useOrderlyConfig } from "@/utils/config";
 import {
   getRuntimeConfigBoolean,
@@ -11,6 +12,7 @@ import {
 } from "@/utils/runtime-config";
 import { createSymbolDataAdapter } from "@/utils/symbol-filter";
 import ServiceDisclaimerDialog from "./ServiceDisclaimerDialog";
+import { WalletStatusAttr } from "./WalletStatusAttr";
 import { OrderlyLocaleProvider } from "./orderlyLocaleProvider";
 
 const NETWORK_ID_KEY = "orderly_network_id";
@@ -132,6 +134,8 @@ const OrderlyProvider = (props: { children: ReactNode }) => {
       }}
     >
       <DemoGraduationChecker />
+      <WalletStatusAttr />
+      <MarketsSheetCloseButton />
       <ServiceDisclaimerDialog />
       {props.children}
     </OrderlyAppProvider>

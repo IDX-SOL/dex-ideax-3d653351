@@ -7,7 +7,9 @@ export function useNav() {
   const [searchParams] = useSearchParams();
 
   const onRouteChange = useCallback(
-    (option: RouteOption) => {
+    (option?: RouteOption | null) => {
+      if (!option?.href) return;
+
       const searchParamsString = searchParams.toString();
       const queryString = searchParamsString ? `?${searchParamsString}` : "";
 
