@@ -45,6 +45,10 @@
   }
 }
 
+html[data-idx-mobile-ui="true"] .idx-footer-by {
+  display: none;
+}
+
 .idx-mobile-nav-by-wrap {
   display: flex;
   align-items: center;
@@ -785,7 +789,7 @@ html:not([data-idx-orderbook-folded="true"]) .oui-trading-orderBook-container {
   flex: 0 0 280px !important;
 }
 
-/* Order entry column: wider than Orderly’s 280px default */
+/* Order entry column: wider than Orderly’s 280px default (full desktop) */
 .oui-trading-orderEntry-container {
   width: 320px !important;
   min-width: 320px !important;
@@ -797,6 +801,30 @@ html:not([data-idx-orderbook-folded="true"]) .oui-trading-orderBook-container {
 /* SM layout sibling that hardcodes 280px for the order-entry slot */
 .oui-w-\[calc\(100\%_-_280px_-_12px\)\] {
   width: calc(100% - 320px - 12px) !important;
+}
+
+/*
+ * Compact desktop (Orderly max2XL, ≤1279px): keep Orderly’s 280px math so the
+ * chart column, gap, and positions stay aligned. Full desktop (≥1280) keeps 320px.
+ * iPads still use mobile via device detection — this only affects narrow laptop windows.
+ */
+@media (max-width: 1279.98px) {
+  .oui-trading-orderEntry-container {
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
+    flex: 0 0 280px !important;
+  }
+
+  .oui-w-\[calc\(100\%_-_280px_-_12px\)\] {
+    width: calc(100% - 280px - 12px) !important;
+  }
+
+  #orderEntryView {
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
+  }
 }
 
 /* Positions / data list: always full width of the chart+order-book column */

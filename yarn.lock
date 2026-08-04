@@ -2814,7 +2814,7 @@
     date-fns "^3.6.0"
     ramda "^0.29.0"
 
-"@orderly.network/trading@3.1.1":
+"@orderly.network/trading@^3.1.1":
   version "3.1.1"
   resolved "https://registry.npmjs.org/@orderly.network/trading/-/trading-3.1.1.tgz"
   integrity sha512-xMdXlDpbxvV/fuTgkZTLkniHOXPJMr69pFQLVyu9TFGCMRR2vITieWtVexRFnLMRtTa5VHm/5VN7Qe6BJCkZ+A==

@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { withBasePath } from "./utils/base-path";
+import { applyMobileUiDocumentFlag } from "./utils/mobile-ui-document";
 import { getRuntimeConfig } from "./utils/runtime-config";
 import { applyDefaultChartSettings } from "./utils/trading-chart-defaults";
 import { applyDefaultTradingLayout } from "./utils/trading-layout";
@@ -157,6 +158,7 @@ loadRuntimeConfig().then(() => {
   applyDefaultTradingLayout();
   applyDefaultChartSettings();
   applyTradingModeToDocument();
+  applyMobileUiDocumentFlag();
   loadAnalytics();
 
   ReactDOM.createRoot(document.getElementById("root")!).render(
