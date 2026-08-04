@@ -8,13 +8,13 @@ export function isTradingMode(value: unknown): value is TradingMode {
 }
 
 export function getStoredTradingMode(): TradingMode {
-  // Full trading UI is Pro; Lite is the reduced mode.
-  if (typeof window === "undefined") return "pro";
+  // Default for new visits is Lite; Pro is the full UI when chosen.
+  if (typeof window === "undefined") return "lite";
   try {
     const stored = localStorage.getItem(TRADING_MODE_STORAGE_KEY);
-    return isTradingMode(stored) ? stored : "pro";
+    return isTradingMode(stored) ? stored : "lite";
   } catch {
-    return "pro";
+    return "lite";
   }
 }
 
