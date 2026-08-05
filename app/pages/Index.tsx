@@ -110,6 +110,7 @@ export default function Index() {
         </Helmet>
       )}
       <TradingPage
+        key={isLite ? "lite" : "pro"}
         symbol={symbol}
         onSymbolChange={onSymbolChange}
         tradingViewConfig={config.tradingPage.tradingViewConfig}

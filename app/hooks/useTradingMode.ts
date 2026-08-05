@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import {
   applyTradingModeToDocument,
   getStoredTradingMode,
@@ -10,7 +10,7 @@ import {
 export function useTradingMode() {
   const [mode, setMode] = useState<TradingMode>(() => getStoredTradingMode());
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     applyTradingModeToDocument(mode);
   }, [mode]);
 

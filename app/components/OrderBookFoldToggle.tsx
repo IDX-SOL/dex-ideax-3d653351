@@ -8,6 +8,7 @@ import {
 import { createPortal } from "react-dom";
 import { useScreen } from "@orderly.network/ui";
 import { useTradingMode } from "@/hooks/useTradingMode";
+import { isMobileUiDevice } from "@/utils/device-detection";
 import { getStoredTradingMode } from "@/utils/trading-mode";
 
 const STORAGE_KEY = "idx_dex_orderbook_folded";
@@ -29,8 +30,8 @@ const MOBILE_LAYOUT_MS = 340;
 let mobileFoldTimer = 0;
 
 function initialFolded(): boolean {
-  // Lite starts folded; Pro starts with the order book open.
-  return getStoredTradingMode() === "lite";
+  // Lite desktop starts folded; Lite mobile/iPad + Pro start open.
+  return getStoredTradingMode() === "lite" && !isMobileUiDevice();
 }
 
 function writeFolded(folded: boolean) {
@@ -240,13 +241,13 @@ export function OrderBookFoldToggle() {
     });
   }, []);
 
-  // Lite: fold order book (arrow stays). Pro: open order book.
+  // Lite desktop: fold order book. Lite mobile/iPad + Pro: open by default.
   // Manual toggle still works in both modes via the arrow.
   useEffect(() => {
-    const nextFolded = isLite;
+    const nextFolded = isLite && !isMobile;
     setFolded(nextFolded);
     writeFolded(nextFolded);
-  }, [isLite]);
+  }, [isLite, isMobile]);
 
   useLayoutEffect(() => {
     const immediate = skipMobileDelayRef.current;

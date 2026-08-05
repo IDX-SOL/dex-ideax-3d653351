@@ -9,9 +9,13 @@ export function isIPadTablet(): boolean {
   return navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1;
 }
 
-const MOBILE_VIEWPORT_QUERY = "(max-width: 1023.98px)";
+/**
+ * Match Orderly max2XL / compact desktop (and below).
+ * ≥1280px stays full desktop trading layout.
+ */
+export const MOBILE_VIEWPORT_QUERY = "(max-width: 1279.98px)";
 
-/** Phone-sized viewport or iPad — mobile trading / wallet UI. */
+/** Phone, iPad, or narrow desktop — mobile trading / wallet UI. */
 export function isMobileUiDevice(): boolean {
   if (isIPadTablet()) return true;
   if (typeof window === "undefined") return false;

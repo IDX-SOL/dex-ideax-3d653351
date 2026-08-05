@@ -159,6 +159,13 @@ loadRuntimeConfig().then(() => {
   applyDefaultChartSettings();
   applyTradingModeToDocument();
   applyMobileUiDocumentFlag();
+  // Orderly pads order entry with this spacer; clear so compact layout doesn’t
+  // stretch ~1500px and leave empty space above the footer.
+  try {
+    localStorage.setItem("orderly_order_entry_extra_height", "0");
+  } catch {
+    /* ignore */
+  }
   loadAnalytics();
 
   ReactDOM.createRoot(document.getElementById("root")!).render(

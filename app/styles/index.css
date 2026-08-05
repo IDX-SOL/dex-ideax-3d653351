@@ -1074,3 +1074,92 @@ html[data-idx-orderbook-folded="true"]
   width: 12px;
   height: 12px;
 }
+
+/*
+ * Compact desktop (max2XL) + Lite/folded:
+ * - don’t inflate page min-height for a hidden orderbook
+ * - keep comfortable floors (don’t crush chart/Positions to the minimum)
+ * - keep stretch working (never override pane height)
+ * - let TradingView fill the chart pane (no dead gap)
+ */
+html[data-idx-orderbook-folded="true"]
+  .oui-flex.oui-flex-1.oui-flex-col.oui-size-full.oui-min-w-\[1018px\].oui-px-3.oui-py-2 {
+  min-height: 0 !important;
+}
+
+html[data-idx-orderbook-folded="true"]
+  .idx-max2xl-chart-pos-split
+  > .w-split-pane.oui-min-h-0 {
+  /* Comfortable TV floor — not 0, not TV+orderbook */
+  min-height: 320px !important;
+}
+
+/*
+ * Compact desktop: pin trading shell + chart↔Positions split to the viewport.
+ * Stretch only redistributes chart vs Positions inside that box — gap above
+ * the footer stays stable. (extraHeight spacer stays disabled in the SDK patch.)
+ */
+@media (max-width: 1279.98px) {
+  .oui-scaffold-container
+    [class*="100vh_-_48px_-_29px"]:has(.idx-max2xl-chart-pos-split) {
+    height: calc(100vh - 48px - 29px) !important;
+    max-height: calc(100vh - 48px - 29px) !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  .oui-scaffold-container
+    [class*="100vh_-_48px_-_29px"]:has(.idx-max2xl-chart-pos-split)
+    > .oui-flex.oui-flex-row {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+  }
+
+  .oui-scaffold-container
+    [class*="100vh_-_48px_-_29px"]:has(.idx-max2xl-chart-pos-split)
+    .oui-w-\[calc\(100\%_-_280px_-_12px\)\].oui-flex-1.oui-min-h-0 {
+    min-height: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+  }
+
+  .idx-max2xl-chart-pos-split {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+  }
+
+  /* Positions stays the bottom split pane (no max-height gap above footer). */
+  .idx-max2xl-chart-pos-split > .oui-trading-dataList-container {
+    min-height: 200px !important;
+  }
+}
+
+html[data-idx-orderbook-folded="true"]
+  .idx-max2xl-chart-pos-split
+  > .oui-trading-dataList-container {
+  min-height: 200px !important;
+}
+
+html[data-idx-orderbook-folded="true"]
+  .idx-max2xl-chart-pos-split
+  > .w-split-pane.oui-min-h-0
+  > .w-split.w-split-vertical {
+  height: 100% !important;
+  min-height: 0 !important;
+}
+
+html[data-idx-orderbook-folded="true"]
+  .idx-max2xl-chart-pos-split
+  > .w-split-pane.oui-min-h-0
+  > .w-split.w-split-vertical
+  > .w-split-pane:not(.idx-orderbook-pane) {
+  height: 100% !important;
+  max-height: none !important;
+  flex: 1 1 auto !important;
+  min-height: 320px !important;
+}

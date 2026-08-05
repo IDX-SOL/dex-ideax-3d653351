@@ -1,7 +1,6 @@
-import { isMobileUiDevice } from "./device-detection";
+import { isMobileUiDevice, MOBILE_VIEWPORT_QUERY } from "./device-detection";
 
 const MOBILE_UI_ATTR = "data-idx-mobile-ui";
-const MOBILE_VIEWPORT_QUERY = "(max-width: 1023.98px)";
 
 /** Sync html flag for CSS that cannot use iPad device detection in media queries. */
 export function applyMobileUiDocumentFlag(): void {
