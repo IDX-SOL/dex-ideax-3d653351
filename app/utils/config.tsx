@@ -253,6 +253,8 @@ export const useOrderlyConfig = () => {
         isDefault: true,
       },
       { id: "Swap", href: "/swap", name: t("extend.swap"), isDefault: true },
+      // AI Futures Bot: route exists at /ai-futures-bot for local work; keep out of
+      // header + mobile menus until ready to ship (avoid accidental deploy discovery).
       {
         id: "Leaderboard",
         href: "/leaderboard",

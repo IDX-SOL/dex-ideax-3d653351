@@ -1,0 +1,319 @@
+/* AI Futures Bot — brain theater (scoped) */
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap");
+
+.afb-root {
+  --afb-ink: #06080c;
+  --afb-ink-2: #0c1118;
+  --afb-mist: rgba(180, 210, 220, 0.08);
+  --afb-line: rgba(140, 190, 200, 0.18);
+  --afb-teal: #3ecfba;
+  --afb-teal-dim: rgba(62, 207, 186, 0.35);
+  --afb-teal-glow: rgba(62, 207, 186, 0.22);
+  --afb-amber: #e6c35c;
+  --afb-amber-glow: rgba(230, 195, 92, 0.28);
+  --afb-rose: #f07178;
+  --afb-text: #e8eef2;
+  --afb-muted: rgba(200, 214, 222, 0.62);
+  --afb-font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  position: relative;
+  color: var(--afb-text);
+  font-feature-settings: "ss01" on, "cv11" on;
+  min-height: min(100%, 920px);
+}
+
+.afb-display {
+  font-family: var(--afb-font-display);
+}
+
+.afb-atmosphere {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.afb-atmosphere::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(ellipse 55% 45% at 50% 38%, rgba(62, 207, 186, 0.14), transparent 62%),
+    radial-gradient(ellipse 40% 35% at 18% 70%, rgba(230, 195, 92, 0.06), transparent 55%),
+    radial-gradient(ellipse 35% 30% at 82% 22%, rgba(80, 140, 160, 0.1), transparent 50%),
+    linear-gradient(180deg, #070a10 0%, #050608 55%, #040506 100%);
+}
+
+.afb-atmosphere::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  background-image:
+    linear-gradient(rgba(140, 190, 200, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(140, 190, 200, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent 75%);
+}
+
+.afb-content {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes afb-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scale(1.045);
+    opacity: 0.9;
+  }
+}
+
+@keyframes afb-orbit {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes afb-scan {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: rotate(-8deg);
+  }
+  50% {
+    opacity: 0.7;
+    transform: rotate(8deg);
+  }
+}
+
+@keyframes afb-pulse-ring {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.55;
+  }
+  70% {
+    transform: scale(1.08);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.08);
+    opacity: 0;
+  }
+}
+
+@keyframes afb-thought-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes afb-capture-flash {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes afb-thread-flow {
+  0% {
+    stroke-dashoffset: 24;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.afb-breathe {
+  animation: afb-breathe 4.2s ease-in-out infinite;
+}
+
+.afb-orbit {
+  animation: afb-orbit 28s linear infinite;
+}
+
+.afb-scan {
+  animation: afb-scan 5.5s ease-in-out infinite;
+}
+
+.afb-pulse-ring {
+  animation: afb-pulse-ring 2.8s ease-out infinite;
+}
+
+.afb-thought {
+  animation: afb-thought-in 0.45s ease-out both;
+}
+
+.afb-neural-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(140, 190, 200, 0.35) transparent;
+}
+
+.afb-capture-banner {
+  animation: afb-capture-flash 3.2s ease-out both;
+}
+
+.afb-capture-opportunity {
+  border-color: rgba(255, 255, 255, 0.55);
+  background: rgba(14, 18, 24, 0.94);
+  box-shadow: 0 0 36px rgba(255, 255, 255, 0.14);
+}
+
+.afb-capture-opportunity .afb-capture-eyebrow {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.afb-capture-win {
+  border-color: rgba(62, 207, 186, 0.55);
+  background: rgba(6, 22, 18, 0.94);
+  box-shadow: 0 0 40px rgba(62, 207, 186, 0.28);
+}
+
+.afb-capture-win .afb-capture-eyebrow {
+  color: var(--afb-teal);
+}
+
+.afb-capture-loss {
+  border-color: rgba(240, 113, 120, 0.55);
+  background: rgba(28, 10, 12, 0.94);
+  box-shadow: 0 0 40px rgba(240, 113, 120, 0.26);
+}
+
+.afb-capture-loss .afb-capture-eyebrow {
+  color: var(--afb-rose);
+}
+
+.afb-capture-info {
+  border-color: rgba(230, 195, 92, 0.4);
+  background: rgba(20, 16, 8, 0.94);
+  box-shadow: 0 0 36px var(--afb-amber-glow);
+}
+
+.afb-capture-info .afb-capture-eyebrow {
+  color: var(--afb-amber);
+}
+
+.afb-thread path {
+  stroke-dasharray: 6 8;
+  animation: afb-thread-flow 1.4s linear infinite;
+}
+
+.afb-running .afb-breathe {
+  animation-duration: 2.6s;
+}
+
+@keyframes afb-intent-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes afb-intent-dot {
+  0%,
+  100% {
+    r: 3.5;
+    opacity: 0.85;
+  }
+  50% {
+    r: 5;
+    opacity: 1;
+  }
+}
+
+.afb-intent-pulse {
+  animation: afb-intent-pulse 1.6s ease-in-out infinite;
+}
+
+.afb-intent-dot {
+  animation: afb-intent-dot 1.8s ease-in-out infinite;
+}
+
+.afb-chart-fold {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.38s ease;
+}
+
+.afb-chart-fold.is-open {
+  grid-template-rows: 1fr;
+}
+
+.afb-chart-fold-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.afb-fold-handle {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  margin-top: -1px;
+}
+
+.afb-fold-handle button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid var(--afb-line);
+  border-top: none;
+  border-radius: 0 0 0.75rem 0.75rem;
+  background: rgba(8, 12, 18, 0.92);
+  color: var(--afb-muted);
+  padding: 0.2rem 0.85rem 0.35rem;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.afb-fold-handle button:hover {
+  color: var(--afb-text);
+  border-color: rgba(62, 207, 186, 0.35);
+  background: rgba(10, 16, 22, 0.96);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .afb-breathe,
+  .afb-orbit,
+  .afb-scan,
+  .afb-pulse-ring,
+  .afb-thought,
+  .afb-capture-banner,
+  .afb-thread path,
+  .afb-intent-pulse,
+  .afb-intent-dot {
+    animation: none !important;
+  }
+
+  .afb-chart-fold {
+    transition: none;
+  }
+}

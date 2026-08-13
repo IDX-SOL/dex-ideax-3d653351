@@ -38,6 +38,9 @@ const SwapLayout = lazy(() => import("./pages/swap/Layout"));
 const SwapIndex = lazy(() => import("./pages/swap/Index"));
 const PointsLayout = lazy(() => import("./pages/points/Layout"));
 const PointsIndex = lazy(() => import("./pages/points/Index"));
+const AiFuturesBotLayout = lazy(() => import("./pages/ai-futures-bot/Layout"));
+const AiFuturesBotIndex = lazy(() => import("./pages/ai-futures-bot/Index"));
+const AiFuturesBotDetail = lazy(() => import("./pages/ai-futures-bot/Bot"));
 
 async function loadRuntimeConfig() {
   return new Promise<void>((resolve) => {
@@ -147,6 +150,14 @@ const router = createBrowserRouter(
           path: "points",
           element: <PointsLayout />,
           children: [{ index: true, element: <PointsIndex /> }],
+        },
+        {
+          path: "ai-futures-bot",
+          element: <AiFuturesBotLayout />,
+          children: [
+            { index: true, element: <AiFuturesBotIndex /> },
+            { path: ":botId", element: <AiFuturesBotDetail /> },
+          ],
         },
       ],
     },

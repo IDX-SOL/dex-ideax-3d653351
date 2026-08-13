@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { TradingPage } from "@orderly.network/trading";
 import { API } from "@orderly.network/types";
+import { ChartViewportFit } from "@/components/ChartViewportFit";
 import { MobileDepositWithdrawConnectGate } from "@/components/MobileDepositWithdrawConnectGate";
 import { MobileSymbolBarPrice } from "@/components/MobileSymbolBarPrice";
 import { OrderBookFoldToggle } from "@/components/OrderBookFoldToggle";
@@ -119,6 +120,7 @@ export default function Index() {
       <MobileSymbolBarPrice symbol={symbol} />
       <OrderBookFoldToggle />
       <OrderEntryFeeAmounts symbol={symbol} />
+      <ChartViewportFit />
       <MobileDepositWithdrawConnectGate />
     </div>
   );

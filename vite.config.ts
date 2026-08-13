@@ -147,6 +147,7 @@ export default defineConfig(() => {
       // dayjs ships UMD/CJS (dayjs.min.js) — must be prebundled or ESM default import fails
       include: ["react", "react-dom", "react-router-dom", "dayjs"],
       // Patched in postinstall — pre-bundle cache ignores node_modules edits.
+      // Keep trading prebundled for stability; clear node_modules/.vite after patch changes.
       exclude: ["@orderly.network/markets"],
     },
   };
