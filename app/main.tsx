@@ -12,7 +12,8 @@ import { applyDefaultTradingLayout } from "./utils/trading-layout";
 import { applyTradingModeToDocument } from "./utils/trading-mode";
 import "./styles/index.css";
 
-const IndexPage = lazy(() => import("./pages/Index"));
+const HomeIndex = lazy(() => import("./pages/home/Index"));
+const FuturesIndex = lazy(() => import("./pages/futures/Index"));
 const PerpLayout = lazy(() => import("./pages/perp/Layout"));
 const PerpIndex = lazy(() => import("./pages/perp/Index"));
 const PerpSymbol = lazy(() => import("./pages/perp/Symbol"));
@@ -94,7 +95,8 @@ const router = createBrowserRouter(
         {
           element: <PerpLayout />,
           children: [
-            { index: true, element: <IndexPage /> },
+            { index: true, element: <HomeIndex /> },
+            { path: "futures", element: <FuturesIndex /> },
             {
               path: "perp",
               children: [

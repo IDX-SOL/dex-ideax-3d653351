@@ -1,8 +1,18 @@
 import { execSync } from "child_process";
 import fs from "fs/promises";
 import path from "path";
+import {
+  getSeoInjectionOptions,
+  injectSeoIntoHtml,
+  isNoindexPath,
+} from "./scripts/generate-seo-files";
+import {
+  SEO_HOME_ROUTE,
+  getSeoRouteForPath,
+} from "./app/utils/seo-routes";
 
 const STATIC_ROUTES = [
+  "/futures",
   "/perp",
   "/markets",
   "/portfolio",
@@ -78,9 +88,29 @@ async function main() {
 
   // Step 3: Create HTML files for static routes
   console.log("\nCreating static route files...");
+  const seoOptions = getSeoInjectionOptions();
+  const rootIndexHtml = await fs.readFile(indexPath, "utf-8");
+  const homeHtml = injectSeoIntoHtml(rootIndexHtml, SEO_HOME_ROUTE, {
+    ...seoOptions,
+    noindex: false,
+  });
+  await fs.writeFile(indexPath, homeHtml);
+  console.log("Updated: build/client/index.html");
+
   for (const route of STATIC_ROUTES) {
     const targetPath = path.join(buildDir, route, "index.html");
-    await copyIndexToPath(indexPath, targetPath);
+    const routeDef = getSeoRouteForPath(route, seoOptions.basePath);
+    if (!routeDef) {
+      await copyIndexToPath(indexPath, targetPath);
+      continue;
+    }
+    const html = injectSeoIntoHtml(homeHtml, routeDef, {
+      ...seoOptions,
+      noindex: isNoindexPath(route, seoOptions.basePath),
+    });
+    await fs.mkdir(path.dirname(targetPath), { recursive: true });
+    await fs.writeFile(targetPath, html);
+    console.log(`Created: ${targetPath}`);
   }
 
   // Step 4: Fetch symbols and create perp route files
@@ -90,7 +120,17 @@ async function main() {
 
   for (const symbol of symbols) {
     const targetPath = path.join(buildDir, "perp", symbol, "index.html");
-    await copyIndexToPath(indexPath, targetPath);
+    const routeDef = getSeoRouteForPath("/perp", seoOptions.basePath);
+    const html =
+      routeDef != null
+        ? injectSeoIntoHtml(homeHtml, routeDef, {
+            ...seoOptions,
+            noindex: true,
+          })
+        : homeHtml;
+    await fs.mkdir(path.dirname(targetPath), { recursive: true });
+    await fs.writeFile(targetPath, html);
+    console.log(`Created: ${targetPath}`);
   }
 
   // Step 5: Create 404.html for GitHub Pages fallback routing

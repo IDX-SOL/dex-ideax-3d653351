@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
-import { Helmet } from "react-helmet-async";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { TradingPage } from "@orderly.network/trading";
 import { API } from "@orderly.network/types";
 import { ChartViewportFit } from "@/components/ChartViewportFit";
@@ -9,7 +9,6 @@ import { OrderBookFoldToggle } from "@/components/OrderBookFoldToggle";
 import { OrderEntryFeeAmounts } from "@/components/OrderEntryFeeAmounts";
 import { useTradingMode } from "@/hooks/useTradingMode";
 import { useOrderlyConfig } from "@/utils/config";
-import { getRuntimeConfig } from "@/utils/runtime-config";
 import { getPageMeta } from "@/utils/seo";
 import { renderSEOTags } from "@/utils/seo-tags";
 import { getSymbol, updateSymbol } from "@/utils/storage";
@@ -80,9 +79,19 @@ function useLiteShowAllSymbols(isLite: boolean) {
   }, [isLite]);
 }
 
-export default function Index() {
+export default function FuturesIndex() {
+  const { pathname } = useLocation();
+  const [searchParams] = useSearchParams();
   const [symbol, setSymbol] = useState(getSymbol);
   const config = useOrderlyConfig();
+
+  useEffect(() => {
+    const fromUrl = searchParams.get("symbol");
+    if (fromUrl) {
+      setSymbol(fromUrl);
+      updateSymbol(fromUrl);
+    }
+  }, [searchParams]);
   const { isLite } = useTradingMode();
   useLiteMobileForceChartTab(isLite);
   useLiteForceDataListTab(isLite);
@@ -97,19 +106,15 @@ export default function Index() {
     updateSymbol(data.symbol);
   }, []);
 
-  const pageMeta = getPageMeta();
-  const appName = getRuntimeConfig("VITE_APP_NAME");
-  const appDescription = getRuntimeConfig("VITE_APP_DESCRIPTION");
   const pageTitle = generatePageTitle(formatSymbol(symbol));
+  const pageMeta = useMemo(
+    () => getPageMeta({ pathname, pageTitle }),
+    [pathname, pageTitle],
+  );
 
   return (
     <div className="h-full">
       {renderSEOTags(pageMeta, pageTitle)}
-      {appDescription && (
-        <Helmet>
-          <meta name="description" content={appDescription} />
-        </Helmet>
-      )}
       <TradingPage
         key={isLite ? "lite" : "pro"}
         symbol={symbol}

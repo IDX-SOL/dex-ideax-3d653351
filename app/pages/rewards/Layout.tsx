@@ -1,12 +1,30 @@
 import { Outlet, useLocation } from "react-router-dom";
 import { Scaffold } from "@orderly.network/ui-scaffold";
+import { HiddenScaffoldFooter } from "@/components/HiddenScaffoldFooter";
+import { MarketingLayoutShell } from "@/components/MarketingLayoutShell";
 import { useNav } from "@/hooks/useNav";
 import { useOrderlyConfig } from "@/utils/config";
+
+/** Rewards is often off VITE_ENABLED_MENUS but sub-routes must match a menu for mobile nav. */
+const REWARDS_NAV = { name: "Rewards", href: "/rewards" };
+
+function rewardsSubNavTitle(pathname: string): string | undefined {
+  if (pathname.startsWith("/rewards/affiliate")) return "Affiliate";
+  return undefined;
+}
 
 export default function RewardsLayout() {
   const { onRouteChange } = useNav();
   const config = useOrderlyConfig();
   const { pathname } = useLocation();
+
+  const baseMenus = config.scaffold.mainNavProps.mainMenus ?? [];
+  const hasRewardsNav = baseMenus.some((menu) => menu.href === "/rewards");
+  const mainMenus = hasRewardsNav
+    ? baseMenus
+    : [REWARDS_NAV, ...baseMenus];
+
+  const subTitle = rewardsSubNavTitle(pathname);
 
   return (
     <Scaffold
@@ -16,19 +34,23 @@ export default function RewardsLayout() {
       }}
       mainNavProps={{
         ...config.scaffold.mainNavProps,
-        // Show mobile sub-header (back arrow) on /rewards/affiliate.
-        // initialMenu is where back navigates; "/" avoids /rewards → affiliate loop.
+        mainMenus,
         current: pathname,
-        initialMenu: "/",
+        initialMenu: "/portfolio",
+        ...(subTitle
+          ? { subItems: [{ name: subTitle, href: pathname }] }
+          : {}),
       }}
-      footerProps={config.scaffold.footerProps}
-      footer={config.scaffold.footer}
+      footer={<HiddenScaffoldFooter />}
       routerAdapter={{
         onRouteChange,
+        currentPath: pathname,
       }}
       bottomNavProps={config.scaffold.bottomNavProps}
     >
-      <Outlet />
+      <MarketingLayoutShell>
+        <Outlet />
+      </MarketingLayoutShell>
     </Scaffold>
   );
 }

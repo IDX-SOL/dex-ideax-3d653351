@@ -1,15 +1,15 @@
 import { OverviewModule } from "@orderly.network/portfolio";
-import { generatePageTitle } from "@/utils/utils";
-import { getPageMeta } from "@/utils/seo";
+import { usePortfolioOverviewCardClicks } from "@/hooks/usePortfolioOverviewCardClicks";
+import { usePageSEO } from "@/hooks/usePageSEO";
 import { renderSEOTags } from "@/utils/seo-tags";
 
 export default function PortfolioIndex() {
-  const pageMeta = getPageMeta();
-  const pageTitle = generatePageTitle("Portfolio");
+  usePortfolioOverviewCardClicks();
+  const { tags, pageTitle } = usePageSEO("Portfolio");
 
   return (
     <div className="oui-portfolio-page">
-      {renderSEOTags(pageMeta, pageTitle)}
+      {renderSEOTags(tags, pageTitle)}
       <OverviewModule.OverviewPage />
     </div>
   );

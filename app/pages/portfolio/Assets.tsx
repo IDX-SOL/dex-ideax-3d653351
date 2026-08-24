@@ -1,15 +1,13 @@
 import { AssetsModule } from "@orderly.network/portfolio";
-import { generatePageTitle } from "@/utils/utils";
-import { getPageMeta } from "@/utils/seo";
+import { usePageSEO } from "@/hooks/usePageSEO";
 import { renderSEOTags } from "@/utils/seo-tags";
 
 export default function PortfolioAssets() {
-  const pageMeta = getPageMeta();
-  const pageTitle = generatePageTitle("Assets");
+  const { tags, pageTitle } = usePageSEO("Assets");
 
   return (
     <>
-      {renderSEOTags(pageMeta, pageTitle)}
+      {renderSEOTags(tags, pageTitle)}
       <AssetsModule.AssetsPage />
     </>
   );

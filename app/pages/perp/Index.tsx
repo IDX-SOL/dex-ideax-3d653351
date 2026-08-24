@@ -1,14 +1,16 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-/** Legacy /perp route — redirect to clean root URL. */
+/** Legacy /perp route — redirect to /futures. */
 export default function PerpIndex() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
     const searchParamsString = searchParams.toString();
-    const redirectPath = searchParamsString ? `/?${searchParamsString}` : "/";
+    const redirectPath = searchParamsString
+      ? `/futures?${searchParamsString}`
+      : "/futures";
     navigate(redirectPath, { replace: true });
   }, [navigate, searchParams]);
 

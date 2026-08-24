@@ -18,7 +18,7 @@ import {
   type AiFuturesBotMarket,
 } from "./constants";
 import IntentChart from "./IntentChart";
-import { useMarketSnapshot } from "./market";
+import { useMarketSnapshot, type Candle } from "./market";
 import {
   addBot,
   deleteBot,
@@ -33,6 +33,7 @@ import {
   startBot,
   stopBot,
   type EngineBot,
+  type EngineCandle,
   type NeuralLogRow,
 } from "./workerApi";
 import { useBotAccess } from "./useBotAccess";
@@ -59,6 +60,19 @@ function formatPrice(n: number, symbol: string) {
     return n.toLocaleString("en-US", { maximumFractionDigits: 1 });
   }
   return n.toLocaleString("en-US", { maximumFractionDigits: 2 });
+}
+
+function mapEngineCandles(rows?: EngineCandle[]): Candle[] | undefined {
+  if (!rows?.length) return undefined;
+  return rows.map((c) => ({
+    t: c.t,
+    o: c.o,
+    h: c.h,
+    l: c.l,
+    c: c.c,
+    v: c.v,
+    a: c.a,
+  }));
 }
 
 function AgentNode({
@@ -575,22 +589,53 @@ export default function BotTheater() {
         id: bot?.symbol || "PERP_SOL_USDC",
         symbol: bot?.label?.replace("-PERP", "") || "SOL",
         label: bot?.label || "SOL-PERP",
-        basePrice: bot?.mean_m || 0,
+        basePrice: 0,
       }
     );
   }, [activeSymbol, bot]);
 
-  const { snapshot } = useMarketSnapshot(market.id, timeframe);
+  const useEngineChart = online && Boolean(bot);
+
+  useEffect(() => {
+    if (useEngineChart && timeframe !== "15m") {
+      setTimeframe("15m");
+    }
+  }, [useEngineChart, timeframe]);
+
+  const { snapshot } = useMarketSnapshot(market.id, timeframe, {
+    enabled: !useEngineChart,
+  });
+
+  const engineCandles = useMemo(
+    () => mapEngineCandles(bot?.chart_candles),
+    [bot?.chart_candles],
+  );
+
   const running = bot?.status === "running" || bot?.status === "paused_kill";
-  const mean = bot?.mean_m || snapshot?.meanM || market.basePrice;
-  const price = bot?.price || snapshot?.price || mean;
-  const stretch = bot?.stretch ?? snapshot?.stretch ?? 0;
-  const stretchAtr = bot?.stretch_atr ?? snapshot?.stretchAtr;
-  const side =
-    (bot?.position.side as "long" | "short" | null) ||
-    bot?.side_bias ||
-    snapshot?.side ||
-    null;
+  const mean = useEngineChart
+    ? bot!.mean_m > 0
+      ? bot!.mean_m
+      : 0
+    : snapshot?.meanM ?? 0;
+  const price = useEngineChart
+    ? bot!.price > 0
+      ? bot!.price
+      : 0
+    : snapshot?.price ?? 0;
+  const stretch = useEngineChart ? bot!.stretch : (snapshot?.stretch ?? 0);
+  const stretchAtr = useEngineChart
+    ? bot!.stretch_atr
+    : snapshot?.stretchAtr;
+  const side = useEngineChart
+    ? ((bot!.position.side as "long" | "short" | null) ||
+        (bot!.side_bias as "long" | "short" | null) ||
+        null)
+    : ((bot?.position.side as "long" | "short" | null) ||
+        bot?.side_bias ||
+        snapshot?.side ||
+        null);
+  const chartCandles = useEngineChart ? engineCandles : snapshot?.candles;
+  const chartLoading = useEngineChart && bot!.mean_m <= 0;
   const status = bot ? statusFromBot(bot) : "…";
   const todayPnl = bot?.today_pnl ?? 0;
   const openPnl = bot?.position.unrealized_pnl ?? 0;
@@ -1053,7 +1098,9 @@ export default function BotTheater() {
                   timeframe={timeframe}
                   onTimeframeChange={setTimeframe}
                   running={!!running}
-                  candles={snapshot?.candles}
+                  candles={chartCandles}
+                  marketLoading={chartLoading}
+                  lockTimeframe={useEngineChart}
                   dailyTrMed={dailyTrMed > 0 ? dailyTrMed : null}
                   fillEntry={
                     bot && bot.position.qty > 0 ? bot.position.avg_entry : null

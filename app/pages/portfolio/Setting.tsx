@@ -1,15 +1,13 @@
 import { SettingModule } from "@orderly.network/portfolio";
-import { generatePageTitle } from "@/utils/utils";
-import { getPageMeta } from "@/utils/seo";
+import { usePageSEO } from "@/hooks/usePageSEO";
 import { renderSEOTags } from "@/utils/seo-tags";
 
 export default function PortfolioSetting() {
-  const pageMeta = getPageMeta();
-  const pageTitle = generatePageTitle("Setting");
+  const { tags, pageTitle } = usePageSEO("Setting");
 
   return (
     <>
-      {renderSEOTags(pageMeta, pageTitle)}
+      {renderSEOTags(tags, pageTitle)}
       <SettingModule.SettingPage />
     </>
   );

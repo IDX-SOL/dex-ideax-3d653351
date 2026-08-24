@@ -7,6 +7,11 @@ import type { Candle, MarketSnapshot, MarketTimeframe } from "./types";
 const KLINE_POLL_MS = 30_000;
 const MARK_POLL_MS = 8_000;
 
+type UseMarketSnapshotOptions = {
+  /** When false, skip client kline/mark fetches (bot page uses worker instead). */
+  enabled?: boolean;
+};
+
 type UseMarketSnapshotResult = {
   snapshot: MarketSnapshot | null;
   loading: boolean;
@@ -20,15 +25,25 @@ type UseMarketSnapshotResult = {
 export function useMarketSnapshot(
   symbol: string,
   timeframe: MarketTimeframe,
+  opts?: UseMarketSnapshotOptions,
 ): UseMarketSnapshotResult {
-  const { data: streamMark } = useMarkPrice(symbol);
+  const enabled = opts?.enabled !== false;
+  const { data: streamMark } = useMarkPrice(enabled ? symbol : "");
   const [snapshot, setSnapshot] = useState<MarketSnapshot | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(enabled);
   const [error, setError] = useState<string | null>(null);
   const candlesRef = useRef<Candle[]>([]);
   const restMarkRef = useRef(0);
 
   useEffect(() => {
+    if (!enabled) {
+      setSnapshot(null);
+      setLoading(false);
+      setError(null);
+      candlesRef.current = [];
+      return undefined;
+    }
+
     let cancelled = false;
     const ac = new AbortController();
 
@@ -97,9 +112,10 @@ export function useMarketSnapshot(
     };
     // streamMark applied in the effect below
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [symbol, timeframe]);
+  }, [symbol, timeframe, enabled]);
 
   useEffect(() => {
+    if (!enabled) return;
     if (!(typeof streamMark === "number" && streamMark > 0)) return;
     if (!candlesRef.current.length) return;
     setSnapshot(
@@ -110,7 +126,7 @@ export function useMarketSnapshot(
         candles: candlesRef.current,
       }),
     );
-  }, [streamMark, symbol, timeframe]);
+  }, [streamMark, symbol, timeframe, enabled]);
 
   return { snapshot, loading, error };
 }

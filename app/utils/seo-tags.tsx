@@ -1,19 +1,10 @@
 import { Helmet } from "react-helmet-async";
 
-type MetaTag =
-  | { title: string }
-  | { name: string; content: string }
-  | { property: string; content: string };
+import type { SeoTag } from "@/utils/seo";
 
-type LinkTag = {
-  rel: string;
-  href: string;
-  hrefLang?: string;
-};
+export type { SeoTag };
 
-export type SEOTag = MetaTag | LinkTag;
-
-export function renderSEOTags(tags: SEOTag[], pageTitle?: string) {
+export function renderSEOTags(tags: SeoTag[], pageTitle?: string) {
   const metaTags: JSX.Element[] = [];
   const linkTags: JSX.Element[] = [];
   let titleElement: JSX.Element | null = null;

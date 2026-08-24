@@ -44,3 +44,57 @@
   background: rgb(var(--oui-color-base-3)) !important;
   color: rgb(var(--oui-color-base-foreground)) !important;
 }
+
+/* WooFi sets body.mobile from UA only — stack chart + swap on tablet/narrow viewports */
+html[data-idx-mobile-ui="true"] .idx-swap-page .dex {
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+}
+
+html[data-idx-mobile-ui="true"] .idx-swap-page .dex .main {
+  display: flex;
+  flex-direction: column-reverse;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  background: none;
+  border: none;
+}
+
+html[data-idx-mobile-ui="true"] .idx-swap-page .dex .main .left,
+html[data-idx-mobile-ui="true"] .idx-swap-page .dex .main .right {
+  width: 100%;
+  max-width: 100%;
+}
+
+html[data-idx-mobile-ui="true"] .idx-swap-page .dex .main > .chart {
+  width: 100% !important;
+  max-width: 100%;
+  height: auto;
+  overflow: visible;
+  display: block !important;
+}
+
+html[data-idx-mobile-ui="true"] .idx-swap-page .dex .main > .chart > .chart {
+  width: 100%;
+  max-width: 100%;
+  height: 370px;
+  min-height: 300px;
+  margin-top: 20px;
+  padding: 20px 10px;
+  box-sizing: border-box;
+}
+
+html[data-idx-mobile-ui="true"] .idx-swap-page .dex .swap-wrap {
+  width: 100% !important;
+  max-width: 100%;
+}
+
+html[data-idx-mobile-ui="true"] .idx-swap-page .dex .swap {
+  width: 100%;
+  max-width: 100%;
+}

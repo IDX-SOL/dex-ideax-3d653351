@@ -1,5 +1,5 @@
 import { useMemo, type ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "@orderly.network/i18n";
 import { AppLogos } from "@orderly.network/react-app";
 import { TradingPageProps } from "@orderly.network/trading";
@@ -12,7 +12,6 @@ import {
   LeaderboardInactiveIcon,
   MarketsActiveIcon,
   MarketsInactiveIcon,
-  useScreen,
   Flex,
   cn,
 } from "@orderly.network/ui";
@@ -22,8 +21,10 @@ import {
   MainNavWidgetProps,
   MainNavItem as MainNavItemType,
 } from "@orderly.network/ui-scaffold";
-import { CampaignsNavTitle } from "@/components/CampaignsNavTitle";
+import { HeaderNavLinks } from "@/components/HeaderNavLinks";
+import { useHeaderLayout } from "@/hooks/useHeaderLayout";
 import CustomLeftNav from "@/components/CustomLeftNav";
+import { ExchangeMarketingFooter } from "@/components/exchange-home/ExchangeMarketingFooter";
 import { IdxScaffoldFooter } from "@/components/IdxScaffoldFooter";
 import { TradingModeToggle } from "@/components/TradingModeToggle";
 import { OrderlyActiveIcon, OrderlyIcon } from "../components/icons/orderly";
@@ -34,6 +35,7 @@ import {
   getRuntimeConfigNumber,
 } from "./runtime-config";
 import { CHART_THEME_OVERRIDES } from "./trading-chart-defaults";
+import { DOCS_EXCHANGE_URL } from "@/config/exchange/urls";
 
 interface MainNavItem {
   name: string;
@@ -65,6 +67,7 @@ export type OrderlyConfig = {
     mainNavProps: MainNavWidgetProps;
     footerProps: FooterProps;
     footer: ReactNode;
+    exchangeFooter: ReactNode;
     bottomNavProps: BottomNavProps;
   };
   tradingPage: {
@@ -235,15 +238,23 @@ const getColorConfig = (): ColorConfigInterface | undefined => {
 
 export const useOrderlyConfig = () => {
   const { t } = useTranslation();
-  const { isMobile } = useScreen();
+  const { useCompactHeader, useDesktopHeader } = useHeaderLayout();
+  const location = useLocation();
+  const isFuturesPage = location.pathname.startsWith("/futures");
 
   return useMemo<OrderlyConfig>(() => {
     const allMenuItems: MenuConfigItem[] = [
-      { id: "Trading", href: "/", name: t("common.trading"), isDefault: true },
+      { id: "Trading", href: "/futures", name: "Futures", isDefault: true },
       {
         id: "Portfolio",
         href: "/portfolio",
         name: t("common.portfolio"),
+        isDefault: true,
+      },
+      {
+        id: "ApiKey",
+        href: "/portfolio/api-key",
+        name: "API",
         isDefault: true,
       },
       {
@@ -252,7 +263,7 @@ export const useOrderlyConfig = () => {
         name: t("common.markets"),
         isDefault: true,
       },
-      { id: "Swap", href: "/swap", name: t("extend.swap"), isDefault: true },
+      { id: "Swap", href: "/swap", name: "Bridge/Swap", isDefault: true },
       // AI Futures Bot: route exists at /ai-futures-bot for local work; keep out of
       // header + mobile menus until ready to ship (avoid accidental deploy discovery).
       {
@@ -319,7 +330,7 @@ export const useOrderlyConfig = () => {
       .filter((menu) => menu.activeIcon && menu.inactiveIcon);
 
     const mainNavProps: MainNavWidgetProps = {
-      initialMenu: "/",
+      initialMenu: "/futures",
       mainMenus: allMainMenus,
     };
 
@@ -341,10 +352,20 @@ export const useOrderlyConfig = () => {
     }
 
     mainNavProps.customRender = (components) => {
+      const navItems = [
+        ...translatedEnabledMenus.filter(
+          (menu) => menu.href && menu.href !== "/" && menu.target !== "_blank",
+        ),
+        { name: "Docs", href: DOCS_EXCHANGE_URL, target: "_blank" },
+      ];
+      const mainNav = useDesktopHeader ? (
+        <HeaderNavLinks menus={navItems} />
+      ) : null;
+
       return (
         <Flex
           justify="between"
-          className="oui-w-full oui-min-w-0 oui-max-w-full"
+          className="oui-w-full oui-min-w-0 oui-max-w-full idx-header-bar"
         >
           <Flex
             itemAlign={"center"}
@@ -353,41 +374,65 @@ export const useOrderlyConfig = () => {
               "oui-min-w-0 oui-flex-1 oui-overflow-hidden",
             )}
           >
-            {isMobile && (
+            {useCompactHeader && (
               <CustomLeftNav
                 menus={translatedEnabledMenus}
                 externalLinks={customMenus}
               />
             )}
-            <Link to="/">
-              {isMobile &&
-              getRuntimeConfigBoolean("VITE_HAS_SECONDARY_LOGO") ? (
-                <img
-                  src={withBasePath("/logo-secondary.webp")}
-                  alt="logo"
-                  style={{ height: "32px" }}
-                />
-              ) : (
-                components.title
-              )}
+            <Link to="/" className="idx-header-brand oui-flex oui-items-center oui-gap-2 oui-shrink-0">
+              <img
+                src={withBasePath("/exchange-home/logo.png")}
+                alt=""
+                width={32}
+                height={32}
+                style={{ display: "block" }}
+              />
+              <span
+                style={{
+                  fontSize: "15px",
+                  fontWeight: 600,
+                  letterSpacing: "-0.02em",
+                  color: "rgb(var(--oui-color-base-foreground) / 0.92)",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                IDX Exchange
+              </span>
             </Link>
-            {components.mainNav}
+            {mainNav}
           </Flex>
 
           <Flex itemAlign={"center"} className="oui-gap-2 oui-shrink-0">
-            <TradingModeToggle />
-            {!isMobile && components.accountSummary}
-            {!isMobile && components.linkDevice}
-            {/* scanQR / account (subAccount) live in the mobile left menu */}
-            {!isMobile && components.scanQRCode}
-            {!isMobile && components.languageSwitcher}
-            {!isMobile && components.subAccount}
-            {components.chainMenu}
-            {components.walletConnect}
+            {isFuturesPage && <TradingModeToggle />}
+            {useDesktopHeader && isFuturesPage && "accountSummary" in components &&
+              components.accountSummary}
+            {useDesktopHeader && isFuturesPage && "linkDevice" in components &&
+              components.linkDevice}
+            {useCompactHeader && "scanQRCode" in components &&
+              components.scanQRCode}
+            {useDesktopHeader && isFuturesPage && "languageSwitcher" in components &&
+              components.languageSwitcher}
+            {useDesktopHeader && isFuturesPage && "subAccount" in components &&
+              components.subAccount}
+            {"chainMenu" in components && components.chainMenu}
+            {"walletConnect" in components && components.walletConnect}
           </Flex>
         </Flex>
       );
     };
+
+    const exchangeFooterProps = {
+      telegramUrl: getRuntimeConfig("VITE_TELEGRAM_URL") || undefined,
+      discordUrl: getRuntimeConfig("VITE_DISCORD_URL") || undefined,
+      twitterUrl: getRuntimeConfig("VITE_TWITTER_URL") || undefined,
+      trailing: null,
+    };
+
+    const exchangeFooter = (
+      <IdxScaffoldFooter {...exchangeFooterProps} />
+    );
+    const marketingFooter = <ExchangeMarketingFooter />;
 
     return {
       scaffold: {
@@ -395,34 +440,21 @@ export const useOrderlyConfig = () => {
         bottomNavProps: {
           mainMenus: bottomNavMenus,
         },
-        footerProps: {
-          telegramUrl: getRuntimeConfig("VITE_TELEGRAM_URL") || undefined,
-          discordUrl: getRuntimeConfig("VITE_DISCORD_URL") || undefined,
-          twitterUrl: getRuntimeConfig("VITE_TWITTER_URL") || undefined,
-          trailing: null,
-        },
-        footer: (
-          <IdxScaffoldFooter
-            telegramUrl={getRuntimeConfig("VITE_TELEGRAM_URL") || undefined}
-            discordUrl={getRuntimeConfig("VITE_DISCORD_URL") || undefined}
-            twitterUrl={getRuntimeConfig("VITE_TWITTER_URL") || undefined}
-            trailing={null}
-          />
-        ),
+        footerProps: exchangeFooterProps,
+        footer: marketingFooter,
+        exchangeFooter,
       },
       orderlyAppProvider: {
         appIcons: {
-          main: getRuntimeConfigBoolean("VITE_HAS_PRIMARY_LOGO")
-            ? {
-                component: (
-                  <img
-                    src={withBasePath("/logo.webp")}
-                    alt="logo"
-                    style={{ height: "42px" }}
-                  />
-                ),
-              }
-            : { img: withBasePath("/orderly-logo.svg") },
+          main: {
+            component: (
+              <img
+                src={withBasePath("/exchange-home/logo.png")}
+                alt="IDX Exchange"
+                style={{ height: "32px", width: "32px" }}
+              />
+            ),
+          },
           secondary: {
             img: getRuntimeConfigBoolean("VITE_HAS_SECONDARY_LOGO")
               ? withBasePath("/logo-secondary.webp")
@@ -455,5 +487,5 @@ export const useOrderlyConfig = () => {
         },
       },
     };
-  }, [t, isMobile]);
+  }, [t, useCompactHeader, useDesktopHeader, isFuturesPage]);
 };

@@ -1,10 +1,11 @@
-import { Helmet } from "react-helmet-async";
-import { generatePageTitle } from "@/utils/utils";
 import { Dashboard, ReferralProvider } from "@orderly.network/affiliate";
+import { usePageSEO } from "@/hooks/usePageSEO";
 import { getRuntimeConfig } from "@/utils/runtime-config";
+import { renderSEOTags } from "@/utils/seo-tags";
 
 export default function RewardsAffiliate() {
   const brokerName = getRuntimeConfig("VITE_ORDERLY_BROKER_NAME");
+  const { tags, pageTitle } = usePageSEO("Affiliate");
   const referralLinkUrl =
     typeof window !== "undefined"
       ? window.location.origin
@@ -12,9 +13,7 @@ export default function RewardsAffiliate() {
 
   return (
     <>
-      <Helmet>
-        <title>{generatePageTitle("Affiliate")}</title>
-      </Helmet>
+      {renderSEOTags(tags, pageTitle)}
       <ReferralProvider
         becomeAnAffiliateUrl="https://orderly.network"
         learnAffiliateUrl="https://orderly.network"

@@ -18,8 +18,8 @@ export function useNav() {
         return;
       }
 
-      if (option.href === "/") {
-        navigate(`/${queryString}`.replace(/\/\?$/, "/"));
+      if (option.href === "/" || option.href === "/perp") {
+        navigate(`/futures${queryString}`.replace(/\/\?$/, "/futures"));
         return;
       }
 

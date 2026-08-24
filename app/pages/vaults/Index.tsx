@@ -1,15 +1,13 @@
 import { VaultsPage as VaultsPageComponent } from "@orderly.network/vaults";
-import { generatePageTitle } from "@/utils/utils";
-import { getPageMeta } from "@/utils/seo";
+import { usePageSEO } from "@/hooks/usePageSEO";
 import { renderSEOTags } from "@/utils/seo-tags";
 
 export default function VaultsIndex() {
-  const pageMeta = getPageMeta();
-  const pageTitle = generatePageTitle("Vaults");
+  const { tags, pageTitle } = usePageSEO("Vaults");
 
   return (
     <>
-      {renderSEOTags(pageMeta, pageTitle)}
+      {renderSEOTags(tags, pageTitle)}
       <VaultsPageComponent />
     </>
   );

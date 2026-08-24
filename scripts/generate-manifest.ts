@@ -143,8 +143,8 @@ function generateManifest() {
     categories: ["finance", "business"],
     shortcuts: [
       {
-        name: "Trading",
-        short_name: "Trade",
+        name: "Futures",
+        short_name: "Futures",
         description: "Start trading perpetuals",
         url: withBasePath("/", basePath),
         icons: [

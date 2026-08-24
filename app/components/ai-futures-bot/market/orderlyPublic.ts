@@ -17,17 +17,17 @@ export function getOrderlyRestBase(network?: NetworkId): string {
     : "https://api.orderly.org";
 }
 
-/** Bars needed for ~24h VWAP window by timeframe. */
+/** Bars needed for ~12h VWAP window by timeframe (match engine WINDOW_BARS). */
 export function barsForWindow(tf: MarketTimeframe): number {
   switch (tf) {
     case "5m":
-      return 288;
+      return 144;
     case "15m":
-      return 96;
+      return 48;
     case "1h":
-      return 24;
+      return 12;
     default:
-      return 96;
+      return 48;
   }
 }
 

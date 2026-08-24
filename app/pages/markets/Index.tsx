@@ -4,19 +4,17 @@ import {
   getRuntimeConfig,
   getRuntimeConfigBoolean,
 } from "@/utils/runtime-config";
-import { getPageMeta } from "@/utils/seo";
+import { usePageSEO } from "@/hooks/usePageSEO";
 import { renderSEOTags } from "@/utils/seo-tags";
 import { updateSymbol } from "@/utils/storage";
-import { generatePageTitle } from "@/utils/utils";
 
 export default function MarketsIndex() {
-  const pageMeta = getPageMeta();
-  const pageTitle = generatePageTitle("Markets");
+  const { tags, pageTitle } = usePageSEO("Markets");
   const navigate = useNavigate();
 
   return (
     <>
-      {renderSEOTags(pageMeta, pageTitle)}
+      {renderSEOTags(tags, pageTitle)}
       <MarketsHomePage
         comparisonProps={{
           exchangesIconSrc: getRuntimeConfigBoolean("VITE_HAS_SECONDARY_LOGO")
@@ -26,7 +24,7 @@ export default function MarketsIndex() {
         }}
         onSymbolChange={(symbol) => {
           updateSymbol(symbol.symbol);
-          navigate("/");
+          navigate("/futures");
         }}
       />
     </>

@@ -22,6 +22,10 @@ type IntentChartProps = {
   onTimeframeChange: (tf: "5m" | "15m" | "1h") => void;
   running: boolean;
   candles?: Candle[];
+  /** Worker online but M not ready yet — no demo fallback */
+  marketLoading?: boolean;
+  /** Engine chart is 15m only */
+  lockTimeframe?: boolean;
   /** 30d median daily TR (D) — enables real × D planning (no fake %) */
   dailyTrMed?: number | null;
   /** Exchange-synced levels when in position */
@@ -331,6 +335,8 @@ export default function IntentChart({
   onTimeframeChange,
   running,
   candles = [],
+  marketLoading = false,
+  lockTimeframe = false,
   dailyTrMed = null,
   fillEntry = null,
   fillTp = null,
@@ -511,9 +517,14 @@ export default function IntentChart({
   const tpY = yFor(levels.tp);
   const slY = yFor(levels.sl);
 
+  const showDemo = !marketLoading && mean > 0 && price > 0;
+
   const path = useMemo(() => {
     if (candles.length >= 2) {
       return buildCandlePath(plotW, padY, plotH, candles, minP, maxP);
+    }
+    if (!showDemo) {
+      return "";
     }
     return buildDemoPath(
       plotW,
@@ -536,6 +547,8 @@ export default function IntentChart({
     side,
     market.symbol,
     timeframe,
+    showDemo,
+    H,
   ]);
 
   const format = (n: number) => {
@@ -598,20 +611,38 @@ export default function IntentChart({
   );
 
   const leftLabelsView = [
-    {
-      id: "mean",
-      y: leftResolved.mean ?? meanY,
-      lineY: meanY,
-      display: `M ${format(mean)}`,
-      style: meanTagStyle(),
-    },
-    {
-      id: "price",
-      y: leftResolved.price ?? priceY,
-      lineY: priceY,
-      display: `Live ${format(price)}`,
-      style: priceTagStyle(tickDir),
-    },
+    ...(mean > 0
+      ? [
+          {
+            id: "mean",
+            y: leftResolved.mean ?? meanY,
+            lineY: meanY,
+            display: `M ${format(mean)}`,
+            style: meanTagStyle(),
+          },
+        ]
+      : marketLoading
+        ? [
+            {
+              id: "mean",
+              y: leftResolved.mean ?? priceY,
+              lineY: priceY,
+              display: "M …",
+              style: meanTagStyle(),
+            },
+          ]
+        : []),
+    ...(price > 0
+      ? [
+          {
+            id: "price",
+            y: leftResolved.price ?? priceY,
+            lineY: priceY,
+            display: `Live ${format(price)}`,
+            style: priceTagStyle(tickDir),
+          },
+        ]
+      : []),
   ];
 
   const rightLabelsView = rightLines.map((l) => ({
@@ -630,7 +661,9 @@ export default function IntentChart({
             Intent chart · {market.label}
           </p>
           <p className="mt-0.5 text-[11px] text-[var(--afb-muted)]">
-            Left: M & Live · Right: live fill or planned Entry/TP/SL/Add (× D)
+            {lockTimeframe
+              ? "Engine · 15m — same on every tab"
+              : "Left: M & Live · Right: live fill or planned Entry/TP/SL/Add (× D)"}
           </p>
         </div>
         <div className="flex rounded-lg border border-[var(--afb-line)] bg-black/30 p-0.5">
@@ -638,11 +671,14 @@ export default function IntentChart({
             <button
               key={tf}
               type="button"
+              disabled={lockTimeframe && tf !== "15m"}
               onClick={() => onTimeframeChange(tf)}
               className={`afb-display rounded-md px-2.5 py-1 text-[11px] font-semibold tracking-wide transition-colors ${
                 timeframe === tf
                   ? "bg-white/12 text-[var(--afb-text)]"
-                  : "text-[var(--afb-muted)] hover:text-[var(--afb-text)]"
+                  : lockTimeframe && tf !== "15m"
+                    ? "cursor-not-allowed text-[var(--afb-muted)]/40"
+                    : "text-[var(--afb-muted)] hover:text-[var(--afb-text)]"
               }`}
             >
               {tf}
@@ -652,6 +688,11 @@ export default function IntentChart({
       </div>
 
       <div className="relative overflow-hidden rounded-xl border border-[var(--afb-line)] bg-[rgba(4,7,10,0.65)]">
+        {marketLoading ? (
+          <p className="pointer-events-none absolute inset-x-0 top-2 z-10 text-center text-[11px] text-[var(--afb-muted)]">
+            Loading session mean…
+          </p>
+        ) : null}
         <svg
           viewBox={`0 0 ${W} ${H}`}
           className="h-[200px] w-full sm:h-[240px]"
@@ -694,24 +735,26 @@ export default function IntentChart({
             );
           })}
 
-          <rect
-            x={plotLeft}
-            y={Math.min(yFor(mean * 1.015), yFor(mean * 0.985))}
-            width={plotW}
-            height={Math.abs(yFor(mean * 0.985) - yFor(mean * 1.015))}
-            fill="rgba(62,207,186,0.05)"
-          />
-
-          {/* Mean line */}
-          <line
-            x1={plotLeft}
-            x2={plotRight}
-            y1={meanY}
-            y2={meanY}
-            stroke="rgba(200,214,222,0.45)"
-            strokeWidth="1.25"
-            strokeDasharray="5 5"
-          />
+          {mean > 0 ? (
+            <>
+              <rect
+                x={plotLeft}
+                y={Math.min(yFor(mean * 1.015), yFor(mean * 0.985))}
+                width={plotW}
+                height={Math.abs(yFor(mean * 0.985) - yFor(mean * 1.015))}
+                fill="rgba(62,207,186,0.05)"
+              />
+              <line
+                x1={plotLeft}
+                x2={plotRight}
+                y1={meanY}
+                y2={meanY}
+                stroke="rgba(200,214,222,0.45)"
+                strokeWidth="1.25"
+                strokeDasharray="5 5"
+              />
+            </>
+          ) : null}
 
           {/* Intent lines */}
           {rightLines.map((l) => (

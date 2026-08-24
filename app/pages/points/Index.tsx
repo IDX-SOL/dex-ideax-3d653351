@@ -1,25 +1,23 @@
 import { useNavigate } from "react-router-dom";
 import { PointSystemPage } from "@orderly.network/trading-points";
 import { RouteOption } from "@orderly.network/types";
-import { getPageMeta } from "@/utils/seo";
+import { usePageSEO } from "@/hooks/usePageSEO";
 import { renderSEOTags } from "@/utils/seo-tags";
-import { generatePageTitle } from "@/utils/utils";
 
 export default function PointsIndex() {
-  const pageMeta = getPageMeta();
-  const pageTitle = generatePageTitle("Points");
+  const { tags, pageTitle } = usePageSEO("Points");
   const navigate = useNavigate();
 
   const onRouteChange = (pathObject: RouteOption) => {
     const path = pathObject.href;
-    if (path && (path === "/perp" || path === "/")) {
-      navigate("/");
+    if (path && (path === "/perp" || path === "/" || path === "/futures")) {
+      navigate("/futures");
     }
   };
 
   return (
     <>
-      {renderSEOTags(pageMeta, pageTitle)}
+      {renderSEOTags(tags, pageTitle)}
       <PointSystemPage onRouteChange={onRouteChange} />
     </>
   );

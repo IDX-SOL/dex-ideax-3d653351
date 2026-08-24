@@ -1,9 +1,11 @@
 import { Outlet } from "react-router-dom";
 import { Scaffold } from "@orderly.network/ui-scaffold";
+import { HiddenScaffoldFooter } from "@/components/HiddenScaffoldFooter";
+import { MarketingLayoutShell } from "@/components/MarketingLayoutShell";
 import { useNav } from "@/hooks/useNav";
 import { useOrderlyConfig } from "@/utils/config";
 
-export default function LeaderboardLayout() {
+export default function PointsLayout() {
   const config = useOrderlyConfig();
   const { onRouteChange } = useNav();
 
@@ -13,14 +15,15 @@ export default function LeaderboardLayout() {
         ...config.scaffold.mainNavProps,
         initialMenu: "/points",
       }}
-      footerProps={config.scaffold.footerProps}
-      footer={config.scaffold.footer}
+      footer={<HiddenScaffoldFooter />}
       routerAdapter={{
         onRouteChange,
       }}
       bottomNavProps={config.scaffold.bottomNavProps}
     >
-      <Outlet />
+      <MarketingLayoutShell>
+        <Outlet />
+      </MarketingLayoutShell>
     </Scaffold>
   );
 }

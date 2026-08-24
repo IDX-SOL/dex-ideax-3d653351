@@ -5,10 +5,9 @@ import { useTradingLocalStorage } from "@orderly.network/trading";
 import { API } from "@orderly.network/types";
 import { Box } from "@orderly.network/ui";
 import { useOrderlyConfig } from "@/utils/config";
-import { getPageMeta } from "@/utils/seo";
+import { usePageSEO } from "@/hooks/usePageSEO";
 import { renderSEOTags } from "@/utils/seo-tags";
 import { updateSymbol } from "@/utils/storage";
-import { generatePageTitle } from "@/utils/utils";
 
 export default function PortfolioPositions() {
   const config = useOrderlyConfig();
@@ -24,17 +23,16 @@ export default function PortfolioPositions() {
       const searchParamsString = searchParams.toString();
       const queryString = searchParamsString ? `?${searchParamsString}` : "";
 
-      navigate(`/${queryString}`.replace(/\/\?$/, "/"));
+      navigate(`/futures${queryString}`.replace(/\/\?$/, "/futures"));
     },
     [navigate, searchParams],
   );
 
-  const pageMeta = getPageMeta();
-  const pageTitle = generatePageTitle("Positions");
+  const { tags, pageTitle } = usePageSEO("Positions");
 
   return (
     <>
-      {renderSEOTags(pageMeta, pageTitle)}
+      {renderSEOTags(tags, pageTitle)}
       <Box
         p={6}
         pb={0}

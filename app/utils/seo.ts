@@ -1,4 +1,8 @@
 import { getRuntimeConfig, getRuntimeConfigArray } from "./runtime-config";
+import {
+  buildCanonicalUrl,
+  resolveSeoForPath,
+} from "./seo-routes";
 
 export interface SEOConfig {
   siteName?: string;
@@ -22,6 +26,8 @@ type LinkTag = {
   hrefLang?: string;
 };
 
+export type SeoTag = MetaTag | LinkTag;
+
 const SUPPORTED_LANGUAGES = [
   { code: "en", name: "English", flag: "🇺🇸" },
   { code: "zh", name: "中文", flag: "🇨🇳" },
@@ -35,7 +41,7 @@ const SUPPORTED_LANGUAGES = [
   { code: "id", name: "Bahasa Indonesia", flag: "🇮🇩" },
   { code: "tr", name: "Türkçe", flag: "🇹🇷" },
   { code: "it", name: "Italiano", flag: "🇮🇹" },
-  { code: "pt", name: "Português", flag: "🇵🇹" },
+  { code: "pt", name: "Português", flag: "🇵🇷" },
   { code: "uk", name: "Українська", flag: "🇺🇦" },
   { code: "pl", name: "Polski", flag: "🇵🇱" },
   { code: "nl", name: "Nederlands", flag: "🇳🇱" },
@@ -69,6 +75,10 @@ export function getSEOConfig(): SEOConfig {
   };
 }
 
+function getBasePath(): string {
+  return getRuntimeConfig("VITE_BASE_URL") || import.meta.env.BASE_URL || "/";
+}
+
 function getAvailableLanguages(): string[] {
   const languages = getRuntimeConfigArray("VITE_AVAILABLE_LANGUAGES");
   if (languages.length === 0) return ["en"];
@@ -90,8 +100,7 @@ function generateHrefLangLinks(path: string): LinkTag[] {
   const links: LinkTag[] = [];
 
   availableLanguages.forEach((langCode) => {
-    const url = new URL(siteUrl);
-    url.pathname = path;
+    const url = new URL(buildCanonicalUrl(siteUrl, path, getBasePath()));
 
     if (langCode !== "en") {
       url.searchParams.set("lang", langCode);
@@ -105,45 +114,63 @@ function generateHrefLangLinks(path: string): LinkTag[] {
   });
 
   if (availableLanguages.length > 1) {
-    const defaultUrl = new URL(siteUrl);
-    defaultUrl.pathname = path;
-
     links.push({
       rel: "alternate",
       hrefLang: "x-default",
-      href: defaultUrl.toString(),
+      href: buildCanonicalUrl(siteUrl, path, getBasePath()),
     });
   }
 
   return links;
 }
 
-export function getPageMeta(): (MetaTag | LinkTag)[] {
+export function getOgImageUrl(siteUrl?: string): string | undefined {
+  const base = siteUrl || getSEOConfig().siteUrl;
+  if (!base) return undefined;
+  const origin = base.endsWith("/") ? base.slice(0, -1) : base;
+  return `${origin}/og-image.jpg`;
+}
+
+export interface GetPageMetaOptions {
+  pathname?: string;
+  pageTitle?: string;
+}
+
+export function getPageMeta(options: GetPageMetaOptions = {}): SeoTag[] {
   const config = getSEOConfig();
-  const siteName = config.siteName;
-  const siteDescription = config.siteDescription;
+  const basePath = getBasePath();
+  const pathname =
+    options.pathname ??
+    (typeof window !== "undefined" ? window.location.pathname : "/");
+  const resolved = resolveSeoForPath(pathname, {
+    basePath,
+    brokerName: getRuntimeConfig("VITE_ORDERLY_BROKER_NAME") || "IDX",
+    siteDescription: config.siteDescription,
+  });
+
+  const pageTitle = options.pageTitle ?? config.siteName ?? resolved.titleSuffix;
+  const description = resolved.description;
   const siteUrl = config.siteUrl;
-
-  const fullTitle = siteName;
-  const fullUrl = siteUrl || "";
-
-  let metaImage;
-  if (siteUrl) {
-    const baseUrl = siteUrl.endsWith("/") ? siteUrl.slice(0, -1) : siteUrl;
-    metaImage = `${baseUrl}/og-image.jpg`;
-  }
-
+  const canonical = siteUrl
+    ? buildCanonicalUrl(siteUrl, resolved.path, basePath)
+    : "";
+  const metaImage = getOgImageUrl(siteUrl);
   const metaKeywords = config.keywords;
 
-  const tags: (MetaTag | LinkTag)[] = [];
+  const tags: SeoTag[] = [];
 
-  if (fullTitle) {
-    tags.push({ title: fullTitle });
+  if (pageTitle) {
+    tags.push({ title: pageTitle });
   }
 
-  if (siteDescription) {
-    tags.push({ name: "description", content: siteDescription });
+  if (description) {
+    tags.push({ name: "description", content: description });
   }
+
+  tags.push({
+    name: "robots",
+    content: resolved.noindex ? "noindex, nofollow" : "index, follow",
+  });
 
   if (metaKeywords) {
     tags.push({ name: "keywords", content: metaKeywords });
@@ -153,25 +180,31 @@ export function getPageMeta(): (MetaTag | LinkTag)[] {
     tags.push({ name: "theme-color", content: config.themeColor });
   }
 
+  if (canonical) {
+    tags.push({ rel: "canonical", href: canonical });
+  }
+
   if (siteUrl) {
-    if (fullTitle) {
-      tags.push({ property: "og:title", content: fullTitle });
+    tags.push({ property: "og:type", content: "website" });
+
+    if (pageTitle) {
+      tags.push({ property: "og:title", content: pageTitle });
     }
 
-    if (siteName) {
-      tags.push({ property: "og:site_name", content: siteName });
+    if (config.siteName) {
+      tags.push({ property: "og:site_name", content: config.siteName });
     }
 
-    tags.push(
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: fullUrl },
-    );
+    if (canonical) {
+      tags.push({ property: "og:url", content: canonical });
+    }
+
     if (metaImage) {
       tags.push({ property: "og:image", content: metaImage });
     }
 
-    if (siteDescription) {
-      tags.push({ property: "og:description", content: siteDescription });
+    if (description) {
+      tags.push({ property: "og:description", content: description });
     }
 
     if (config.locale) {
@@ -179,27 +212,49 @@ export function getPageMeta(): (MetaTag | LinkTag)[] {
     }
   }
 
-  if (config.twitterHandle || siteUrl) {
-    tags.push({ name: "twitter:card", content: "summary_large_image" });
+  tags.push({ name: "twitter:card", content: "summary_large_image" });
 
-    if (fullTitle) {
-      tags.push({ name: "twitter:title", content: fullTitle });
-    }
-
-    if (siteDescription) {
-      tags.push({ name: "twitter:description", content: siteDescription });
-    }
-
-    if (config.twitterHandle) {
-      tags.push({ name: "twitter:site", content: config.twitterHandle });
-    }
-
-    if (metaImage) {
-      tags.push({ name: "twitter:image", content: metaImage });
-    }
+  if (pageTitle) {
+    tags.push({ name: "twitter:title", content: pageTitle });
   }
 
-  const hrefLangLinks = generateHrefLangLinks("");
-  tags.push(...hrefLangLinks);
+  if (description) {
+    tags.push({ name: "twitter:description", content: description });
+  }
+
+  if (config.twitterHandle) {
+    tags.push({ name: "twitter:site", content: config.twitterHandle });
+  }
+
+  if (metaImage) {
+    tags.push({ name: "twitter:image", content: metaImage });
+  }
+
+  tags.push(...generateHrefLangLinks(resolved.path));
   return tags;
+}
+
+export function getHomeStructuredData(): Record<string, unknown> {
+  const config = getSEOConfig();
+  const siteUrl = config.siteUrl || "https://dex.idxsolana.io";
+  const siteName = config.siteName || "IDX Exchange";
+
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        name: siteName,
+        url: siteUrl,
+        description: config.siteDescription,
+        inLanguage: config.language || "en",
+      },
+      {
+        "@type": "Organization",
+        name: siteName,
+        url: siteUrl,
+        logo: `${siteUrl.replace(/\/$/, "")}/exchange-home/logo.png`,
+      },
+    ],
+  };
 }

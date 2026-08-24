@@ -67,7 +67,7 @@ export function fadeSide(
 }
 
 /**
- * VWAP over ~24h window; ATR over full series (incl. warmup bars).
+ * VWAP over ~12h window; ATR over full series (incl. warmup bars).
  * `candles` should be chronological oldest→newest.
  */
 export function buildSnapshot(input: {

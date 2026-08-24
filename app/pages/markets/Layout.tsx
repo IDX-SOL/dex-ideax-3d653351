@@ -1,9 +1,12 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { Scaffold } from "@orderly.network/ui-scaffold";
+import { HiddenScaffoldFooter } from "@/components/HiddenScaffoldFooter";
+import { MarketingLayoutShell } from "@/components/MarketingLayoutShell";
 import { useNav } from "@/hooks/useNav";
 import { useOrderlyConfig } from "@/utils/config";
 
 export default function MarketsLayout() {
+  const { pathname } = useLocation();
   const config = useOrderlyConfig();
   const { onRouteChange } = useNav();
 
@@ -12,15 +15,18 @@ export default function MarketsLayout() {
       mainNavProps={{
         ...config.scaffold.mainNavProps,
         initialMenu: "/markets",
+        current: pathname,
       }}
-      footerProps={config.scaffold.footerProps}
-      footer={config.scaffold.footer}
+      footer={<HiddenScaffoldFooter />}
       routerAdapter={{
         onRouteChange,
+        currentPath: pathname,
       }}
       bottomNavProps={config.scaffold.bottomNavProps}
     >
-      <Outlet />
+      <MarketingLayoutShell>
+        <Outlet />
+      </MarketingLayoutShell>
     </Scaffold>
   );
 }

@@ -3,20 +3,10 @@ import { useAccount } from "@orderly.network/hooks";
 import { useAppContext } from "@orderly.network/react-app";
 import { AccountStatusEnum } from "@orderly.network/types";
 import { useScreen } from "@orderly.network/ui";
+import { triggerHeaderConnect } from "../utils/triggerHeaderConnect";
 
 function pointInRect(x: number, y: number, rect: DOMRect): boolean {
   return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
-}
-
-function triggerHeaderConnect(connectWallet: () => unknown) {
-  const connectBtn = document.querySelector<HTMLButtonElement>(
-    '[data-testid="oui-testid-nav-bar-connectWallet-btn"], button.wallet-connect-button',
-  );
-  if (connectBtn) {
-    connectBtn.click();
-    return;
-  }
-  void connectWallet();
 }
 
 /**

@@ -38,6 +38,18 @@ export type EngineBot = {
   stretch: number;
   side_bias: "long" | "short" | null;
   available_usdc: number;
+  /** Engine 15m window — sole chart source when worker is online */
+  chart_candles?: EngineCandle[];
+};
+
+export type EngineCandle = {
+  t: number;
+  o: number;
+  h: number;
+  l: number;
+  c: number;
+  v: number;
+  a: number;
 };
 
 function baseUrl(): string {
@@ -90,6 +102,7 @@ export type StrategyConfig = {
   max_tp_overshoot_d: number;
   trend_lookback_bars: number;
   trend_move_d: number;
+  window_bars: number;
   limit_entry_wait_seconds: number;
   loss_streak_pause_n: number;
   loss_streak_cooldown_hours: number;

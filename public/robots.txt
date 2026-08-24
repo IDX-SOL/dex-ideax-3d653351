@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /ai-futures-bot
+Disallow: /portfolio/
+Disallow: /perp/
+Disallow: /tradingview/
+
+Sitemap: https://dex.idxsolana.io/sitemap.xml

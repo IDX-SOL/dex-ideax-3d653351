@@ -6,6 +6,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hide Orderly fixed footer slot when marketing footer renders in page flow */
+.oui-scaffold-footer:has(.idx-scaffold-footer-hidden) {
+  display: none !important;
+}
+
 /* Hide Orderly "Powered by" branding in scaffold footer */
 .oui-scaffold-footer-powered-by {
   display: none !important;
@@ -15,6 +20,83 @@
 .idx-footer-shell {
   position: relative;
   width: 100%;
+}
+
+/* Short pages: keep marketing footer at the bottom above mobile bottom nav */
+:root {
+  --idx-bottom-nav-h: 64px;
+}
+
+.idx-marketing-layout-shell {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-height: calc(
+    100svh - var(--idx-scaffold-chrome-h, 52px) - env(safe-area-inset-bottom)
+  );
+}
+
+/* Portfolio mobile shell (oui-h-full-screen) — not oui-scaffold-root */
+.oui-h-full-screen:has(.oui-scaffold-topNavbar) {
+  --idx-scaffold-chrome-h: 52px;
+}
+
+/* Portfolio mobile shell only — hide marketing footer above bottom nav (not home). */
+.oui-h-full-screen:has(> .oui-scaffold-bottomNav) .idx-marketing-layout-shell {
+  min-height: 0;
+  padding-bottom: calc(var(--idx-bottom-nav-h) + env(safe-area-inset-bottom));
+}
+
+.oui-h-full-screen:has(> .oui-scaffold-bottomNav) .idx-marketing-layout-shell .ex-footer {
+  display: none;
+}
+
+.oui-h-full-screen:has(> .oui-scaffold-bottomNav) {
+  min-height: 100svh;
+}
+
+.oui-h-full-screen:has(> .oui-scaffold-bottomNav) > .oui-scaffold-container:has(.idx-marketing-layout-shell) {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.oui-scaffold-content:has(> .idx-marketing-layout-shell) {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: inherit;
+}
+
+.idx-marketing-layout-shell__content {
+  flex: 1 1 auto;
+}
+
+.idx-marketing-layout-shell .ex-footer {
+  flex-shrink: 0;
+  margin-top: auto;
+}
+
+.idx-marketing-layout-shell__content:has(.idx-swap-page) {
+  min-width: 0;
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
+.oui-scaffold-root:has(.idx-swap-page) .oui-scaffold-container {
+  overflow-x: clip !important;
+  overflow-y: auto !important;
+  height: auto !important;
+}
+
+.oui-scaffold-root:has(.idx-swap-page) .oui-scaffold-content {
+  height: auto !important;
+  overflow: visible !important;
+}
+
+.idx-marketing-layout-shell:has(.idx-swap-page) {
+  min-height: 0;
 }
 
 .idx-footer-credit {
@@ -486,6 +568,38 @@ html[data-idx-trading-mode="lite"]
   display: none;
 }
 
+/* Orderly portfolio mobile arrows omit cursor:pointer on clickable targets */
+.oui-portfolio-page .oui-absolute.oui-end-0.oui-top-0.oui-flex.oui-h-full {
+  cursor: pointer;
+}
+
+.oui-portfolio-page .oui-portfolio-affiliate-card .oui-mt-auto.oui-w-full,
+.oui-portfolio-page .oui-portfolio-trader-card .oui-mt-auto.oui-w-full {
+  cursor: pointer;
+}
+
+.oui-portfolio-page .oui-portfolio-affiliate-card svg.oui-ms-auto,
+.oui-portfolio-page .oui-portfolio-trader-card svg.oui-ms-auto {
+  cursor: pointer;
+}
+
+.oui-portfolio-page .oui-relative.oui-rounded-2xl.oui-bg-base-9 .oui-flex-row svg {
+  cursor: pointer;
+}
+
+.oui-portfolio-page .oui-flex.oui-items-center.oui-justify-start.oui-gap-1:has(> svg) {
+  cursor: pointer;
+}
+
+/* Portfolio sidebar — active label matches header nav green */
+.oui-portfolio-page .oui-group/bar button[data-actived="true"] .oui-bg-clip-text {
+  background-image: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: rgb(var(--oui-color-primary-light) / 1);
+  -webkit-text-fill-color: currentColor;
+}
+
 /*
  * Orderly scaffold/trading use ~1018px / 1440px min-widths; clip horizontal overflow
  * so narrow viewports do not get a page-level sideways scrollbar.
@@ -650,10 +764,120 @@ body,
  * Main header: match IDX tools site black (#050506), not DexScreener panel grey.
  * Scaffold paints topNavbar with oui-bg-base-9 (panels use that for surfaces).
  */
+
+/* Orderly sub-page header: chevron-only back → show "Back" label beside it */
+.oui-scaffold-topNavbar .oui-relative:has(> svg.oui-absolute.oui-start-6)::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 7rem; /* matches BACK_HIT_WIDTH_PX in useSubNavBackAffordance */
+  cursor: pointer;
+  z-index: 1;
+}
+
+.oui-scaffold-topNavbar .oui-relative:has(> svg.oui-absolute.oui-start-6)::after {
+  content: "Back";
+  position: absolute;
+  left: 3.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgb(var(--oui-color-base-contrast) / 0.54);
+  pointer-events: none;
+  line-height: 1;
+  z-index: 2;
+}
+
+.oui-scaffold-topNavbar .oui-relative:has(> svg.oui-absolute.oui-start-6) svg.oui-absolute.oui-start-6 {
+  cursor: pointer;
+}
+
 .oui-scaffold-topNavbar,
 .oui-scaffold-topNavbar .oui-main-nav {
   background-color: #050506 !important;
   border-bottom: none !important;
+}
+
+.oui-scaffold-root:has(.idx-header-bar) {
+  /* Distance from viewport top to page content (= header bar height). */
+  --idx-scaffold-chrome-h: 52px;
+}
+
+/* MobileScaffold adds oui-pt-2; desktop does not — drop it so total chrome matches 52px. */
+.oui-scaffold-root.oui-pt-2:has(.idx-header-bar) {
+  padding-top: 0 !important;
+}
+
+.oui-scaffold-topNavbar:has(.idx-header-bar) {
+  height: 52px !important;
+  min-height: 52px !important;
+  max-height: 52px !important;
+}
+
+.oui-scaffold-topNavbar:has(.idx-header-bar) > .oui-flex,
+.oui-scaffold-topNavbar:has(.idx-header-bar) > .oui-box {
+  --oui-height: 52px !important;
+  height: 52px !important;
+  min-height: 52px !important;
+  max-height: 52px !important;
+}
+
+.oui-scaffold-topNavbar:has(.idx-header-bar) .idx-header-bar {
+  min-height: 52px;
+}
+
+.idx-header-nav {
+  display: none;
+  align-items: center;
+  gap: 0.15rem;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.idx-header-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.idx-header-nav-link {
+  flex-shrink: 0;
+  padding: 0.35rem 0.65rem;
+  border-radius: 8px;
+  color: rgb(var(--oui-color-base-foreground) / 0.68);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.idx-header-nav-link:hover {
+  color: rgb(var(--oui-color-primary-light) / 1);
+}
+
+.idx-header-nav-link--active {
+  color: rgb(var(--oui-color-primary-light) / 1);
+}
+
+@media (max-width: 859.98px) {
+  .idx-header-brand > span {
+    display: none;
+  }
+}
+
+@media (min-width: 860px) {
+  .idx-header-nav {
+    display: flex;
+    margin-left: 0.75rem;
+  }
+
+  /* Orderly mobile scaffold pins header at 44px — match desktop row height */
+  .oui-scaffold-topNavbar:has(.idx-header-bar) {
+    z-index: 50;
+  }
+}
+
+@media (min-width: 1280px) {
+  .idx-header-nav {
+    margin-left: 3.5rem;
+  }
 }
 
 /*

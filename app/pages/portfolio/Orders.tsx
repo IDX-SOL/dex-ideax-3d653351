@@ -1,16 +1,14 @@
 import { Box } from "@orderly.network/ui";
 import { OrdersModule } from "@orderly.network/portfolio";
-import { generatePageTitle } from "@/utils/utils";
-import { getPageMeta } from "@/utils/seo";
+import { usePageSEO } from "@/hooks/usePageSEO";
 import { renderSEOTags } from "@/utils/seo-tags";
 
 export default function PortfolioOrders() {
-  const pageMeta = getPageMeta();
-  const pageTitle = generatePageTitle("Orders");
+  const { tags, pageTitle } = usePageSEO("Orders");
 
   return (
     <>
-      {renderSEOTags(pageMeta, pageTitle)}
+      {renderSEOTags(tags, pageTitle)}
       <Box
         p={6}
         pb={0}
