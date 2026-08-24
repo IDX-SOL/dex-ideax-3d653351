@@ -137,7 +137,6 @@ export default function ExchangeHomePage() {
                 <div className="ex-device ex-device-laptop">
                   <div className="ex-device-lid">
                     <div className="ex-device-screen">
-                      <span className="ex-device-notch" aria-hidden="true" />
                       <img
                         className="ex-shot"
                         src={withBasePath("/exchange-home/trade-desktop.png")}

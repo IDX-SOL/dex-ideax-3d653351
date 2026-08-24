@@ -376,7 +376,7 @@ export const useOrderlyConfig = () => {
           >
             {useCompactHeader && (
               <CustomLeftNav
-                menus={translatedEnabledMenus}
+                menus={navItems}
                 externalLinks={customMenus}
               />
             )}
