@@ -49,10 +49,10 @@ const FROM_IMG_JS = `    OrderlyIcon = (props) => /* @__PURE__ */ jsxRuntime.jsx
       }
     );`;
 
-function buildIdxIconJsx(runtime) {
-  const jsx = `${runtime}.jsx`;
-  const jsxs = `${runtime}.jsxs`;
-  return `    OrderlyIcon = (props) => /* @__PURE__ */ ${jsxs}(
+/** @param {string} jsxCall e.g. "jsxRuntime.jsx" or "jsx" */
+/** @param {string} jsxsCall e.g. "jsxRuntime.jsxs" or "jsxs" */
+function buildIdxIconJsx(jsxCall, jsxsCall) {
+  return `    OrderlyIcon = (props) => /* @__PURE__ */ ${jsxsCall}(
       "svg",
       {
         width: ${ICON_W},
@@ -62,34 +62,46 @@ function buildIdxIconJsx(runtime) {
         xmlns: "http://www.w3.org/2000/svg",
         ...props,
         children: [
-          /* @__PURE__ */ ${jsx}("path", { fill: "#AFADB0", d: "${IDX_PATHS[0]}" }),
-          /* @__PURE__ */ ${jsx}("path", { fill: "#AFADB0", d: "${IDX_PATHS[1]}" }),
-          /* @__PURE__ */ ${jsx}("path", { fill: "#AFADB0", d: "${IDX_PATHS[2]}" })
+          /* @__PURE__ */ ${jsxCall}("path", { fill: "#AFADB0", d: "${IDX_PATHS[0]}" }),
+          /* @__PURE__ */ ${jsxCall}("path", { fill: "#AFADB0", d: "${IDX_PATHS[1]}" }),
+          /* @__PURE__ */ ${jsxCall}("path", { fill: "#AFADB0", d: "${IDX_PATHS[2]}" })
         ] /* ${MARKER} */
       }
     );`;
 }
 
-const TO_JS = buildIdxIconJsx("jsxRuntime");
-const TO_MJS = buildIdxIconJsx("jsx");
+const TO_JS = buildIdxIconJsx("jsxRuntime.jsx", "jsxRuntime.jsxs");
+const TO_MJS = buildIdxIconJsx("jsx", "jsxs");
 
-const FROM_IDX_JS = buildIdxIconJsx("jsxRuntime").replace(
+const FROM_IDX_JS = buildIdxIconJsx("jsxRuntime.jsx", "jsxRuntime.jsxs").replace(
   `width: ${ICON_W}`,
   "width: 12",
 ).replace(`height: ${ICON_H}`, "height: 13");
 
-const FROM_IDX_MJS = buildIdxIconJsx("jsx").replace(
+const FROM_IDX_MJS = buildIdxIconJsx("jsx", "jsxs").replace(
   `width: ${ICON_W}`,
   "width: 12",
 ).replace(`height: ${ICON_H}`, "height: 13");
 
-const FROM_ORDERLY_MJS = FROM_ORDERLY_JS
-  .replaceAll("jsxRuntime.jsx", "jsx")
-  .replaceAll("jsxRuntime.jsxs", "jsxs");
+/** Bad ESM patch output (jsx.jsx) — repair target for already-deployed builds. */
+const FROM_IDX_MJS_BROKEN = buildIdxIconJsx("jsx.jsx", "jsx.jsxs").replace(
+  `width: ${ICON_W}`,
+  "width: 12",
+).replace(`height: ${ICON_H}`, "height: 13");
 
-const FROM_IMG_MJS = FROM_IMG_JS
-  .replaceAll("jsxRuntime.jsx", "jsx")
-  .replaceAll("jsxRuntime.jsxs", "jsxs");
+const FROM_IDX_MJS_BROKEN_SIZED = buildIdxIconJsx("jsx.jsx", "jsx.jsxs");
+
+function cjsToEsmJsx(source) {
+  return source
+    .replaceAll("jsxRuntime.jsxs", "jsxs")
+    .replaceAll("jsxRuntime.jsx", "jsx");
+}
+
+const FROM_ORDERLY_MJS = cjsToEsmJsx(FROM_ORDERLY_JS);
+const FROM_IMG_MJS = cjsToEsmJsx(FROM_IMG_JS);
+
+const ORDERLY_ICON_BLOCK =
+  /    OrderlyIcon = \(props\) =>[\s\S]*?\/\* idx_markets_orderly_icon \*\/[\s\S]*?\n    \);/;
 
 function patchFile(filePath, fromCandidates, to) {
   if (!fs.existsSync(filePath)) {
@@ -97,10 +109,21 @@ function patchFile(filePath, fromCandidates, to) {
     return false;
   }
   const before = fs.readFileSync(filePath, "utf8");
+
+  if (before.includes(MARKER) && before.includes("jsx.jsx")) {
+    const next = before.replace(ORDERLY_ICON_BLOCK, to.trimEnd());
+    if (next !== before) {
+      fs.writeFileSync(filePath, next);
+      console.log("repaired jsx.jsx", path.relative(root, filePath));
+      return true;
+    }
+  }
+
   if (
     before.includes(MARKER) &&
     before.includes(`width: ${ICON_W}`) &&
-    before.includes(`height: ${ICON_H}`)
+    before.includes(`height: ${ICON_H}`) &&
+    !before.includes("jsx.jsx")
   ) {
     console.log("unchanged", path.relative(root, filePath));
     return false;
@@ -154,7 +177,13 @@ const mjs = path.join(
 let changed = 0;
 if (patchFile(js, [FROM_IDX_JS, FROM_IMG_JS, FROM_ORDERLY_JS], TO_JS))
   changed += 1;
-if (patchFile(mjs, [FROM_IDX_MJS, FROM_IMG_MJS, FROM_ORDERLY_MJS], TO_MJS))
+if (
+  patchFile(
+    mjs,
+    [FROM_IDX_MJS_BROKEN_SIZED, FROM_IDX_MJS_BROKEN, FROM_IDX_MJS, FROM_IMG_MJS, FROM_ORDERLY_MJS],
+    TO_MJS,
+  )
+)
   changed += 1;
 
 console.log(`markets orderly icon patch done (${changed} files updated)`);
