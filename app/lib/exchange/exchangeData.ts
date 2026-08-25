@@ -6,6 +6,7 @@ import {
   buildMarketsList,
   buildNewListingsTable,
   fetchOrderlyJson,
+  getOpenInterestUsd,
   toNumber,
   topGainers,
 } from "@/lib/exchange/orderlyMarkets";
@@ -68,7 +69,11 @@ export async function fetchMarketsSnapshot() {
       );
       openInterest = rows.reduce(
         (sum: number, row: Record<string, unknown>) =>
-          sum + toNumber(row.open_interest),
+          sum +
+          getOpenInterestUsd(
+            row.open_interest,
+            row.index_price ?? row.mark_price,
+          ),
         0,
       );
     }

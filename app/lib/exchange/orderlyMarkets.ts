@@ -53,11 +53,8 @@ export function normalizeMarketRow(
   if (!(price > 0) || pct == null) return null;
 
   const markPrice = toNumber(row.mark_price) || price;
-  const openInterestRaw = toNumber(row.open_interest);
-  const openInterest =
-    markPrice > 0 && openInterestRaw > 0 && openInterestRaw < 100
-      ? openInterestRaw * markPrice
-      : openInterestRaw;
+  const indexPrice = toNumber(row.index_price) || markPrice;
+  const openInterest = getOpenInterestUsd(row.open_interest, indexPrice);
   const fundingRate =
     toNumber(row.est_funding_rate) || toNumber(row.last_funding_rate) || null;
 
