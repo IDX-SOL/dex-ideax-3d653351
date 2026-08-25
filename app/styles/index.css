@@ -520,6 +520,26 @@ html[data-idx-trading-mode="lite"]
   width: 100%;
 }
 
+/* Markets sheet: Symbol column uses oui-z-10 — keep sticky header opaque like other columns */
+.oui-marketsSheet-list .oui-table-thead {
+  z-index: 12;
+}
+
+.oui-marketsSheet-list .oui-table-thead-th:first-child {
+  background-color: var(
+    --oui-table-background-color,
+    rgb(var(--oui-color-base-8))
+  );
+}
+
+.oui-marketsSheet-list .oui-table-tbody-td:first-child {
+  z-index: 0;
+  background-color: var(
+    --oui-table-background-color,
+    rgb(var(--oui-color-base-8))
+  );
+}
+
 /*
  * Order-entry danger outlines: keep SDK validation, but don't show red borders
  * when trading isn't ready (submit disabled / wallet not connected) or the

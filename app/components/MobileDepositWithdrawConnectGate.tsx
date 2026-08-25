@@ -9,9 +9,27 @@ function pointInRect(x: number, y: number, rect: DOMRect): boolean {
   return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
 }
 
+/** Left column (symbol, leverage, icon) — open markets sheet without wallet. */
+function isSymbolMarketPicker(target: HTMLElement): boolean {
+  const host = target.closest(
+    ".oui-symbol-info-bar-mobile .oui-flex-1.oui-overflow-hidden",
+  );
+  if (!host) return false;
+
+  const symbolColumn = host.querySelector(":scope > .oui-gap-x-3");
+  return Boolean(symbolColumn?.contains(target));
+}
+
+function openMobileMarketsPicker(host: Element) {
+  host
+    .querySelector<HTMLElement>(".oui-h-5.oui-cursor-pointer")
+    ?.click();
+}
+
 /**
  * While disconnected:
- * - Mobile: Deposit / Withdraw trailing → header Connect wallet
+ * - Mobile/tablet: symbol bar (SOL / leverage) → markets sheet (no wallet)
+ * - Mobile/tablet: Deposit / Withdraw trailing → header Connect wallet
  * - All viewports: Buy / Long | Sell / Short submit → header Connect wallet
  */
 export function MobileDepositWithdrawConnectGate() {
@@ -49,6 +67,21 @@ export function MobileDepositWithdrawConnectGate() {
 
       // Keep eye toggle working
       if (target.closest(".oui-symbol-info-bar-mobile button.oui-px-1")) {
+        return;
+      }
+
+      if (isSymbolMarketPicker(target)) {
+        const host = target.closest(
+          ".oui-symbol-info-bar-mobile .oui-flex-1.oui-overflow-hidden",
+        );
+        if (
+          host &&
+          !target.closest(".oui-symbol-info-bar-mobile .oui-h-5.oui-cursor-pointer")
+        ) {
+          openMobileMarketsPicker(host);
+          event.preventDefault();
+          event.stopPropagation();
+        }
         return;
       }
 
