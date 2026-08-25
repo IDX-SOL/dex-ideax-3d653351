@@ -25,6 +25,7 @@ import { HeaderNavLinks } from "@/components/HeaderNavLinks";
 import { useHeaderLayout } from "@/hooks/useHeaderLayout";
 import CustomLeftNav from "@/components/CustomLeftNav";
 import { ExchangeMarketingFooter } from "@/components/exchange-home/ExchangeMarketingFooter";
+import { HeaderLinkOrScanButton } from "@/components/HeaderLinkOrScanButton";
 import { IdxScaffoldFooter } from "@/components/IdxScaffoldFooter";
 import { TradingModeToggle } from "@/components/TradingModeToggle";
 import { OrderlyActiveIcon, OrderlyIcon } from "../components/icons/orderly";
@@ -407,9 +408,7 @@ export const useOrderlyConfig = () => {
             {isFuturesPage && <TradingModeToggle />}
             {useDesktopHeader && isFuturesPage && "accountSummary" in components &&
               components.accountSummary}
-            {useDesktopHeader && isFuturesPage && "linkDevice" in components &&
-              components.linkDevice}
-            {"scanQRCode" in components && components.scanQRCode}
+            <HeaderLinkOrScanButton />
             {useDesktopHeader && isFuturesPage && "languageSwitcher" in components &&
               components.languageSwitcher}
             {useDesktopHeader && isFuturesPage && "subAccount" in components &&
