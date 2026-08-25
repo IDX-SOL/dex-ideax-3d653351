@@ -409,8 +409,7 @@ export const useOrderlyConfig = () => {
               components.accountSummary}
             {useDesktopHeader && isFuturesPage && "linkDevice" in components &&
               components.linkDevice}
-            {useCompactHeader && "scanQRCode" in components &&
-              components.scanQRCode}
+            {"scanQRCode" in components && components.scanQRCode}
             {useDesktopHeader && isFuturesPage && "languageSwitcher" in components &&
               components.languageSwitcher}
             {useDesktopHeader && isFuturesPage && "subAccount" in components &&
