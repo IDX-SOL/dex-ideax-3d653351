@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
-import { cn } from "@orderly.network/ui";
 
 type NavItem = {
   name: string;
@@ -33,66 +32,69 @@ export function MarketingMobileNav({
       </button>
 
       {open ? (
-        <div
-          className="idx-marketing-mobile-nav-backdrop"
-          role="presentation"
-          onClick={() => setOpen(false)}
-        />
-      ) : null}
-
-      <aside
-        className={cn(
-          "idx-marketing-mobile-nav",
-          open && "idx-marketing-mobile-nav--open",
-        )}
-        aria-hidden={!open}
-      >
-        <div className="idx-marketing-mobile-nav__head">
-          <span className="idx-marketing-mobile-nav__title">Menu</span>
-          <button
-            type="button"
-            className="idx-marketing-mobile-nav__close"
-            aria-label="Close navigation menu"
+        <>
+          <div
+            className="idx-marketing-mobile-nav-backdrop"
+            role="presentation"
             onClick={() => setOpen(false)}
+          />
+          <aside
+            className="idx-marketing-mobile-nav idx-marketing-mobile-nav--open"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Navigation menu"
           >
-            <X size={18} />
-          </button>
-        </div>
-        <nav className="idx-marketing-mobile-nav__links" aria-label="Primary">
-          {navItems.map((item) =>
-            item.target === "_blank" ? (
-              <a
-                key={item.href}
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
+            <div className="idx-marketing-mobile-nav__head">
+              <span className="idx-marketing-mobile-nav__title">Menu</span>
+              <button
+                type="button"
+                className="idx-marketing-mobile-nav__close"
+                aria-label="Close navigation menu"
                 onClick={() => setOpen(false)}
               >
-                {item.name}
-              </a>
-            ) : (
-              <Link
-                key={item.href}
-                to={item.href}
-                onClick={() => setOpen(false)}
-              >
-                {item.name}
-              </Link>
-            ),
-          )}
-          {customMenus.map((item) => (
-            <a
-              key={`${item.name}-${item.href}`}
-              href={item.href}
-              target={item.target ?? "_blank"}
-              rel="noopener noreferrer"
-              onClick={() => setOpen(false)}
+                <X size={18} />
+              </button>
+            </div>
+            <nav
+              className="idx-marketing-mobile-nav__links"
+              aria-label="Primary"
             >
-              {item.name}
-            </a>
-          ))}
-        </nav>
-      </aside>
+              {navItems.map((item) =>
+                item.target === "_blank" ? (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setOpen(false)}
+                  >
+                    {item.name}
+                  </a>
+                ) : (
+                  <Link
+                    key={item.href}
+                    to={item.href}
+                    onClick={() => setOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                ),
+              )}
+              {customMenus.map((item) => (
+                <a
+                  key={`${item.name}-${item.href}`}
+                  href={item.href}
+                  target={item.target ?? "_blank"}
+                  rel="noopener noreferrer"
+                  onClick={() => setOpen(false)}
+                >
+                  {item.name}
+                </a>
+              ))}
+            </nav>
+          </aside>
+        </>
+      ) : null}
     </>
   );
 }
