@@ -15,6 +15,7 @@ import {
 } from "@/config/exchange/urls";
 import { fetchTickerQuotes } from "@/lib/exchange/exchangeData";
 import { withBasePath } from "@/utils/base-path";
+import { removeStaticHero } from "@/utils/staticHero";
 import "@/styles/exchange-home.css";
 
 function formatMark(price: number) {
@@ -105,6 +106,13 @@ export default function ExchangeHomePage() {
   const openDemoGuide = () => {
     window.dispatchEvent(new CustomEvent(DEMO_GUIDE_OPEN_EVENT));
   };
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      requestAnimationFrame(removeStaticHero);
+    });
+    return () => cancelAnimationFrame(id);
+  }, []);
 
   useEffect(() => {
     let alive = true;

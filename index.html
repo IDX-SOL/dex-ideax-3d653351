@@ -65,12 +65,89 @@
       content="Trade crypto perpetual futures on IDX Exchange, a decentralized perp exchange with no KYC, up to 100x leverage, non-custodial trading, deep liquidity, low fees, and seamless on-chain derivatives."
     />
     <meta name="twitter:image" content="https://dex.idxsolana.io/og-image.jpg" />
+
+    <!-- Home-only static hero: LCP paints before React (removed on ExchangeHomePage mount) -->
+    <style>
+      body {
+        margin: 0;
+        background: #050506;
+      }
+
+      #idx-static-hero {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background: #050506;
+        overflow: hidden;
+      }
+
+      html.idx-static-hero-active #idx-static-hero {
+        display: block;
+      }
+
+      html.idx-static-hero-active #root {
+        position: relative;
+        z-index: 1;
+        min-height: 100svh;
+      }
+
+      .idx-static-hero__bg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 64% center;
+      }
+
+      .idx-static-hero__overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          90deg,
+          rgba(5, 5, 6, 0.93) 0%,
+          rgba(5, 5, 6, 0.8) 36%,
+          rgba(5, 5, 6, 0.4) 58%,
+          rgba(5, 5, 6, 0.1) 100%
+        );
+      }
+    </style>
+    <script>
+      (function () {
+        function normalizePath(path) {
+          if (!path || path === "/") return "/";
+          return path.endsWith("/") ? path.slice(0, -1) : path;
+        }
+
+        var base = normalizePath(
+          document.documentElement.getAttribute("data-base") || "/",
+        );
+        var path = normalizePath(location.pathname);
+        if (path === base) {
+          document.documentElement.classList.add("idx-static-hero-active");
+        }
+      })();
+    </script>
   </head>
   <body>
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N5DRLDC5"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
+    <div id="idx-static-hero" aria-hidden="true">
+      <img
+        class="idx-static-hero__bg"
+        src="/exchange-home/hero-bg.webp"
+        alt=""
+        width="1024"
+        height="571"
+        decoding="async"
+        fetchpriority="high"
+      />
+      <div class="idx-static-hero__overlay"></div>
+    </div>
     <div id="root"></div>
     <script type="module" src="/app/main.tsx"></script>
   </body>

@@ -34,14 +34,19 @@ function loadConfigTitle(): string {
   }
 }
 
-function htmlTitlePlugin(): Plugin {
+function htmlTransformPlugin(basePath: string): Plugin {
   const title = loadConfigTitle();
   console.log(`Using title from config.js: ${title}`);
 
   return {
-    name: "html-title-transform",
+    name: "html-transform",
     transformIndexHtml(html) {
-      return html.replace(/<title>.*?<\/title>/, `<title>${title}</title>`);
+      return html
+        .replace(/<title>.*?<\/title>/, `<title>${title}</title>`)
+        .replace(
+          /<html lang="en">/,
+          `<html lang="en" data-base="${basePath}">`,
+        );
     },
   };
 }
@@ -131,7 +136,7 @@ export default defineConfig(() => {
     plugins: [
       react(),
       tsconfigPaths(),
-      htmlTitlePlugin(),
+      htmlTransformPlugin(basePath),
       tradingViewExchangeNamePlugin(),
       cjsInterop({
         dependencies: ["bs58", "@coral-xyz/anchor", "lodash", "dayjs"],
