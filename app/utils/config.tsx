@@ -1,5 +1,4 @@
 import { useMemo, type ReactNode } from "react";
-import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "@orderly.network/i18n";
 import { AppLogos } from "@orderly.network/react-app";
 import { TradingPageProps } from "@orderly.network/trading";
@@ -12,8 +11,6 @@ import {
   LeaderboardInactiveIcon,
   MarketsActiveIcon,
   MarketsInactiveIcon,
-  Flex,
-  cn,
 } from "@orderly.network/ui";
 import {
   BottomNavProps,
@@ -21,13 +18,9 @@ import {
   MainNavWidgetProps,
   MainNavItem as MainNavItemType,
 } from "@orderly.network/ui-scaffold";
-import { HeaderNavLinks } from "@/components/HeaderNavLinks";
-import { useHeaderLayout } from "@/hooks/useHeaderLayout";
-import CustomLeftNav from "@/components/CustomLeftNav";
+import { IdxHeaderBar } from "@/components/IdxHeaderBar";
 import { ExchangeMarketingFooter } from "@/components/exchange-home/ExchangeMarketingFooter";
-import { HeaderLinkOrScanButton } from "@/components/HeaderLinkOrScanButton";
 import { IdxScaffoldFooter } from "@/components/IdxScaffoldFooter";
-import { TradingModeToggle } from "@/components/TradingModeToggle";
 import { OrderlyActiveIcon, OrderlyIcon } from "../components/icons/orderly";
 import { withBasePath } from "./base-path";
 import {
@@ -239,9 +232,6 @@ const getColorConfig = (): ColorConfigInterface | undefined => {
 
 export const useOrderlyConfig = () => {
   const { t } = useTranslation();
-  const { useCompactHeader, useDesktopHeader } = useHeaderLayout();
-  const location = useLocation();
-  const isFuturesPage = location.pathname.startsWith("/futures");
 
   return useMemo<OrderlyConfig>(() => {
     const allMenuItems: MenuConfigItem[] = [
@@ -359,61 +349,13 @@ export const useOrderlyConfig = () => {
         ),
         { name: "Docs", href: DOCS_EXCHANGE_URL, target: "_blank" },
       ];
-      const mainNav = useDesktopHeader ? (
-        <HeaderNavLinks menus={navItems} />
-      ) : null;
 
       return (
-        <Flex
-          justify="between"
-          className="oui-w-full oui-min-w-0 oui-max-w-full idx-header-bar"
-        >
-          <Flex
-            itemAlign={"center"}
-            className={cn(
-              "oui-gap-3",
-              "oui-min-w-0 oui-flex-1 oui-overflow-hidden",
-            )}
-          >
-            {useCompactHeader && (
-              <CustomLeftNav
-                menus={navItems}
-                externalLinks={customMenus}
-              />
-            )}
-            <Link
-              to="/"
-              aria-label="IDX Exchange home"
-              className={cn(
-                "idx-header-brand oui-flex oui-items-center oui-gap-2 oui-shrink-0",
-                isFuturesPage && "idx-header-brand--compact",
-              )}
-            >
-              <img
-                src={withBasePath("/exchange-home/logo.png")}
-                alt=""
-                width={32}
-                height={32}
-                style={{ display: "block" }}
-              />
-              <span className="idx-header-brand-title">IDX Exchange</span>
-            </Link>
-            {mainNav}
-          </Flex>
-
-          <Flex itemAlign={"center"} className="oui-gap-2 oui-shrink-0">
-            {isFuturesPage && <TradingModeToggle />}
-            {useDesktopHeader && isFuturesPage && "accountSummary" in components &&
-              components.accountSummary}
-            <HeaderLinkOrScanButton />
-            {useDesktopHeader && isFuturesPage && "languageSwitcher" in components &&
-              components.languageSwitcher}
-            {useDesktopHeader && isFuturesPage && "subAccount" in components &&
-              components.subAccount}
-            {"chainMenu" in components && components.chainMenu}
-            {"walletConnect" in components && components.walletConnect}
-          </Flex>
-        </Flex>
+        <IdxHeaderBar
+          components={components}
+          navItems={navItems}
+          customMenus={customMenus}
+        />
       );
     };
 
@@ -443,11 +385,17 @@ export const useOrderlyConfig = () => {
         appIcons: {
           main: {
             component: (
-              <img
-                src={withBasePath("/exchange-home/logo.png")}
-                alt="IDX Exchange"
-                style={{ height: "32px", width: "32px" }}
-              />
+              <picture>
+                <source
+                  srcSet={withBasePath("/exchange-home/logo.webp")}
+                  type="image/webp"
+                />
+                <img
+                  src={withBasePath("/exchange-home/logo.png")}
+                  alt="IDX Exchange"
+                  style={{ height: "32px", width: "32px" }}
+                />
+              </picture>
             ),
           },
           secondary: {
@@ -482,5 +430,5 @@ export const useOrderlyConfig = () => {
         },
       },
     };
-  }, [t, useCompactHeader, useDesktopHeader, isFuturesPage]);
+  }, [t]);
 };

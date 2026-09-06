@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { fetchMarketsGrid } from "@/lib/exchange/exchangeData";
-import { fetchSparklineCloses } from "@/lib/exchange/sparklineFetch";
+import {
+  fetchSparklineCloses,
+  mapSparklinesConcurrent,
+} from "@/lib/exchange/sparklineFetch";
 import {
   readSparklineClientCache,
   writeSparklineClientCache,
@@ -230,28 +233,26 @@ export default function MarketsGrid() {
       });
 
       try {
-        await Promise.all(
-          marketsToFetch.map(async (market) => {
-            const { symbol } = market;
-            try {
-              const closes = await fetchSparklineDeduped(symbol);
-              if (!alive) return;
-              if (closes.length >= 2) {
-                applySparkline(symbol, closes);
-                warmedSymbolsRef.current.add(symbol);
-              }
-            } catch {
-              /* ignore per-symbol failures */
-            } finally {
-              if (!alive) return;
-              setFetchingSymbols((prev) => {
-                const next = new Set(prev);
-                next.delete(symbol);
-                return next;
-              });
+        await mapSparklinesConcurrent(marketsToFetch, async (market) => {
+          const { symbol } = market;
+          try {
+            const closes = await fetchSparklineDeduped(symbol);
+            if (!alive) return;
+            if (closes.length >= 2) {
+              applySparkline(symbol, closes);
+              warmedSymbolsRef.current.add(symbol);
             }
-          }),
-        );
+          } catch {
+            /* ignore per-symbol failures */
+          } finally {
+            if (!alive) return;
+            setFetchingSymbols((prev) => {
+              const next = new Set(prev);
+              next.delete(symbol);
+              return next;
+            });
+          }
+        });
       } finally {
         visibleFetchingRef.current = false;
         if (alive && sparklineInflightRef.current === pageSymbolsKey) {

@@ -4,8 +4,8 @@
   --ex-line: rgba(255, 255, 255, 0.08);
   --ex-muted: rgba(237, 237, 237, 0.68);
   --ex-text: #ededed;
-  --ex-emerald: #059669;
-  --ex-emerald-hover: #047857;
+  --ex-emerald: #047857;
+  --ex-emerald-hover: #065f46;
   --ex-lime: #c8f542;
   --ex-loss: #f5618b;
   --ex-nav-h: 4.25rem;
@@ -691,6 +691,13 @@ button.ex-btn {
   font-size: 0.82rem;
 }
 
+.ex-ticker-item picture {
+  display: inline-flex;
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+}
+
 .ex-ticker-icon {
   width: 18px;
   height: 18px;
@@ -762,7 +769,10 @@ button.ex-btn {
       rgba(5, 5, 6, 0.48) 88%,
       rgba(5, 5, 6, 0.66) 100%
     ),
-    url("/exchange-home/swap-section-bg.png") center 45% / cover no-repeat;
+    image-set(
+      url("/exchange-home/swap-section-bg.webp") type("image/webp"),
+      url("/exchange-home/swap-section-bg.png") type("image/png")
+    ) center 45% / cover no-repeat;
 }
 
 #swap.ex-section .ex-wrap {
@@ -1741,7 +1751,10 @@ button.ex-btn {
       rgba(5, 5, 6, 0.14) 88%,
       rgba(5, 5, 6, 0.08) 100%
     ),
-    url("/exchange-home/bots-bg.png") center 65% / cover no-repeat;
+    image-set(
+      url("/exchange-home/bots-bg.webp") type("image/webp"),
+      url("/exchange-home/bots-bg.png") type("image/png")
+    ) center 65% / cover no-repeat;
 }
 
 .ex-bots-detail-section .ex-bots {
@@ -2396,7 +2409,10 @@ button.ex-btn {
       rgba(5, 5, 6, 0.42) 58%,
       rgba(5, 5, 6, 0.28) 100%
     ),
-    url("/exchange-home/launch-section-bg.png") 78% 12% / cover no-repeat;
+    image-set(
+      url("/exchange-home/launch-section-bg.webp") type("image/webp"),
+      url("/exchange-home/launch-section-bg.png") type("image/png")
+    ) 78% 12% / cover no-repeat;
 }
 
 #launch.ex-section-alt {
@@ -2439,8 +2455,8 @@ button.ex-btn {
   --ex-line: rgba(255, 255, 255, 0.08);
   --ex-muted: rgba(237, 237, 237, 0.68);
   --ex-text: #ededed;
-  --ex-emerald: #059669;
-  --ex-emerald-hover: #047857;
+  --ex-emerald: #047857;
+  --ex-emerald-hover: #065f46;
   padding: 2.5rem 0 2rem;
   border-top: 1px solid var(--ex-line);
   color: var(--ex-muted);

@@ -37,3 +37,7 @@ export const TICKER_SYMBOLS: Record<string, string> = {
 export function tickerIcon(id: string) {
   return withBasePath(`/exchange-home/tickers/${id}.png`);
 }
+
+export function tickerIconWebp(id: string) {
+  return withBasePath(`/exchange-home/tickers/${id}.webp`);
+}

@@ -2,7 +2,6 @@ import { ReactNode, useCallback, lazy, Suspense } from "react";
 import { OrderlyAppProvider } from "@orderly.network/react-app";
 import type { NetworkId } from "@orderly.network/types";
 import { DemoGraduationChecker } from "@/components/DemoGraduationChecker";
-import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { MarketsSheetCloseButton } from "@/components/MarketsSheetCloseButton";
 import { useOrderlyConfig } from "@/utils/config";
 import {
@@ -149,7 +148,7 @@ const OrderlyProvider = (props: { children: ReactNode }) => {
 
   return (
     <OrderlyLocaleProvider>
-      <Suspense fallback={<LoadingSpinner />}>{walletConnector}</Suspense>
+      <Suspense fallback={null}>{walletConnector}</Suspense>
     </OrderlyLocaleProvider>
   );
 };

@@ -10,8 +10,11 @@ const ORDERLY_KLINE_URL = "https://api.orderly.org/v1/tv/kline_history";
 const ORDERLY_RESOLUTION = "15m";
 const ORDERLY_KLINE_GAP_MS = 2500;
 const ORDERLY_COOLDOWN_DEFAULT_MS = 15_000;
+export const SPARKLINE_FAILURE_COOLDOWN_MS = 5_000;
+export const SPARKLINE_FETCH_CONCURRENCY = 4;
 
 const cache = new Map<string, { closes: number[]; expiresAt: number }>();
+const failureCooldownUntil = new Map<string, number>();
 const inFlight = new Map<string, Promise<number[]>>();
 let orderlyQueue: Promise<void> = Promise.resolve();
 let batchGate = Promise.resolve();
@@ -38,7 +41,49 @@ function getCached(symbol: string) {
 function setCached(symbol: string, closes: number[]) {
   if (closes.length) {
     cache.set(symbol, { closes, expiresAt: sparklineCacheExpiresAt() });
+    failureCooldownUntil.delete(symbol);
   }
+}
+
+function isFailureCoolingDown(symbol: string) {
+  const until = failureCooldownUntil.get(symbol);
+  if (!until) return false;
+  if (until <= Date.now()) {
+    failureCooldownUntil.delete(symbol);
+    return false;
+  }
+  return true;
+}
+
+function markFailureCooldown(symbol: string) {
+  failureCooldownUntil.set(
+    symbol,
+    Date.now() + SPARKLINE_FAILURE_COOLDOWN_MS,
+  );
+}
+
+export async function mapSparklinesConcurrent<T, R>(
+  items: T[],
+  fn: (item: T) => Promise<R>,
+  concurrency = SPARKLINE_FETCH_CONCURRENCY,
+): Promise<R[]> {
+  if (!items.length) return [];
+
+  const results = new Array<R>(items.length);
+  let nextIndex = 0;
+
+  async function worker() {
+    while (true) {
+      const index = nextIndex;
+      nextIndex += 1;
+      if (index >= items.length) return;
+      results[index] = await fn(items[index]);
+    }
+  }
+
+  const workers = Math.min(concurrency, items.length);
+  await Promise.all(Array.from({ length: workers }, () => worker()));
+  return results;
 }
 
 function wait(ms: number) {
@@ -135,6 +180,8 @@ export async function fetchSparklineCloses(symbol: string) {
   const cached = getCached(symbol);
   if (cached) return cached;
 
+  if (isFailureCoolingDown(symbol)) return [];
+
   const pending = inFlight.get(symbol);
   if (pending) return pending;
 
@@ -144,6 +191,7 @@ export async function fetchSparklineCloses(symbol: string) {
       setCached(symbol, closes);
       return closes;
     }
+    markFailureCooldown(symbol);
     return [];
   })().finally(() => {
     inFlight.delete(symbol);
@@ -165,11 +213,9 @@ export async function fetchSparklinesBatch(symbols: string[]) {
     const unique = [...new Set(symbols.filter(Boolean))].slice(0, 12);
     const sparklines: Record<string, number[]> = {};
 
-    await Promise.all(
-      unique.map(async (symbol) => {
-        sparklines[symbol] = await fetchSparklineCloses(symbol);
-      }),
-    );
+    await mapSparklinesConcurrent(unique, async (symbol) => {
+      sparklines[symbol] = await fetchSparklineCloses(symbol);
+    });
 
     return sparklines;
   } finally {

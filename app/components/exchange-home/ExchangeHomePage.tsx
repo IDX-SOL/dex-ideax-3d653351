@@ -4,11 +4,11 @@ import { DEMO_GUIDE_OPEN_EVENT } from "@/components/exchange-home/ExchangeMarket
 import MarketsGrid from "@/components/exchange-home/MarketsGrid";
 import MarketsSnapshot from "@/components/exchange-home/MarketsSnapshot";
 import NewListingsStack from "@/components/exchange-home/NewListingsStack";
-import { TICKER, tickerIcon } from "@/config/exchange/ticker";
+import { TICKER, tickerIcon, tickerIconWebp } from "@/config/exchange/ticker";
 import {
   AFFILIATE_URL,
   API_KEYS_URL,
-  DOCS_URL,
+  DOCS_EXCHANGE_API_URL,
   FUTURES_URL,
   LAUNCHLAB_URL,
   SWAP_URL,
@@ -280,13 +280,16 @@ export default function ExchangeHomePage() {
                     const down = (quote?.changePct ?? 0) < 0;
                     return (
                       <div className="ex-ticker-item" key={`${dup}-${sym}`}>
-                        <img
-                          className="ex-ticker-icon"
-                          src={tickerIcon(sym)}
-                          alt=""
-                          width={18}
-                          height={18}
-                        />
+                        <picture>
+                          <source srcSet={tickerIconWebp(sym)} type="image/webp" />
+                          <img
+                            className="ex-ticker-icon"
+                            src={tickerIcon(sym)}
+                            alt=""
+                            width={18}
+                            height={18}
+                          />
+                        </picture>
                         <b>{sym}</b>
                         <span className="ex-ticker-quote">
                           <span className="ex-ticker-price">
@@ -422,7 +425,7 @@ export default function ExchangeHomePage() {
                 </Link>
                 <a
                   className="ex-btn ex-btn-ghost"
-                  href={DOCS_URL}
+                  href={DOCS_EXCHANGE_API_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                 >

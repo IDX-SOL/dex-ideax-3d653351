@@ -1,10 +1,10 @@
 :root {
   --oui-font-family: 'Manrope', sans-serif;
 
-  /* colors — LaunchLab CTA green (emerald-600 / #059669) */
-  --oui-color-primary: 5 150 105;
+  /* colors — emerald-700 primary for AA contrast on white button text */
+  --oui-color-primary: 4 120 87;
   --oui-color-primary-light: 16 185 129;
-  --oui-color-primary-darken: 4 120 87;
+  --oui-color-primary-darken: 6 95 70;
   --oui-color-primary-contrast: 255 255 255;
 
   --oui-color-link: 16 185 129;
@@ -57,8 +57,8 @@
   --oui-color-trading-profit: 52 211 153;
   --oui-color-trading-profit-contrast: 255 255 255;
 
-  /* gradients — LaunchLab: emerald-500 → green-500 / solid emerald-600 CTAs */
-  --oui-gradient-primary-start: 5 150 105;
+  /* gradients — solid emerald-700 CTAs (Connect, brand buttons) */
+  --oui-gradient-primary-start: 4 120 87;
   --oui-gradient-primary-end: 16 185 129;
 
   --oui-gradient-secondary-start: 4 120 87;
@@ -70,9 +70,9 @@
   --oui-gradient-danger-start: 153 24 76;
   --oui-gradient-danger-end: 245 97 139;
 
-  /* Solid emerald-600 — matches LaunchLab "Launch coin" CTA */
-  --oui-gradient-brand-start: 5 150 105;
-  --oui-gradient-brand-end: 5 150 105;
+  /* Solid emerald-700 — AA contrast for white label text */
+  --oui-gradient-brand-start: 4 120 87;
+  --oui-gradient-brand-end: 4 120 87;
   --oui-gradient-brand-stop-start: 0%;
   --oui-gradient-brand-stop-end: 100%;
   --oui-gradient-brand-angle: 90deg;

@@ -40,12 +40,18 @@ export function ExchangeMarketingFooter() {
         <div className="ex-wrap">
           <div className="ex-footer-bar">
             <Link to="/" className="ex-footer-brand">
-              <img
-                src={withBasePath("/exchange-home/logo.png")}
-                alt=""
-                width={28}
-                height={28}
-              />
+              <picture>
+                <source
+                  srcSet={withBasePath("/exchange-home/logo.webp")}
+                  type="image/webp"
+                />
+                <img
+                  src={withBasePath("/exchange-home/logo.png")}
+                  alt=""
+                  width={28}
+                  height={28}
+                />
+              </picture>
               <p className="ex-footer-name">IDX Exchange</p>
             </Link>
             <div className="ex-footer-social" aria-label="Social links">
