@@ -10,6 +10,7 @@ import {
   modal,
   useModal,
   VectorIcon,
+  cn,
 } from "@orderly.network/ui";
 import {
   LanguageSwitcher,
@@ -21,6 +22,7 @@ import {
   useScanQRCodeScript,
 } from "@orderly.network/ui-scaffold";
 import { IdxFooterCreditLink } from "@/components/IdxFooterCreditLink";
+import { FUTURES_URL } from "@/config/exchange/urls";
 import { withBasePath } from "@/utils/base-path";
 import {
   getRuntimeConfig,
@@ -38,6 +40,8 @@ type LeftNavUIProps = LeftNavProps & {
     href: string;
     target?: string;
   }>;
+  /** Home marketing header — hide scan / account chrome; show Trade instead. */
+  hideWalletActions?: boolean;
 };
 
 const navRowClassName =
@@ -127,7 +131,10 @@ const LeftNavSheet = modal.create<LeftNavUIProps>((props) => {
             <LanguageNavItem />
           </div>
 
-          <BottomAccountActions />
+          <BottomAccountActions
+            hideWalletActions={props.hideWalletActions}
+            onClose={hide}
+          />
         </div>
       </SheetContent>
     </Sheet>
@@ -168,7 +175,29 @@ const LanguageNavItem: FC = () => {
 };
 
 /** Scan QR when disconnected; Switch account when trading-ready — pinned to menu bottom. */
-const BottomAccountActions: FC = () => {
+const HomeMenuTradeFooter: FC<{ onClose?: () => void }> = ({ onClose }) => (
+  <div className="oui-mt-auto oui-w-full oui-shrink-0 oui-flex oui-flex-col">
+    <Link
+      to={FUTURES_URL}
+      onClick={onClose}
+      className={cn(
+        navRowClassName,
+        "oui-justify-center oui-text-base-contrast oui-no-underline idx-header-trade-btn",
+      )}
+    >
+      Trade
+    </Link>
+    <div className="oui-border-t oui-border-line-12">
+      <div className="idx-mobile-nav-by-wrap">
+        <IdxFooterCreditLink className="idx-mobile-nav-by" />
+      </div>
+    </div>
+  </div>
+);
+
+const WalletBottomAccountActions: FC<{ onClose?: () => void }> = ({
+  onClose,
+}) => {
   const { t } = useTranslation();
   const { state } = useAccount();
   const scan = useScanQRCodeScript();
@@ -214,6 +243,17 @@ const BottomAccountActions: FC = () => {
       </div>
     </div>
   );
+};
+
+const BottomAccountActions: FC<{
+  hideWalletActions?: boolean;
+  onClose?: () => void;
+}> = ({ hideWalletActions, onClose }) => {
+  if (hideWalletActions) {
+    return <HomeMenuTradeFooter onClose={onClose} />;
+  }
+
+  return <WalletBottomAccountActions onClose={onClose} />;
 };
 
 type NavItemProps = {

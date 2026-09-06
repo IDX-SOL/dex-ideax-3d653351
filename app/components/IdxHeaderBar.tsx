@@ -2,9 +2,12 @@ import { Link, useLocation } from "react-router-dom";
 import { Flex, cn } from "@orderly.network/ui";
 import type { ReactNode } from "react";
 import CustomLeftNav from "@/components/CustomLeftNav";
+import { MarketingMobileNav } from "@/components/marketing/MarketingMobileNav";
 import { HeaderLinkOrScanButton } from "@/components/HeaderLinkOrScanButton";
 import { HeaderNavLinks } from "@/components/HeaderNavLinks";
 import { TradingModeToggle } from "@/components/TradingModeToggle";
+import { FUTURES_URL } from "@/config/exchange/urls";
+import { useOrderlyBoot } from "@/contexts/OrderlyBootContext";
 import { useHeaderLayout } from "@/hooks/useHeaderLayout";
 import { withBasePath } from "@/utils/base-path";
 
@@ -27,12 +30,16 @@ export function IdxHeaderBar({
 }: IdxHeaderBarProps) {
   const location = useLocation();
   const { useCompactHeader, useDesktopHeader } = useHeaderLayout();
+  const { isBooted } = useOrderlyBoot();
   const isFuturesPage = location.pathname.startsWith("/futures");
+  const isHomePage = location.pathname === "/";
+  const useLightMobileNav = isHomePage && !isBooted;
   const mainNav = useDesktopHeader ? <HeaderNavLinks menus={navItems} /> : null;
 
   return (
     <Flex
       justify="between"
+      itemAlign="center"
       className="oui-w-full oui-min-w-0 oui-max-w-full idx-header-bar"
     >
       <Flex
@@ -40,7 +47,18 @@ export function IdxHeaderBar({
         className={cn("oui-gap-3", "oui-min-w-0 oui-flex-1 oui-overflow-hidden")}
       >
         {useCompactHeader ? (
-          <CustomLeftNav menus={navItems} externalLinks={customMenus} />
+          useLightMobileNav ? (
+            <MarketingMobileNav
+              navItems={navItems}
+              customMenus={customMenus}
+            />
+          ) : (
+            <CustomLeftNav
+              menus={navItems}
+              externalLinks={customMenus}
+              hideWalletActions={isHomePage}
+            />
+          )
         ) : null}
         <Link
           to="/"
@@ -73,15 +91,24 @@ export function IdxHeaderBar({
         {useDesktopHeader && isFuturesPage && "accountSummary" in components
           ? components.accountSummary
           : null}
-        <HeaderLinkOrScanButton />
+        {!isHomePage ? <HeaderLinkOrScanButton /> : null}
         {useDesktopHeader && isFuturesPage && "languageSwitcher" in components
           ? components.languageSwitcher
           : null}
         {useDesktopHeader && isFuturesPage && "subAccount" in components
           ? components.subAccount
           : null}
-        {"chainMenu" in components ? components.chainMenu : null}
-        {"walletConnect" in components ? components.walletConnect : null}
+        {!isHomePage && "chainMenu" in components ? components.chainMenu : null}
+        {isHomePage ? (
+          <Link
+            to={FUTURES_URL}
+            className="idx-header-trade-btn oui-button oui-gradient-brand"
+          >
+            Trade
+          </Link>
+        ) : "walletConnect" in components ? (
+          components.walletConnect
+        ) : null}
       </Flex>
     </Flex>
   );

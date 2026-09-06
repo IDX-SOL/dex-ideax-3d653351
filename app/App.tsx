@@ -4,8 +4,10 @@ import { Outlet } from "react-router-dom";
 import { HttpsRequiredWarning } from "@/components/HttpsRequiredWarning";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { SubNavBackAffordance } from "@/components/SubNavBackAffordance";
-import OrderlyProvider from "@/components/orderlyProvider";
 import DeferredGtm from "@/components/analytics/DeferredGtm";
+import { OrderlyBootGate } from "@/components/orderlyProvider/OrderlyBootGate";
+import { OrderlyLocaleProvider } from "@/components/orderlyProvider/orderlyLocaleProvider";
+import { OrderlyBootProvider } from "@/contexts/OrderlyBootContext";
 import { withBasePath } from "./utils/base-path";
 import { getSEOConfig, getUserLanguage } from "./utils/seo";
 import { getRuntimeConfig } from "./utils/runtime-config";
@@ -39,12 +41,16 @@ export default function App() {
       </Helmet>
       <DeferredGtm />
       <HttpsRequiredWarning />
-      <OrderlyProvider>
-        <SubNavBackAffordance />
-        <Suspense fallback={<LoadingSpinner />}>
-          <Outlet />
-        </Suspense>
-      </OrderlyProvider>
+      <OrderlyLocaleProvider>
+        <OrderlyBootProvider>
+          <OrderlyBootGate>
+            <SubNavBackAffordance />
+            <Suspense fallback={<LoadingSpinner />}>
+              <Outlet />
+            </Suspense>
+          </OrderlyBootGate>
+        </OrderlyBootProvider>
+      </OrderlyLocaleProvider>
     </>
   );
 }

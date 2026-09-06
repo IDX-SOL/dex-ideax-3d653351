@@ -906,6 +906,20 @@ body,
   }
 }
 
+/* Home header CTA — same slot as Connect wallet on other routes */
+.idx-header-trade-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding-inline: 0.85rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
 /* Link-device control in header — match scan button hit area (860px+ layout) */
 .idx-header-link-device {
   display: inline-flex;
@@ -1551,4 +1565,106 @@ html[data-idx-orderbook-folded="true"]
     height: 100% !important;
     max-height: 100% !important;
   }
+}
+
+.idx-marketing-home-shell {
+  min-height: 100svh;
+  background: #050506;
+}
+
+.idx-marketing-home-shell .oui-scaffold-topNavbar.idx-marketing-home-nav {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  padding-inline: 0.75rem;
+  width: 100%;
+}
+
+.idx-marketing-home-nav__inner {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 52px;
+  min-height: 52px;
+}
+
+.idx-marketing-home-shell .idx-header-trade-btn {
+  flex-shrink: 0;
+  align-self: center;
+  min-height: 32px;
+  height: 32px;
+  line-height: 1;
+}
+
+.idx-marketing-mobile-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.idx-marketing-mobile-nav {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 61;
+  display: flex;
+  width: min(276px, 86vw);
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.75rem 0.85rem 1rem;
+  background: rgb(var(--oui-color-base-8) / 1);
+  transform: translateX(-105%);
+  transition: transform 0.22s ease;
+  pointer-events: none;
+}
+
+.idx-marketing-mobile-nav--open {
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.idx-marketing-mobile-nav__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+}
+
+.idx-marketing-mobile-nav__title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.idx-marketing-mobile-nav__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.72);
+  cursor: pointer;
+}
+
+.idx-marketing-mobile-nav__links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  overflow-y: auto;
+}
+
+.idx-marketing-mobile-nav__links a {
+  display: block;
+  padding: 0.85rem 0.75rem;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.88);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.idx-marketing-mobile-nav__links a:hover {
+  background: rgb(var(--oui-color-base-7) / 1);
 }

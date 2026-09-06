@@ -70,7 +70,7 @@ export type OrderlyConfig = {
   };
 };
 
-const getCustomMenuItems = (): MainNavItem[] => {
+export const getCustomMenuItems = (): MainNavItem[] => {
   const customMenusEnv = getRuntimeConfig("VITE_CUSTOM_MENUS");
 
   if (

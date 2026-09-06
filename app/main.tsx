@@ -13,6 +13,9 @@ import { applyTradingModeToDocument } from "./utils/trading-mode";
 import "./styles/index.css";
 
 const HomeIndex = lazy(() => import("./pages/home/Index"));
+const MarketingHomeLayout = lazy(
+  () => import("./pages/home/MarketingHomeLayout"),
+);
 const FuturesIndex = lazy(() => import("./pages/futures/Index"));
 const PerpLayout = lazy(() => import("./pages/perp/Layout"));
 const PerpIndex = lazy(() => import("./pages/perp/Index"));
@@ -93,9 +96,12 @@ const router = createBrowserRouter(
       errorElement: <ErrorBoundary />,
       children: [
         {
+          element: <MarketingHomeLayout />,
+          children: [{ index: true, element: <HomeIndex /> }],
+        },
+        {
           element: <PerpLayout />,
           children: [
-            { index: true, element: <HomeIndex /> },
             { path: "futures", element: <FuturesIndex /> },
             {
               path: "perp",

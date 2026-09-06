@@ -12,7 +12,6 @@ import {
 import { createSymbolDataAdapter } from "@/utils/symbol-filter";
 import ServiceDisclaimerDialog from "./ServiceDisclaimerDialog";
 import { WalletStatusAttr } from "./WalletStatusAttr";
-import { OrderlyLocaleProvider } from "./orderlyLocaleProvider";
 
 const NETWORK_ID_KEY = "orderly_network_id";
 
@@ -146,11 +145,7 @@ const OrderlyProvider = (props: { children: ReactNode }) => {
     <WalletConnector networkId={networkId}>{appProvider}</WalletConnector>
   );
 
-  return (
-    <OrderlyLocaleProvider>
-      <Suspense fallback={null}>{walletConnector}</Suspense>
-    </OrderlyLocaleProvider>
-  );
+  return <Suspense fallback={null}>{walletConnector}</Suspense>;
 };
 
 export default OrderlyProvider;
