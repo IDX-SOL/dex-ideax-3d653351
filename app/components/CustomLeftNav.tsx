@@ -10,7 +10,6 @@ import {
   modal,
   useModal,
   VectorIcon,
-  cn,
 } from "@orderly.network/ui";
 import {
   LanguageSwitcher,
@@ -22,7 +21,6 @@ import {
   useScanQRCodeScript,
 } from "@orderly.network/ui-scaffold";
 import { IdxFooterCreditLink } from "@/components/IdxFooterCreditLink";
-import { FUTURES_URL } from "@/config/exchange/urls";
 import { withBasePath } from "@/utils/base-path";
 import {
   getRuntimeConfig,
@@ -40,8 +38,10 @@ type LeftNavUIProps = LeftNavProps & {
     href: string;
     target?: string;
   }>;
-  /** Home marketing header — hide scan / account chrome; show Trade instead. */
+  /** Home marketing header — hide scan / account chrome in drawer footer. */
   hideWalletActions?: boolean;
+  /** Cold home load — language row needs Orderly analytics hooks. */
+  hideLanguageSwitcher?: boolean;
 };
 
 const navRowClassName =
@@ -127,8 +127,12 @@ const LeftNavSheet = modal.create<LeftNavUIProps>((props) => {
                 </>
               )}
 
-            <div className="oui-w-full oui-border-t oui-border-line-12 oui-my-2" />
-            <LanguageNavItem />
+            {!props.hideLanguageSwitcher ? (
+              <>
+                <div className="oui-w-full oui-border-t oui-border-line-12 oui-my-2" />
+                <LanguageNavItem />
+              </>
+            ) : null}
           </div>
 
           <BottomAccountActions
@@ -174,24 +178,17 @@ const LanguageNavItem: FC = () => {
   );
 };
 
-/** Scan QR when disconnected; Switch account when trading-ready — pinned to menu bottom. */
-const HomeMenuTradeFooter: FC<{ onClose?: () => void }> = ({ onClose }) => (
-  <div className="oui-mt-auto oui-w-full oui-shrink-0 oui-flex oui-flex-col">
-    <Link
-      to={FUTURES_URL}
-      onClick={onClose}
-      className={cn(
-        navRowClassName,
-        "oui-justify-center oui-text-base-contrast oui-no-underline idx-header-trade-btn",
-      )}
-    >
-      Trade
-    </Link>
-    <div className="oui-border-t oui-border-line-12">
-      <div className="idx-mobile-nav-by-wrap">
-        <IdxFooterCreditLink className="idx-mobile-nav-by" />
-      </div>
+const NavMenuFooterCredit: FC = () => (
+  <div className="oui-border-t oui-border-line-12">
+    <div className="idx-mobile-nav-by-wrap">
+      <IdxFooterCreditLink className="idx-mobile-nav-by" />
     </div>
+  </div>
+);
+
+const NavMenuFooter: FC = () => (
+  <div className="oui-mt-auto oui-w-full oui-shrink-0 oui-flex oui-flex-col">
+    <NavMenuFooterCredit />
   </div>
 );
 
@@ -236,11 +233,7 @@ const WalletBottomAccountActions: FC<{ onClose?: () => void }> = ({
           />
         </div>
       )}
-      <div className="oui-border-t oui-border-line-12">
-        <div className="idx-mobile-nav-by-wrap">
-          <IdxFooterCreditLink className="idx-mobile-nav-by" />
-        </div>
-      </div>
+      <NavMenuFooterCredit />
     </div>
   );
 };
@@ -250,7 +243,7 @@ const BottomAccountActions: FC<{
   onClose?: () => void;
 }> = ({ hideWalletActions, onClose }) => {
   if (hideWalletActions) {
-    return <HomeMenuTradeFooter onClose={onClose} />;
+    return <NavMenuFooter />;
   }
 
   return <WalletBottomAccountActions onClose={onClose} />;

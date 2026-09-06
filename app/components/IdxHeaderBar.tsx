@@ -2,7 +2,6 @@ import { Link, useLocation } from "react-router-dom";
 import { Flex, cn } from "@orderly.network/ui";
 import type { ReactNode } from "react";
 import CustomLeftNav from "@/components/CustomLeftNav";
-import { MarketingMobileNav } from "@/components/marketing/MarketingMobileNav";
 import { HeaderLinkOrScanButton } from "@/components/HeaderLinkOrScanButton";
 import { HeaderNavLinks } from "@/components/HeaderNavLinks";
 import { TradingModeToggle } from "@/components/TradingModeToggle";
@@ -33,7 +32,6 @@ export function IdxHeaderBar({
   const { isBooted } = useOrderlyBoot();
   const isFuturesPage = location.pathname.startsWith("/futures");
   const isHomePage = location.pathname === "/";
-  const useLightMobileNav = isHomePage && !isBooted;
   const mainNav = useDesktopHeader ? <HeaderNavLinks menus={navItems} /> : null;
 
   return (
@@ -47,18 +45,12 @@ export function IdxHeaderBar({
         className={cn("oui-gap-3", "oui-min-w-0 oui-flex-1 oui-overflow-hidden")}
       >
         {useCompactHeader ? (
-          useLightMobileNav ? (
-            <MarketingMobileNav
-              navItems={navItems}
-              customMenus={customMenus}
-            />
-          ) : (
-            <CustomLeftNav
-              menus={navItems}
-              externalLinks={customMenus}
-              hideWalletActions={isHomePage}
-            />
-          )
+          <CustomLeftNav
+            menus={navItems}
+            externalLinks={customMenus}
+            hideWalletActions={isHomePage}
+            hideLanguageSwitcher={isHomePage && !isBooted}
+          />
         ) : null}
         <Link
           to="/"

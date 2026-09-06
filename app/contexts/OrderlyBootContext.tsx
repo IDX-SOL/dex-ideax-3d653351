@@ -18,13 +18,16 @@ const OrderlyBootContext = createContext<OrderlyBootContextValue | null>(null);
 export function OrderlyBootProvider({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
   const onHome = isHomeRoute(pathname);
-  const [isBooted, setIsBooted] = useState(() => !onHome);
+  const [everBooted, setEverBooted] = useState(() => !onHome);
 
   useEffect(() => {
     if (!onHome) {
-      setIsBooted(true);
+      setEverBooted(true);
     }
   }, [onHome]);
+
+  // Boot synchronously when leaving `/` — useEffect alone lets Scaffold mount too early.
+  const isBooted = !onHome || everBooted;
 
   const value = useMemo(() => ({ isBooted }), [isBooted]);
 
