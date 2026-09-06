@@ -7,7 +7,9 @@ export function MarketingLayoutShell({
 }) {
   return (
     <div className="idx-marketing-layout-shell">
-      <div className="idx-marketing-layout-shell__content">{children}</div>
+      <main id="main-content" className="idx-marketing-layout-shell__content">
+        {children}
+      </main>
       <ExchangeMarketingFooter />
     </div>
   );

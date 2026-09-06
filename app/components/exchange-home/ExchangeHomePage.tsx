@@ -45,15 +45,77 @@ function formatChange(changePct: number | null | undefined) {
 
 type Quote = { price: number | null; changePct: number | null };
 
+type HeroPictureProps = {
+  webp: string;
+  png: string;
+  alt: string;
+  className?: string;
+  width: number;
+  height: number;
+  fetchPriority?: "high" | "low" | "auto";
+};
+
+function HeroPicture({
+  webp,
+  png,
+  alt,
+  className,
+  width,
+  height,
+  fetchPriority,
+}: HeroPictureProps) {
+  return (
+    <picture>
+      <source srcSet={withBasePath(webp)} type="image/webp" />
+      <img
+        className={className}
+        src={withBasePath(png)}
+        alt={alt}
+        width={width}
+        height={height}
+        decoding="async"
+        fetchPriority={fetchPriority}
+      />
+    </picture>
+  );
+}
+
+function scheduleIdleWork(callback: () => void, timeoutMs = 2500) {
+  if (typeof window.requestIdleCallback === "function") {
+    return window.requestIdleCallback(callback, { timeout: timeoutMs });
+  }
+  return window.setTimeout(callback, Math.min(timeoutMs, 1500));
+}
+
+function cancelIdleWork(id: number) {
+  if (typeof window.cancelIdleCallback === "function") {
+    window.cancelIdleCallback(id);
+    return;
+  }
+  window.clearTimeout(id);
+}
+
 export default function ExchangeHomePage() {
   const [shiftPx, setShiftPx] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
   const shiftLocked = useRef(false);
   const [quotes, setQuotes] = useState<Record<string, Quote>>({});
+  const [marketsReady, setMarketsReady] = useState(false);
 
   const openDemoGuide = () => {
     window.dispatchEvent(new CustomEvent(DEMO_GUIDE_OPEN_EVENT));
   };
+
+  useEffect(() => {
+    let alive = true;
+    const id = scheduleIdleWork(() => {
+      if (alive) setMarketsReady(true);
+    });
+    return () => {
+      alive = false;
+      cancelIdleWork(id);
+    };
+  }, []);
 
   useEffect(() => {
     let alive = true;
@@ -81,11 +143,16 @@ export default function ExchangeHomePage() {
         /* keep last quotes */
       }
     };
-    load();
-    const timer = setInterval(load, 20000);
+    let timer: ReturnType<typeof setInterval> | undefined;
+    const id = scheduleIdleWork(() => {
+      if (!alive) return;
+      load();
+      timer = setInterval(load, 20000);
+    });
     return () => {
       alive = false;
-      clearInterval(timer);
+      cancelIdleWork(id);
+      if (timer) clearInterval(timer);
     };
   }, []);
 
@@ -109,6 +176,15 @@ export default function ExchangeHomePage() {
       <div className="ex-page">
         <div className="ex-fold">
           <section className="ex-hero">
+            <HeroPicture
+              webp="/exchange-home/hero-bg.webp"
+              png="/exchange-home/hero-bg.png"
+              alt=""
+              className="ex-hero-bg"
+              width={1024}
+              height={571}
+              fetchPriority="high"
+            />
             <div className="ex-wrap ex-hero-grid">
               <div>
                 <p className="ex-kicker">Perpetual futures</p>
@@ -137,10 +213,13 @@ export default function ExchangeHomePage() {
                 <div className="ex-device ex-device-laptop">
                   <div className="ex-device-lid">
                     <div className="ex-device-screen">
-                      <img
-                        className="ex-shot"
-                        src={withBasePath("/exchange-home/trade-desktop.png")}
+                      <HeroPicture
+                        webp="/exchange-home/trade-desktop.webp"
+                        png="/exchange-home/trade-desktop.png"
                         alt="IDX Exchange Pro terminal on MacBook"
+                        className="ex-shot"
+                        width={1024}
+                        height={683}
                       />
                     </div>
                   </div>
@@ -155,20 +234,26 @@ export default function ExchangeHomePage() {
                   <span className="ex-device-btn ex-device-btn-power" aria-hidden="true" />
                   <div className="ex-device-screen">
                     <span className="ex-device-island" aria-hidden="true" />
-                    <img
-                      className="ex-shot"
-                      src={withBasePath("/exchange-home/trade-mobile.png")}
+                    <HeroPicture
+                      webp="/exchange-home/trade-mobile.webp"
+                      png="/exchange-home/trade-mobile.png"
                       alt="IDX Exchange on iPhone"
+                      className="ex-shot"
+                      width={538}
+                      height={1024}
                     />
                   </div>
                 </div>
                 <div className="ex-device ex-device-ipad">
                   <span className="ex-device-cam" aria-hidden="true" />
                   <div className="ex-device-screen">
-                    <img
-                      className="ex-shot"
-                      src={withBasePath("/exchange-home/trade-ipad.png")}
+                    <HeroPicture
+                      webp="/exchange-home/trade-ipad.webp"
+                      png="/exchange-home/trade-ipad.png"
                       alt="IDX Exchange on iPad"
+                      className="ex-shot"
+                      width={1024}
+                      height={699}
                     />
                   </div>
                 </div>
@@ -237,9 +322,13 @@ export default function ExchangeHomePage() {
             <header className="ex-markets-snapshot-intro">
               <h2 className="ex-h2">Market overview</h2>
             </header>
-            <MarketsSnapshot />
-            <MarketsGrid />
-            <NewListingsStack />
+            {marketsReady ? (
+              <>
+                <MarketsSnapshot />
+                <MarketsGrid />
+                <NewListingsStack />
+              </>
+            ) : null}
           </div>
         </section>
 
@@ -256,10 +345,13 @@ export default function ExchangeHomePage() {
               </h2>
             </header>
             <figure className="ex-swap-visual">
-              <img
-                className="ex-swap-shot"
-                src={withBasePath("/exchange-home/swap-desktop.png")}
+              <HeroPicture
+                webp="/exchange-home/swap-desktop.webp"
+                png="/exchange-home/swap-desktop.png"
                 alt="IDX Swap — chart, route, and swap panel"
+                className="ex-swap-shot"
+                width={1024}
+                height={570}
               />
             </figure>
             <div className="ex-swap-after">
@@ -303,14 +395,13 @@ export default function ExchangeHomePage() {
         <section className="ex-section ex-api-section" id="api">
           <div className="ex-wrap ex-api">
             <figure className="ex-api-visual">
-              <img
-                className="ex-api-shot"
-                src={withBasePath("/exchange-home/api-autobot.png")}
+              <HeroPicture
+                webp="/exchange-home/api-autobot.webp"
+                png="/exchange-home/api-autobot.png"
                 alt="IDX AutoBot — automated trading on IDX"
+                className="ex-api-shot"
                 width={440}
                 height={640}
-                loading="lazy"
-                decoding="async"
               />
             </figure>
             <div className="ex-api-copy">

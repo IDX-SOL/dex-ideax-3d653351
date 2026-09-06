@@ -133,7 +133,7 @@ self.addEventListener('fetch', (event) => {
       return fetch(request)
         .then((response) => {
           if (response && response.status === 200 && response.type === 'basic') {
-            const isStaticAsset = /\.(woff2?|png|jpg|jpeg|svg|webp|ico|css)$/i.test(url.pathname);
+            const isStaticAsset = /\.(woff2?|ttf|otf|png|jpg|jpeg|svg|webp|ico|css)$/i.test(url.pathname);
             
             if (isStaticAsset) {
               const responseToCache = response.clone();

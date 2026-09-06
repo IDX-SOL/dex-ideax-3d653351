@@ -5,6 +5,7 @@ import { HttpsRequiredWarning } from "@/components/HttpsRequiredWarning";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { SubNavBackAffordance } from "@/components/SubNavBackAffordance";
 import OrderlyProvider from "@/components/orderlyProvider";
+import DeferredGtm from "@/components/analytics/DeferredGtm";
 import { withBasePath } from "./utils/base-path";
 import { getSEOConfig, getUserLanguage } from "./utils/seo";
 import { getRuntimeConfig } from "./utils/runtime-config";
@@ -36,6 +37,7 @@ export default function App() {
           href={withBasePath("/favicon.webp")}
         />
       </Helmet>
+      <DeferredGtm />
       <HttpsRequiredWarning />
       <OrderlyProvider>
         <SubNavBackAffordance />

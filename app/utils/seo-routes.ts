@@ -9,9 +9,17 @@ export type SeoChangeFreq =
   | "yearly"
   | "never";
 
+export const SEO_HOME_PAGE_TITLE =
+  "IDX Exchange - Decentralized Crypto Perpetual Futures (Perp) Exchange";
+
+export const SITE_DESCRIPTION =
+  "Trade crypto perpetual futures on IDX Exchange, a decentralized perp exchange with no KYC, up to 100x leverage, non-custodial trading, deep liquidity, low fees, and seamless on-chain derivatives.";
+
 export interface SeoRouteDefinition {
   path: string;
   titleSuffix: string;
+  /** When set, used as the full document title (no `| broker` suffix). */
+  pageTitle?: string;
   description: string;
   /** Included in sitemap.xml when true (default false for aux routes). */
   indexable?: boolean;
@@ -32,13 +40,13 @@ export const SEO_ROBOTS_DISALLOW = [
   "/tradingview/",
 ] as const;
 
-const SITE_DESCRIPTION_FALLBACK =
-  "Trade crypto perpetual futures on IDX Exchange — a decentralized perp DEX with no KYC, up to 100x leverage, non-custodial trading, deep liquidity, and low fees.";
+const SITE_DESCRIPTION_FALLBACK = SITE_DESCRIPTION;
 
 export const SEO_HOME_ROUTE: SeoRouteDefinition = {
   path: "/",
   titleSuffix: "IDX Exchange",
-  description: SITE_DESCRIPTION_FALLBACK,
+  pageTitle: SEO_HOME_PAGE_TITLE,
+  description: SITE_DESCRIPTION,
   indexable: true,
   changefreq: "weekly",
   priority: 1,
@@ -213,6 +221,14 @@ export function getSitemapRoutes(): SeoRouteDefinition[] {
 
 export function buildPageTitle(titleSuffix: string, brokerName: string): string {
   return `${titleSuffix} | ${brokerName}`;
+}
+
+export function resolvePageTitle(
+  route: SeoRouteDefinition | undefined,
+  brokerName: string,
+): string {
+  if (route?.pageTitle) return route.pageTitle;
+  return buildPageTitle(route?.titleSuffix ?? "IDX Exchange", brokerName);
 }
 
 export function buildCanonicalUrl(

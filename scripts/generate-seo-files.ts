@@ -7,6 +7,7 @@ import {
   buildPageTitle,
   getSitemapRoutes,
   isNoindexPath,
+  resolvePageTitle,
   type SeoRouteDefinition,
 } from "../app/utils/seo-routes";
 
@@ -117,7 +118,7 @@ export function injectSeoIntoHtml(
   },
 ): string {
   const pageTitle = escapeHtmlAttr(
-    buildPageTitle(route.titleSuffix, options.brokerName),
+    resolvePageTitle(route, options.brokerName),
   );
   const description = escapeHtmlAttr(route.description);
   const canonical = escapeHtmlAttr(

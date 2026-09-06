@@ -1,6 +1,8 @@
 import { getRuntimeConfig, getRuntimeConfigArray } from "./runtime-config";
 import {
   buildCanonicalUrl,
+  buildPageTitle,
+  getSeoRouteForPath,
   resolveSeoForPath,
 } from "./seo-routes";
 
@@ -147,8 +149,13 @@ export function getPageMeta(options: GetPageMetaOptions = {}): SeoTag[] {
     brokerName: getRuntimeConfig("VITE_ORDERLY_BROKER_NAME") || "IDX",
     siteDescription: config.siteDescription,
   });
+  const route = getSeoRouteForPath(resolved.path, basePath);
 
-  const pageTitle = options.pageTitle ?? config.siteName ?? resolved.titleSuffix;
+  const pageTitle =
+    options.pageTitle ??
+    route?.pageTitle ??
+    config.siteName ??
+    buildPageTitle(resolved.titleSuffix, getRuntimeConfig("VITE_ORDERLY_BROKER_NAME") || "IDX");
   const description = resolved.description;
   const siteUrl = config.siteUrl;
   const canonical = siteUrl
