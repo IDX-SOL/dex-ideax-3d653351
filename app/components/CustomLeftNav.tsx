@@ -40,8 +40,6 @@ type LeftNavUIProps = LeftNavProps & {
   }>;
   /** Home marketing header — hide scan / account chrome in drawer footer. */
   hideWalletActions?: boolean;
-  /** Cold home load — language row needs Orderly analytics hooks. */
-  hideLanguageSwitcher?: boolean;
 };
 
 const navRowClassName =
@@ -127,12 +125,8 @@ const LeftNavSheet = modal.create<LeftNavUIProps>((props) => {
                 </>
               )}
 
-            {!props.hideLanguageSwitcher ? (
-              <>
-                <div className="oui-w-full oui-border-t oui-border-line-12 oui-my-2" />
-                <LanguageNavItem />
-              </>
-            ) : null}
+            <div className="oui-w-full oui-border-t oui-border-line-12 oui-my-2" />
+            <LanguageNavItem />
           </div>
 
           <BottomAccountActions

@@ -1595,3 +1595,43 @@ html[data-idx-orderbook-folded="true"]
   height: 32px;
   line-height: 1;
 }
+
+.idx-cold-home-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.idx-cold-home-nav-sheet {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 61;
+  box-sizing: border-box;
+  display: flex;
+  width: 276px;
+  max-width: 86vw;
+  height: 100%;
+  flex-direction: column;
+  background: rgb(var(--oui-color-base-8) / 1);
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.35);
+}
+
+.idx-cold-home-nav-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.54);
+  cursor: pointer;
+}
+
+.idx-cold-home-nav-close:hover {
+  color: rgba(255, 255, 255, 0.82);
+}

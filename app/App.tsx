@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import { Helmet } from "react-helmet-async";
 import { Outlet } from "react-router-dom";
-import { ModalProvider, TooltipProvider } from "@orderly.network/ui";
 import { HttpsRequiredWarning } from "@/components/HttpsRequiredWarning";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { SubNavBackAffordance } from "@/components/SubNavBackAffordance";
@@ -43,18 +42,14 @@ export default function App() {
       <DeferredGtm />
       <HttpsRequiredWarning />
       <OrderlyLocaleProvider>
-        <TooltipProvider delayDuration={300}>
-          <ModalProvider>
-            <OrderlyBootProvider>
-              <OrderlyBootGate>
-                <SubNavBackAffordance />
-                <Suspense fallback={<LoadingSpinner />}>
-                  <Outlet />
-                </Suspense>
-              </OrderlyBootGate>
-            </OrderlyBootProvider>
-          </ModalProvider>
-        </TooltipProvider>
+        <OrderlyBootProvider>
+          <OrderlyBootGate>
+            <SubNavBackAffordance />
+            <Suspense fallback={<LoadingSpinner />}>
+              <Outlet />
+            </Suspense>
+          </OrderlyBootGate>
+        </OrderlyBootProvider>
       </OrderlyLocaleProvider>
     </>
   );
