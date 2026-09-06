@@ -1,4 +1,5 @@
 import react from "@vitejs/plugin-react";
+import Beasties from "beasties";
 import fs from "fs";
 import path from "path";
 import { defineConfig, Plugin } from "vite";
@@ -32,6 +33,40 @@ function loadConfigTitle(): string {
     console.warn("Failed to load title from config.js:", error);
     return DEFAULT_HTML_TITLE;
   }
+}
+
+function beastiesInlinePlugin(basePath: string, outDir: string): Plugin {
+  return {
+    name: "idx-beasties-inline",
+    apply: "build",
+    enforce: "post",
+    closeBundle: async () => {
+      const outputPath = path.resolve(outDir);
+      const indexPath = path.join(outputPath, "index.html");
+      if (!fs.existsSync(indexPath)) {
+        console.warn("[beasties] index.html not found, skipping");
+        return;
+      }
+
+      const beasties = new Beasties({
+        path: outputPath,
+        publicPath: basePath,
+        preload: "swap",
+        noscriptFallback: true,
+        logLevel: "warn",
+        allowRules: [
+          /^html\.idx-static-hero-active/,
+          /^#idx-static-hero/,
+          /^\.idx-static-hero__/,
+        ],
+      });
+
+      const html = fs.readFileSync(indexPath, "utf8");
+      const result = await beasties.process(html);
+      fs.writeFileSync(indexPath, result);
+      console.log("[beasties] Inlined critical CSS; main stylesheet loads async");
+    },
+  };
 }
 
 function htmlTransformPlugin(basePath: string): Plugin {
@@ -126,6 +161,7 @@ function tradingViewExchangeNamePlugin(): Plugin {
 
 export default defineConfig(() => {
   const basePath = process.env.PUBLIC_PATH || "/";
+  const outDir = path.resolve(__dirname, "build/client");
 
   return {
     server: {
@@ -144,6 +180,7 @@ export default defineConfig(() => {
       nodePolyfills({
         include: ["buffer", "crypto", "stream"],
       }),
+      beastiesInlinePlugin(basePath, outDir),
     ],
     build: {
       outDir: "build/client",

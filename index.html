@@ -5,6 +5,9 @@
     <link rel="icon" type="image/webp" href="/favicon.webp" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <link rel="preconnect" href="https://api.orderly.org" crossorigin />
+    <link rel="preconnect" href="https://testnet-api.orderly.org" crossorigin />
+
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#000000" />
     <meta name="mobile-web-app-capable" content="yes" />
@@ -67,7 +70,8 @@
     <meta name="twitter:image" content="https://dex.idxsolana.io/og-image.jpg" />
 
     <!-- Home-only static hero: LCP paints before React (removed on ExchangeHomePage mount) -->
-    <style>
+    <style id="idx-static-hero-shell">
+      /* beasties:include start */
       body {
         margin: 0;
         background: #050506;
@@ -113,6 +117,7 @@
           rgba(5, 5, 6, 0.1) 100%
         );
       }
+      /* beasties:include end */
     </style>
     <script>
       (function () {
@@ -136,7 +141,7 @@
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N5DRLDC5"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
-    <div id="idx-static-hero" aria-hidden="true">
+    <div id="idx-static-hero" aria-hidden="true" data-beasties-container>
       <img
         class="idx-static-hero__bg"
         src="/exchange-home/hero-bg.webp"
