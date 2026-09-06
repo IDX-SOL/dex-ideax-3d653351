@@ -4,7 +4,6 @@ import DemoGuideModal from "@/components/exchange-home/DemoGuideModal";
 import {
   AFFILIATE_URL,
   CHANNEL_NEWS_URL,
-  CHANNEL_TOKENS_URL,
   DOCS_EXCHANGE_URL,
   FUTURES_URL,
   GUIDE_URL,
@@ -157,9 +156,6 @@ export function ExchangeMarketingFooter() {
             </a>
             <a href={DOCS_EXCHANGE_URL} target="_blank" rel="noopener noreferrer">
               Docs
-            </a>
-            <a href={CHANNEL_TOKENS_URL} target="_blank" rel="noopener noreferrer">
-              New tokens
             </a>
             <a href={CHANNEL_NEWS_URL} target="_blank" rel="noopener noreferrer">
               Crypto news
