@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { resolveSymbolIconUrls } from "@/config/exchange/symbolIcon";
 import { tradeUrl } from "@/config/exchange/urls";
 import { fetchNewListings } from "@/lib/exchange/exchangeData";
@@ -92,15 +92,26 @@ function SortHeader({
   const direction = active ? activeDir : null;
 
   return (
-    <button
-      type="button"
-      className={`ex-markets-new-listings-th${className ? ` ${className}` : ""}${active ? " is-active" : ""}`}
-      onClick={() => onSort(sortKey)}
-      aria-sort={active ? (activeDir === "asc" ? "ascending" : "descending") : "none"}
+    <th
+      scope="col"
+      className={`ex-markets-new-listings-th-cell${className ? ` ${className}` : ""}${active ? " is-active" : ""}`}
+      aria-sort={
+        active
+          ? activeDir === "asc"
+            ? "ascending"
+            : "descending"
+          : "none"
+      }
     >
-      <span>{label}</span>
-      <SortArrows direction={direction} />
-    </button>
+      <button
+        type="button"
+        className={`ex-markets-new-listings-th${active ? " is-active" : ""}`}
+        onClick={() => onSort(sortKey)}
+      >
+        <span>{label}</span>
+        <SortArrows direction={direction} />
+      </button>
+    </th>
   );
 }
 
@@ -172,44 +183,56 @@ function ListingIcon({ symbol, label }: { symbol: string; label: string }) {
 }
 
 function ListingRow({ item }: { item: Listing }) {
+  const navigate = useNavigate();
   const up = item.changePct >= 0;
   const fundingUp = (item.funding8h ?? 0) >= 0;
   const label = item.displaySymbol || item.symbol;
 
+  const goToTrade = () => {
+    updateSymbol(item.symbol);
+    navigate(tradeUrl(item.symbol));
+  };
+
   return (
-    <Link
+    <tr
       className="ex-markets-new-listings-row"
-      to={tradeUrl(item.symbol)}
+      onClick={goToTrade}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          goToTrade();
+        }
+      }}
+      tabIndex={0}
       aria-label={`Trade ${label}`}
-      onClick={() => updateSymbol(item.symbol)}
     >
-      <div className="ex-markets-new-listings-market">
+      <td className="ex-markets-new-listings-market">
         <ListingIcon symbol={item.symbol} label={label} />
         <span className="ex-markets-new-listings-symbol">{label}</span>
         {item.leverage != null ? (
           <span className="ex-markets-new-listings-leverage">{item.leverage}x</span>
         ) : null}
-      </div>
-      <span className="ex-markets-new-listings-cell ex-markets-new-listings-num">
+      </td>
+      <td className="ex-markets-new-listings-cell ex-markets-new-listings-num">
         {formatPrice(item.price)}
-      </span>
-      <span
+      </td>
+      <td
         className={`ex-markets-new-listings-cell ex-markets-new-listings-num${up ? " is-up" : " is-down"}`}
       >
         {formatPctChange(item.changePct)}
-      </span>
-      <span className="ex-markets-new-listings-cell ex-markets-new-listings-num">
+      </td>
+      <td className="ex-markets-new-listings-cell ex-markets-new-listings-num">
         {formatUsd(item.volume24h)}
-      </span>
-      <span className="ex-markets-new-listings-cell ex-markets-new-listings-num ex-markets-new-listings-col--desktop">
+      </td>
+      <td className="ex-markets-new-listings-cell ex-markets-new-listings-num ex-markets-new-listings-col--desktop">
         {formatUsd(item.openInterest)}
-      </span>
-      <span
+      </td>
+      <td
         className={`ex-markets-new-listings-cell ex-markets-new-listings-num ex-markets-new-listings-col--desktop${item.funding8h != null ? (fundingUp ? " is-up" : " is-down") : ""}`}
       >
         {formatFunding8h(item.funding8h)}
-      </span>
-    </Link>
+      </td>
+    </tr>
   );
 }
 
@@ -264,67 +287,72 @@ export default function NewListingsStack() {
         <div className="ex-markets-new-listings-inner">
           <p className="ex-markets-new-listings-title">New listings</p>
 
-          <div className="ex-markets-new-listings-table">
-            <div className="ex-markets-new-listings-table-head" role="row">
-              <SortHeader
-                label="Market"
-                sortKey="market"
-                activeKey={sort.key}
-                activeDir={sort.dir}
-                onSort={handleSort}
-              />
-              <SortHeader
-                label="Last"
-                sortKey="last"
-                activeKey={sort.key}
-                activeDir={sort.dir}
-                onSort={handleSort}
-                className="is-num"
-              />
-              <SortHeader
-                label="24h %"
-                sortKey="change"
-                activeKey={sort.key}
-                activeDir={sort.dir}
-                onSort={handleSort}
-                className="is-num"
-              />
-              <SortHeader
-                label="24h vol"
-                sortKey="volume"
-                activeKey={sort.key}
-                activeDir={sort.dir}
-                onSort={handleSort}
-                className="is-num"
-              />
-              <SortHeader
-                label="Open int."
-                sortKey="oi"
-                activeKey={sort.key}
-                activeDir={sort.dir}
-                onSort={handleSort}
-                className="is-num ex-markets-new-listings-col--desktop"
-              />
-              <SortHeader
-                label="8h funding"
-                sortKey="funding"
-                activeKey={sort.key}
-                activeDir={sort.dir}
-                onSort={handleSort}
-                className="is-num ex-markets-new-listings-col--desktop"
-              />
-            </div>
-
-            <div className="ex-markets-new-listings-table-body">
+          <table className="ex-markets-new-listings-table">
+            <thead>
+              <tr>
+                <SortHeader
+                  label="Market"
+                  sortKey="market"
+                  activeKey={sort.key}
+                  activeDir={sort.dir}
+                  onSort={handleSort}
+                />
+                <SortHeader
+                  label="Last"
+                  sortKey="last"
+                  activeKey={sort.key}
+                  activeDir={sort.dir}
+                  onSort={handleSort}
+                  className="is-num"
+                />
+                <SortHeader
+                  label="24h %"
+                  sortKey="change"
+                  activeKey={sort.key}
+                  activeDir={sort.dir}
+                  onSort={handleSort}
+                  className="is-num"
+                />
+                <SortHeader
+                  label="24h vol"
+                  sortKey="volume"
+                  activeKey={sort.key}
+                  activeDir={sort.dir}
+                  onSort={handleSort}
+                  className="is-num"
+                />
+                <SortHeader
+                  label="Open int."
+                  sortKey="oi"
+                  activeKey={sort.key}
+                  activeDir={sort.dir}
+                  onSort={handleSort}
+                  className="is-num ex-markets-new-listings-col--desktop"
+                />
+                <SortHeader
+                  label="8h funding"
+                  sortKey="funding"
+                  activeKey={sort.key}
+                  activeDir={sort.dir}
+                  onSort={handleSort}
+                  className="is-num ex-markets-new-listings-col--desktop"
+                />
+              </tr>
+            </thead>
+            <tbody>
               {sortedListings.length ? (
                 sortedListings.map((item) => (
                   <ListingRow key={item.symbol} item={item} />
                 ))
               ) : (
-                <p className="ex-markets-gainers-empty">—</p>
+                <tr>
+                  <td colSpan={6} className="ex-markets-new-listings-empty">
+                    <p className="ex-markets-gainers-empty">—</p>
+                  </td>
+                </tr>
               )}
-            </div>
-          </div>
+            </tbody>
+          </table>
         </div>
       </article>
     </div>

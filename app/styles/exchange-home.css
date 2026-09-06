@@ -1180,45 +1180,34 @@ button.ex-btn {
 }
 
 .ex-markets-new-listings-table {
-  --nl-col-market: minmax(8rem, 1.5fr);
-  --nl-col-last: minmax(6rem, 1fr);
-  --nl-col-change: minmax(5rem, 0.85fr);
-  --nl-col-vol: minmax(6rem, 1fr);
-  --nl-col-oi: minmax(6rem, 1fr);
-  --nl-col-funding: minmax(6rem, 1fr);
-  --nl-col-gap: 1.5rem;
-  --nl-row-py: 0.625rem;
-  --nl-row-min-h: 2.5rem;
+  width: 100%;
   margin-top: 0.35rem;
+  border-collapse: collapse;
+  table-layout: fixed;
   min-width: 0;
 }
 
-.ex-markets-new-listings-table-head,
-.ex-markets-new-listings-row {
-  display: grid;
-  grid-template-columns:
-    var(--nl-col-market)
-    var(--nl-col-last)
-    var(--nl-col-change)
-    var(--nl-col-vol)
-    var(--nl-col-oi)
-    var(--nl-col-funding);
-  align-items: center;
-  column-gap: var(--nl-col-gap);
-  padding-inline: 0.15rem;
+.ex-markets-new-listings-table thead tr {
+  border-bottom: 1px solid rgba(16, 16, 18, 0.1);
 }
 
-.ex-markets-new-listings-table-head {
-  min-height: auto;
-  padding-block: 0.28rem 0.32rem;
-  margin: 0;
-  border-bottom: 1px solid rgba(16, 16, 18, 0.1);
+.ex-markets-new-listings-th-cell {
+  padding: 0.28rem 0.15rem 0.32rem;
   font-size: 0.64rem;
   font-weight: 600;
   line-height: 1.15;
   color: rgba(16, 16, 18, 0.46);
   text-transform: uppercase;
   letter-spacing: 0.03em;
+  vertical-align: middle;
+}
+
+.ex-markets-new-listings-th-cell.is-num {
+  text-align: right;
+}
+
+.ex-markets-new-listings-th-cell.is-active {
+  color: rgba(16, 16, 18, 0.72);
 }
 
 .ex-markets-new-listings-th {
@@ -1242,8 +1231,9 @@ button.ex-btn {
   color: rgba(16, 16, 18, 0.72);
 }
 
-.ex-markets-new-listings-th.is-num {
-  justify-self: end;
+.ex-markets-new-listings-th-cell.is-num .ex-markets-new-listings-th {
+  justify-content: flex-end;
+  width: 100%;
 }
 
 .ex-markets-new-listings-sort-icon {
@@ -1268,19 +1258,10 @@ button.ex-btn {
   fill: #047857;
 }
 
-.ex-markets-new-listings-table-body {
-  margin: 0;
-  padding: 0.05rem 0 0;
-}
-
 .ex-markets-new-listings-row {
-  min-height: var(--nl-row-min-h);
-  padding-block: var(--nl-row-py);
-  margin: 0;
+  min-height: 2.5rem;
   border-bottom: 1px solid rgba(16, 16, 18, 0.06);
-  border-radius: 0;
-  text-decoration: none;
-  color: inherit;
+  cursor: pointer;
   transition: background-color 0.15s ease;
 }
 
@@ -1290,6 +1271,15 @@ button.ex-btn {
 
 .ex-markets-new-listings-row:hover {
   background: rgba(16, 16, 18, 0.04);
+}
+
+.ex-markets-new-listings-row td {
+  padding: 0.625rem 0.15rem;
+  vertical-align: middle;
+}
+
+.ex-markets-new-listings-empty {
+  padding: 0.35rem 0.15rem 0;
 }
 
 .ex-markets-new-listings-market {
@@ -1327,7 +1317,6 @@ button.ex-btn {
 }
 
 .ex-markets-new-listings-num {
-  justify-self: end;
   text-align: right;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -1346,31 +1335,17 @@ button.ex-btn {
     display: none !important;
   }
 
-  .ex-markets-new-listings-table {
-    --nl-col-market: minmax(0, 1.35fr);
-    --nl-col-last: minmax(3.1rem, 0.95fr);
-    --nl-col-change: minmax(2.65rem, 0.8fr);
-    --nl-col-vol: minmax(3.1rem, 0.95fr);
-    --nl-col-gap: 0.45rem;
-    --nl-row-py: 0.55rem;
-  }
-
-  .ex-markets-new-listings-table-head,
-  .ex-markets-new-listings-row {
-    grid-template-columns:
-      var(--nl-col-market)
-      var(--nl-col-last)
-      var(--nl-col-change)
-      var(--nl-col-vol);
-  }
-
   .ex-markets-new-listings-card {
     padding-inline: 0.85rem;
   }
 
-  .ex-markets-new-listings-th,
+  .ex-markets-new-listings-th-cell,
   .ex-markets-new-listings-cell {
     font-size: 0.66rem;
+  }
+
+  .ex-markets-new-listings-row td {
+    padding-block: 0.55rem;
   }
 
   .ex-markets-new-listings-sort-icon {

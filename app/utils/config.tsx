@@ -381,7 +381,14 @@ export const useOrderlyConfig = () => {
                 externalLinks={customMenus}
               />
             )}
-            <Link to="/" className="idx-header-brand oui-flex oui-items-center oui-gap-2 oui-shrink-0">
+            <Link
+              to="/"
+              aria-label="IDX Exchange home"
+              className={cn(
+                "idx-header-brand oui-flex oui-items-center oui-gap-2 oui-shrink-0",
+                isFuturesPage && "idx-header-brand--compact",
+              )}
+            >
               <img
                 src={withBasePath("/exchange-home/logo.png")}
                 alt=""
@@ -389,17 +396,7 @@ export const useOrderlyConfig = () => {
                 height={32}
                 style={{ display: "block" }}
               />
-              <span
-                style={{
-                  fontSize: "15px",
-                  fontWeight: 600,
-                  letterSpacing: "-0.02em",
-                  color: "rgb(var(--oui-color-base-foreground) / 0.92)",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                IDX Exchange
-              </span>
+              <span className="idx-header-brand-title">IDX Exchange</span>
             </Link>
             {mainNav}
           </Flex>

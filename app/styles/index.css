@@ -876,9 +876,21 @@ body,
   color: rgb(var(--oui-color-primary-light) / 1);
 }
 
+.idx-header-brand-title {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: rgb(var(--oui-color-base-foreground) / 0.92);
+  white-space: nowrap;
+}
+
 @media (max-width: 859.98px) {
-  .idx-header-brand > span {
+  .idx-header-brand--compact > .idx-header-brand-title {
     display: none;
+  }
+
+  .idx-header-brand-title {
+    font-size: 14px;
   }
 }
 
