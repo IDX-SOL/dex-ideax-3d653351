@@ -4,7 +4,6 @@ export const DOCS_URL = "https://docs.idxsolana.io";
 export const DOCS_EXCHANGE_URL = `${DOCS_URL}/idx-exchange`;
 export const DOCS_EXCHANGE_API_URL = `${DOCS_URL}/idx-exchange/api`;
 export const LAUNCHLAB_URL = `${SITE_URL}/idx-launchlab`;
-export const GUIDE_URL = `${SITE_URL}/exchange/learn-more`;
 
 export const FUTURES_URL = "/futures";
 export const SWAP_URL = "/swap";

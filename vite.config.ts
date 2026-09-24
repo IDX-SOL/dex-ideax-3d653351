@@ -8,7 +8,7 @@ import { nodePolyfills } from "vite-plugin-node-polyfills";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 const DEFAULT_HTML_TITLE =
-  "IDX Exchange - Decentralized Crypto Perpetual Futures (Perp) Exchange";
+  "IDX Exchange, Crypto, Gold & Stock Perps";
 
 function loadConfigTitle(): string {
   try {

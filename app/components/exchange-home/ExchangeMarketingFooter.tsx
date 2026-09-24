@@ -6,7 +6,6 @@ import {
   CHANNEL_NEWS_URL,
   DOCS_EXCHANGE_URL,
   FUTURES_URL,
-  GUIDE_URL,
   LAUNCHLAB_URL,
   MARKETS_URL,
   SITE_URL,
@@ -150,7 +149,6 @@ export function ExchangeMarketingFooter() {
             >
               Demo
             </button>
-            <a href={GUIDE_URL}>Guide</a>
             <a href={TOOLS_SITE_URL} target="_blank" rel="noopener noreferrer">
               Tools
             </a>

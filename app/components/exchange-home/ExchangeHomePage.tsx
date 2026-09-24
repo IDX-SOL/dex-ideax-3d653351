@@ -187,7 +187,7 @@ export default function ExchangeHomePage() {
             <HeroPicture
               webp="/exchange-home/hero-bg.webp"
               png="/exchange-home/hero-bg.png"
-              alt=""
+              alt="IDX Exchange Pro terminal showing Bitcoin and gold perps"
               className="ex-hero-bg"
               width={1024}
               height={571}

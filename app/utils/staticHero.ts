@@ -2,4 +2,5 @@
 export function removeStaticHero() {
   document.documentElement.classList.remove("idx-static-hero-active");
   document.getElementById("idx-static-hero")?.remove();
+  document.getElementById("idx-seo-content")?.remove();
 }

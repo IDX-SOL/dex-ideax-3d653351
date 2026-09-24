@@ -10,10 +10,10 @@ export type SeoChangeFreq =
   | "never";
 
 export const SEO_HOME_PAGE_TITLE =
-  "IDX Exchange - Decentralized Crypto Perpetual Futures (Perp) Exchange";
+  "IDX Exchange, Crypto, Gold & Stock Perps";
 
 export const SITE_DESCRIPTION =
-  "Trade crypto perpetual futures on IDX Exchange, a decentralized perp exchange with no KYC, up to 100x leverage, non-custodial trading, deep liquidity, low fees, and seamless on-chain derivatives.";
+  "Wallet-funded perps on Bitcoin, Gold, Nvidia, and Nasdaq. No KYC. Lite or Pro. Demo with free test USDC.";
 
 export interface SeoRouteDefinition {
   path: string;
