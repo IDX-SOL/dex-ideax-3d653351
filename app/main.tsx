@@ -196,20 +196,9 @@ loadRuntimeConfig().then(() => {
   );
 });
 
-// Skip SW in Vite/dev — it breaks lazy route imports after dep re-opt / HMR
-// ("Failed to fetch dynamically imported module: .../Layout.tsx").
-if ("serviceWorker" in navigator && !import.meta.env.DEV) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register(withBasePath("/sw.js"), { updateViaCache: "none" })
-      .then((registration) => {
-        console.log("SW registered:", registration);
-      })
-      .catch((error) => {
-        console.log("SW registration failed:", error);
-      });
-  });
-} else if ("serviceWorker" in navigator && import.meta.env.DEV) {
+// Do not register a service worker. Old DEX SWs pinned stale CSS; kill-switch
+// in public/sw.js unregisters itself after deploy.
+if ("serviceWorker" in navigator) {
   navigator.serviceWorker.getRegistrations().then((regs) => {
     regs.forEach((reg) => reg.unregister());
   });
