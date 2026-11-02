@@ -201,7 +201,7 @@ loadRuntimeConfig().then(() => {
 if ("serviceWorker" in navigator && !import.meta.env.DEV) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register(withBasePath("/sw.js"))
+      .register(withBasePath("/sw.js"), { updateViaCache: "none" })
       .then((registration) => {
         console.log("SW registered:", registration);
       })
