@@ -35,7 +35,7 @@ window.__RUNTIME_CONFIG__ = {
   "VITE_SEO_KEYWORDS": "IDX Perps, perpetual futures, crypto perps, Solana perps, multi-chain trading, BTC perp, ETH perp, SOL perp, IDX Solana, IDX ecosystem, leverage trading, decentralized exchange",
   "VITE_GOOGLE_SITE_VERIFICATION": "",
   "VITE_BING_SITE_VERIFICATION": "",
-  "VITE_AVAILABLE_LANGUAGES": "en,fr,de,pt,es,uk,ru",
+  "VITE_AVAILABLE_LANGUAGES": "en,fr,de,pt,es,uk,ru,ar",
   "VITE_USE_CUSTOM_PNL_POSTERS": "true",
   "VITE_CUSTOM_PNL_POSTER_COUNT": "1",
   "VITE_TRADING_VIEW_COLOR_CONFIG": "{\"upColor\":\"#10b981\",\"downColor\":\"#f5618b\",\"pnlUpColor\":\"#34d399\",\"pnlDownColor\":\"#f5618b\",\"chartBG\":\"#131722\"}",
