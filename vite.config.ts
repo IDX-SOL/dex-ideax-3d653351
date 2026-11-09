@@ -8,7 +8,7 @@ import { nodePolyfills } from "vite-plugin-node-polyfills";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 const DEFAULT_HTML_TITLE =
-  "IDX Exchange, Crypto, Gold & Stock Perps";
+  "IDX Exchange - Decentralized Crypto Perpetual Futures (Perp) Exchange";
 
 function loadConfigTitle(): string {
   try {
@@ -64,7 +64,9 @@ function beastiesInlinePlugin(basePath: string, outDir: string): Plugin {
       const html = fs.readFileSync(indexPath, "utf8");
       const result = await beasties.process(html);
       fs.writeFileSync(indexPath, result);
-      console.log("[beasties] Inlined critical CSS; main stylesheet loads async");
+      console.log(
+        "[beasties] Inlined critical CSS; main stylesheet loads async",
+      );
     },
   };
 }

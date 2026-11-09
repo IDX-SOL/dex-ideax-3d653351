@@ -10,10 +10,10 @@ export type SeoChangeFreq =
   | "never";
 
 export const SEO_HOME_PAGE_TITLE =
-  "IDX Exchange, Crypto, Gold & Stock Perps";
+  "IDX Exchange - Decentralized Crypto Perpetual Futures (Perp) Exchange";
 
 export const SITE_DESCRIPTION =
-  "Wallet-funded perps on Bitcoin, Gold, Nvidia, and Nasdaq. No KYC. Lite or Pro. Demo with free test USDC.";
+  "Trade crypto perpetual futures on IDX Exchange, a decentralized perpetual (perp) exchange offering secure, non-custodial trading, deep liquidity, low fees, and seamless on-chain derivatives trading.";
 
 export interface SeoRouteDefinition {
   path: string;
@@ -99,8 +99,7 @@ export const SEO_INDEXABLE_ROUTES: SeoRouteDefinition[] = [
   {
     path: "/rewards/affiliate",
     titleSuffix: "Affiliate",
-    description:
-      "Refer traders and track affiliate rewards on IDX Exchange.",
+    description: "Refer traders and track affiliate rewards on IDX Exchange.",
     indexable: true,
     changefreq: "weekly",
     priority: 0.5,
@@ -110,7 +109,9 @@ export const SEO_INDEXABLE_ROUTES: SeoRouteDefinition[] = [
 /** Routes that get static index.html copies in build.ts (includes noindex app pages). */
 export const SEO_STATIC_BUILD_ROUTES: SeoRouteDefinition[] = [
   SEO_HOME_ROUTE,
-  ...SEO_INDEXABLE_ROUTES.filter((route) => route.path !== "/rewards/affiliate"),
+  ...SEO_INDEXABLE_ROUTES.filter(
+    (route) => route.path !== "/rewards/affiliate",
+  ),
   {
     path: "/perp",
     titleSuffix: "Futures",
@@ -219,7 +220,10 @@ export function getSitemapRoutes(): SeoRouteDefinition[] {
   return [SEO_HOME_ROUTE, ...SEO_INDEXABLE_ROUTES.filter((r) => r.indexable)];
 }
 
-export function buildPageTitle(titleSuffix: string, brokerName: string): string {
+export function buildPageTitle(
+  titleSuffix: string,
+  brokerName: string,
+): string {
   return `${titleSuffix} | ${brokerName}`;
 }
 
