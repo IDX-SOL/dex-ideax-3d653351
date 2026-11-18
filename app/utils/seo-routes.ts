@@ -35,7 +35,9 @@ export const SEO_NOINDEX_PREFIXES = [
 
 export const SEO_ROBOTS_DISALLOW = [
   "/ai-futures-bot",
+  "/portfolio",
   "/portfolio/",
+  "/perp",
   "/perp/",
   "/tradingview/",
 ] as const;
@@ -252,5 +254,10 @@ export function buildCanonicalUrl(
     const url = `${origin}${base}/`;
     return url.replace(/([^:]\/)\/+/g, "$1");
   }
-  return `${origin}${base}${path}`.replace(/([^:]\/)\/+/g, "$1");
+  // Production host 301s `/futures` → `/futures/`; canonical + sitemap must match slash URLs.
+  const pathWithTrailingSlash = path.endsWith("/") ? path : `${path}/`;
+  return `${origin}${base}${pathWithTrailingSlash}`.replace(
+    /([^:]\/)\/+/g,
+    "$1",
+  );
 }

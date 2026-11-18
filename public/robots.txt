@@ -1,7 +1,9 @@
 User-agent: *
 Allow: /
 Disallow: /ai-futures-bot
+Disallow: /portfolio
 Disallow: /portfolio/
+Disallow: /perp
 Disallow: /perp/
 Disallow: /tradingview/
 
