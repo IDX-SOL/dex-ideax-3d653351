@@ -23,7 +23,7 @@ window.__RUNTIME_CONFIG__ = {
   "VITE_ENABLE_SERVICE_DISCLAIMER_DIALOG": "false",
   "VITE_ENABLE_CAMPAIGNS": "false",
   "VITE_TELEGRAM_URL": "https://t.me/IDX_Official/13",
-  "VITE_DISCORD_URL": "https://discord.gg/T5cMArBv",
+  "VITE_DISCORD_URL": "https://discord.gg/9AkawpRehw",
   "VITE_TWITTER_URL": "",
   "VITE_SEO_SITE_NAME": "IDX Exchange - Decentralized Crypto Perpetual Futures (Perp) Exchange",
   "VITE_SEO_SITE_DESCRIPTION": "Trade crypto perpetual futures on IDX Exchange, a decentralized perpetual (perp) exchange offering secure, non-custodial trading, deep liquidity, low fees, and seamless on-chain derivatives trading.",
