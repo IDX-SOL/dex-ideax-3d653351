@@ -155,7 +155,10 @@ export function getPageMeta(options: GetPageMetaOptions = {}): SeoTag[] {
     options.pageTitle ??
     route?.pageTitle ??
     config.siteName ??
-    buildPageTitle(resolved.titleSuffix, getRuntimeConfig("VITE_ORDERLY_BROKER_NAME") || "IDX");
+    buildPageTitle(
+      resolved.titleSuffix,
+      getRuntimeConfig("VITE_ORDERLY_BROKER_NAME") || "IDX",
+    );
   const description = resolved.description;
   const siteUrl = config.siteUrl;
   const canonical = siteUrl
@@ -246,6 +249,8 @@ export function getHomeStructuredData(): Record<string, unknown> {
   const siteUrl = config.siteUrl || "https://dex.idxsolana.io";
   const siteName = config.siteName || "IDX Exchange";
 
+  const origin = siteUrl.replace(/\/$/, "");
+
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -260,7 +265,23 @@ export function getHomeStructuredData(): Record<string, unknown> {
         "@type": "Organization",
         name: siteName,
         url: siteUrl,
-        logo: `${siteUrl.replace(/\/$/, "")}/exchange-home/logo.png`,
+        logo: `${origin}/exchange-home/logo.png`,
+        sameAs: [
+          "https://x.com/IDX__Solana",
+          "https://discord.gg/9AkawpRehw",
+          "https://t.me/IDX_Official",
+          "https://www.idxsolana.io/",
+          "https://docs.idxsolana.io/idx-exchange",
+          "https://tools.idxsolana.io/",
+          "https://www.idxwallet.com/",
+        ],
+      },
+      {
+        "@type": "WebApplication",
+        name: "IDX Exchange",
+        url: siteUrl,
+        applicationCategory: "FinanceApplication",
+        operatingSystem: "Web",
       },
     ],
   };

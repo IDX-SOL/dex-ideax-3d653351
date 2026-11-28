@@ -196,13 +196,12 @@ export default function ExchangeHomePage() {
             <div className="ex-wrap ex-hero-grid">
               <div>
                 <p className="ex-kicker">Perpetual futures</p>
-                <h1 className="ex-h1">
-                  Trade perps on Bitcoin, Gold, Nvidia, and Nasdaq. No KYC.
-                </h1>
+                <h1 className="ex-h1">IDX Exchange</h1>
                 <p className="ex-lede">
                   Wallet-funded. You keep the keys. Lite or Pro. Demo with free
-                  test USDC. Up to 100x on eligible markets — BTC, ETH, SOL, and
-                  a book that goes far past coins.
+                  test USDC. Trade Bitcoin, Gold, Nvidia, and Nasdaq perps — up
+                  to 100x on eligible markets, plus BTC, ETH, SOL, and a book
+                  that goes far past coins.
                 </p>
                 <div className="ex-actions">
                   <Link className="ex-btn ex-btn-primary" to={FUTURES_URL}>
@@ -237,9 +236,18 @@ export default function ExchangeHomePage() {
                   </div>
                 </div>
                 <div className="ex-device ex-device-phone">
-                  <span className="ex-device-btn ex-device-btn-silent" aria-hidden="true" />
-                  <span className="ex-device-btn ex-device-btn-vol" aria-hidden="true" />
-                  <span className="ex-device-btn ex-device-btn-power" aria-hidden="true" />
+                  <span
+                    className="ex-device-btn ex-device-btn-silent"
+                    aria-hidden="true"
+                  />
+                  <span
+                    className="ex-device-btn ex-device-btn-vol"
+                    aria-hidden="true"
+                  />
+                  <span
+                    className="ex-device-btn ex-device-btn-power"
+                    aria-hidden="true"
+                  />
                   <div className="ex-device-screen">
                     <span className="ex-device-island" aria-hidden="true" />
                     <HeroPicture
@@ -289,7 +297,10 @@ export default function ExchangeHomePage() {
                     return (
                       <div className="ex-ticker-item" key={`${dup}-${sym}`}>
                         <picture>
-                          <source srcSet={tickerIconWebp(sym)} type="image/webp" />
+                          <source
+                            srcSet={tickerIconWebp(sym)}
+                            type="image/webp"
+                          />
                           <img
                             className="ex-ticker-icon"
                             src={tickerIcon(sym)}
@@ -423,9 +434,9 @@ export default function ExchangeHomePage() {
                 in the AI era.
               </h2>
               <p className="ex-copy">
-                Create API keys for your setup — market data, order routing,
-                and automation on IDX perps. Run your own strategies or plug
-                into AI-driven bots.
+                Create API keys for your setup — market data, order routing, and
+                automation on IDX perps. Run your own strategies or plug into
+                AI-driven bots.
               </p>
               <div className="ex-actions">
                 <Link className="ex-btn ex-btn-primary" to={API_KEYS_URL}>
@@ -448,7 +459,9 @@ export default function ExchangeHomePage() {
           <div className="ex-wrap ex-refer">
             <header className="ex-refer-intro">
               <p className="ex-kicker">Referral</p>
-              <h2 className="ex-h2 ex-h2-sm">Invite traders. Earn on volume.</h2>
+              <h2 className="ex-h2 ex-h2-sm">
+                Invite traders. Earn on volume.
+              </h2>
               <p className="ex-copy">
                 They get fee rebates. You earn when they trade.
               </p>
