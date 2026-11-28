@@ -267,7 +267,7 @@ export function getHomeStructuredData(): Record<string, unknown> {
         url: siteUrl,
         logo: `${origin}/exchange-home/logo.png`,
         sameAs: [
-          "https://x.com/IDX__Solana",
+          "https://x.com/IDX_CryptoEx",
           "https://discord.gg/9AkawpRehw",
           "https://t.me/IDX_Official",
           "https://www.idxsolana.io/",

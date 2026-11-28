@@ -16,9 +16,9 @@ export function tradeUrl(symbol: string) {
   return `${FUTURES_URL}?symbol=${encodeURIComponent(symbol)}`;
 }
 
-export const SOCIAL_X_URL = "https://x.com/IDX__Solana";
+export const SOCIAL_X_URL = "https://x.com/IDX_CryptoEx";
 export const SOCIAL_DISCORD_URL = "https://discord.gg/9AkawpRehw";
-export const SOCIAL_TELEGRAM_URL = "https://t.me/IDX_Solana";
+export const SOCIAL_TELEGRAM_URL = "https://t.me/IDX_Official";
 export const SOCIAL_LINKEDIN_URL =
   "https://www.linkedin.com/company/idx-solana/";
 export const SOCIAL_INSTAGRAM_URL = "https://www.instagram.com/idx_solana/";
